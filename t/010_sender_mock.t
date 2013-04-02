@@ -14,7 +14,25 @@ cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 
 
 my $seq = 1;
-$ardrone_mock->at_ref( 1, 0 );
-my $str = $ardrone_mock->last_cmd;
-cmp_ok( $str, 'eq', "AT*REF=$seq,290718208\r", "Takeoff command" );
-$seq++;
+
+my @TESTS = (
+    {
+        run => 'at_ref',
+        args => [ 1, 0 ],
+        expect => "AT*REF=~SEQ~,290718208\r",
+        test_name => 'Takeoff command',
+    },
+);
+foreach (@TESTS) {
+    my $method = $_->{run};
+    my @args   = @{ $_->{args} };
+    my $expect = $_->{expect};
+    $expect =~ s/~SEQ~/$seq/g;
+    my $test_name = $_->{test_name};
+
+    $ardrone_mock->$method( @args );
+    my $got = $ardrone_mock->last_cmd;
+    cmp_ok( $got, 'eq', $expect, $test_name );
+
+    $seq++;
+}
