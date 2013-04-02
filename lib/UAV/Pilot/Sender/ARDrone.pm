@@ -38,6 +38,29 @@ sub at_ref
     return 1;
 }
 
+sub at_pcmd
+{
+    my ($self, $do_progressive, $do_combined_yaw,
+        $roll, $pitch, $vert_speed, $angular_speed) = @_;
+
+    my $cmd_number = ($do_progressive << 0)
+        | ($do_combined_yaw << 1);
+
+    my $cmd = 'AT*PCMD='
+        . join( ',', 
+            $self->_next_seq,
+            $cmd_number,
+            $roll,
+            $pitch,
+            $vert_speed,
+            $angular_speed,
+        )
+        . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 
 sub _send_cmd
 {

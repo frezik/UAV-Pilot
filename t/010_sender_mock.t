@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 5;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -17,10 +17,16 @@ my $seq = 1;
 
 my @TESTS = (
     {
-        run => 'at_ref',
-        args => [ 1, 0 ],
-        expect => "AT*REF=~SEQ~,290718208\r",
+        run       => 'at_ref',
+        args      => [ 1, 0 ],
+        expect    => "AT*REF=~SEQ~,290718208\r",
         test_name => 'Takeoff command',
+    },
+    {
+        run       => 'at_pcmd',
+        args      => [ 1, 1, 0.5, 0.25, -0.5, -1 ],
+        expect    => "AT*PCMD=~SEQ~,3,0.5,0.25,-0.5,-1\r",
+        test_name => 'Set progressive motion command',
     },
 );
 foreach (@TESTS) {
@@ -35,4 +41,15 @@ foreach (@TESTS) {
     cmp_ok( $got, 'eq', $expect, $test_name );
 
     $seq++;
+}
+
+
+eval {
+    $ardrone_mock->at_pcmd( 1, 1, 2, 0, 0, 0 );
+};
+if( $@ ) {
+    local $TODO = "Errors not yet thrown";
+    ok( 'Caught Out of Range error' );
+    cmp_ok( $seq, '==', $ardrone_mock->seq,
+        "Sequence was not incrmented for Out of Range error" );
 }
