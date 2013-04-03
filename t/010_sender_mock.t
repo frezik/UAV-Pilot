@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 10;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -51,6 +51,12 @@ my @TESTS = (
         args      => [ ],
         expect    => "AT*COMWDG=~SEQ~\r",
         test_name => 'Reset comm watchdog command',
+    },
+    {
+        run       => 'at_led',
+        args      => [ 1, 1.5, 6 ],
+        expect    => "AT*LED=~SEQ~,1,1.5,6\r",
+        test_name => 'Play LED sequence command',
     },
 );
 foreach (@TESTS) {

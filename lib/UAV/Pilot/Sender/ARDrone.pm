@@ -110,6 +110,22 @@ sub at_comwdg
     return 1;
 }
 
+sub at_led
+{
+    my ($self, $anim_id, $freq, $duration) = @_;
+
+    my $cmd = 'AT*LED=' . $self->_next_seq . ','
+        . join(',',
+            $anim_id,
+            $freq,
+            $duration,
+        )
+        . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 
 sub _send_cmd
 {
