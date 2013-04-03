@@ -3,6 +3,9 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
+use UAV::Pilot::Exceptions;
+
+
 extends 'UAV::Pilot::Sender';
 
 has 'port' => (
@@ -42,6 +45,27 @@ sub at_pcmd
 {
     my ($self, $do_progressive, $do_combined_yaw,
         $roll, $pitch, $vert_speed, $angular_speed) = @_;
+
+    if( ($roll >= 1) || ($roll <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Roll should be between 1.0 and -1.0',
+        );
+    }
+    if( ($pitch >= 1) || ($pitch <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Pitch should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($vert_speed >= 1) || ($vert_speed <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Vertical speed should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($angular_speed >= 1) || ($angular_speed <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Angular speed should be between 1.0 and -1.0',
+        );       
+    }
 
     my $cmd_number = ($do_progressive << 0)
         | ($do_combined_yaw << 1);

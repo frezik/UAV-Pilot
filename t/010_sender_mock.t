@@ -1,6 +1,7 @@
 use Test::More tests => 11;
 use v5.14;
 use UAV::Pilot;
+use UAV::Pilot::Exceptions;
 use UAV::Pilot::Sender;
 use UAV::Pilot::Sender::ARDrone;
 use UAV::Pilot::Sender::ARDrone::Mock;
@@ -24,8 +25,8 @@ my @TESTS = (
     },
     {
         run       => 'at_pcmd',
-        args      => [ 1, 1, 0.5, 0.25, -0.5, -1.1 ],
-        expect    => "AT*PCMD=~SEQ~,3,0.5,0.25,-0.5,-1.1\r",
+        args      => [ 1, 1, 0.5, 0.25, -0.5, -0.9 ],
+        expect    => "AT*PCMD=~SEQ~,3,0.5,0.25,-0.5,-0.9\r",
         test_name => 'Set progressive motion command',
     },
     {
@@ -83,9 +84,8 @@ foreach (@TESTS) {
 eval {
     $ardrone_mock->at_pcmd( 1, 1, 2, 0, 0, 0 );
 };
-if( $@ ) {
-    local $TODO = "Errors not yet thrown";
-    ok( 'Caught Out of Range error' );
+if( $@ && $@->isa( 'UAV::Pilot::NumberOutOfRangeException' ) ) {
+    ok( 'Caught Out of Range exception' );
     cmp_ok( $seq, '==', $ardrone_mock->seq,
         "Sequence was not incrmented for Out of Range error" );
 }
