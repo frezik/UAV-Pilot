@@ -12,6 +12,12 @@ has 'last_cmd' => (
     writer => '_send_cmd',
 );
 
+sub connect
+{
+    my ($self) = @_;
+    return 1;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

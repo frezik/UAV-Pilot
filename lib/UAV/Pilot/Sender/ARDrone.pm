@@ -13,6 +13,11 @@ has 'port' => (
     isa => 'Int',
 );
 
+has 'host' => (
+    is  => 'rw',
+    isa => 'Str',
+);
+
 has 'seq' => (
     is      => 'ro',
     isa     => 'Int',
@@ -20,6 +25,12 @@ has 'seq' => (
     writer  => '__set_seq',
 );
 
+
+sub connect
+{
+    my ($self) = @_;
+    return 1;
+}
 
 sub at_ref
 {
