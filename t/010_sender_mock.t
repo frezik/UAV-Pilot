@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 6;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -27,6 +27,12 @@ my @TESTS = (
         args      => [ 1, 1, 0.5, 0.25, -0.5, -1 ],
         expect    => "AT*PCMD=~SEQ~,3,0.5,0.25,-0.5,-1\r",
         test_name => 'Set progressive motion command',
+    },
+    {
+        run       => 'at_ftrim',
+        args      => [],
+        expect    => "AT*FTRIM=~SEQ~\r",
+        test_name => 'Set reference to horizontal plane',
     },
 );
 foreach (@TESTS) {
