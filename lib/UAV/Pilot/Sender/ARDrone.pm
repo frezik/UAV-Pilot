@@ -84,6 +84,22 @@ sub at_config
     return 1;
 }
 
+sub at_config_ids
+{
+    my ($self, $session_id, $user_id, $app_id) = @_;
+
+    my $cmd = 'AT*CONFIG_IDS=' . $self->_next_seq . ','
+        . join( ',',
+            $session_id,
+            $user_id,
+            $app_id,
+        )
+        . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 
 sub _send_cmd
 {

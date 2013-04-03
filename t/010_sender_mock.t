@@ -1,4 +1,4 @@
-use Test::More tests => 7;
+use Test::More tests => 8;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -38,6 +38,12 @@ my @TESTS = (
         run       => 'at_config',
         args      => [ 'SYSLOG:output', '5' ],
         expect    => qq{AT*CONFIG=~SEQ~,"SYSLOG:output","5"\r},
+        test_name => 'Set config option',
+    },
+    {
+        run       => 'at_config_ids',
+        args      => [ '1234', '5678', '9012' ],
+        expect    => "AT*CONFIG_IDS=~SEQ~,1234,5678,9012\r",
         test_name => 'Set config option',
     },
 );
