@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 11;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -57,6 +57,12 @@ my @TESTS = (
         args      => [ 1, 1.5, 6 ],
         expect    => "AT*LED=~SEQ~,1,1.5,6\r",
         test_name => 'Play LED sequence command',
+    },
+    {
+        run       => 'at_anim',
+        args      => [ 1, 20 ],
+        expect    => "AT*ANIM=~SEQ~,1,20\r",
+        test_name => 'Animation command',
     },
 );
 foreach (@TESTS) {
