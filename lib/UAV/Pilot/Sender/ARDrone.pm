@@ -100,6 +100,16 @@ sub at_config_ids
     return 1;
 }
 
+sub at_comwdg
+{
+    my ($self) = @_;
+
+    my $cmd = 'AT*COMWDG=' . $self->_next_seq . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 
 sub _send_cmd
 {
