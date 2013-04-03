@@ -1,4 +1,4 @@
-use Test::More tests => 6;
+use Test::More tests => 7;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender;
@@ -33,6 +33,12 @@ my @TESTS = (
         args      => [],
         expect    => "AT*FTRIM=~SEQ~\r",
         test_name => 'Set reference to horizontal plane',
+    },
+    {
+        run       => 'at_config',
+        args      => [ 'SYSLOG:output', '5' ],
+        expect    => qq{AT*CONFIG=~SEQ~,"SYSLOG:output","5"\r},
+        test_name => 'Set config option',
     },
 );
 foreach (@TESTS) {

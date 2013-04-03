@@ -71,6 +71,19 @@ sub at_ftrim
     return 1;
 }
 
+sub at_config
+{
+    my ($self, $name, $value) = @_;
+
+    my $cmd = 'AT*CONFIG=' . $self->_next_seq
+        . ',' . qq{"$name"}
+        . ',' . qq{"$value"}
+        . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 
 sub _send_cmd
 {
