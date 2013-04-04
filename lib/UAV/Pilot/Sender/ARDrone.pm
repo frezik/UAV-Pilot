@@ -10,8 +10,9 @@ use UAV::Pilot::Exceptions;
 extends 'UAV::Pilot::Sender';
 
 has 'port' => (
-    is  => 'rw',
-    isa => 'Int',
+    is      => 'rw',
+    isa     => 'Int',
+    default => 5556,
 );
 
 has 'host' => (

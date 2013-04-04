@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 15;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -92,3 +92,8 @@ if( $@ && $@->isa( 'UAV::Pilot::NumberOutOfRangeException' ) ) {
     cmp_ok( $seq, '==', $ardrone_mock->seq,
         "Sequence was not incrmented for Out of Range error" );
 }
+
+my $ardrone_port_check = UAV::Pilot::Sender::ARDrone::Mock->new({
+    host => 'localhost',
+});
+cmp_ok( $ardrone_port_check->port, '==', 5556, "Correct default port" );
