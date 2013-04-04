@@ -98,10 +98,10 @@ sub at_pcmd
         . join( ',', 
             $self->_next_seq,
             $cmd_number,
-            $roll,
-            $pitch,
-            $vert_speed,
-            $angular_speed,
+            $self->_float_convert( $roll ),
+            $self->_float_convert( $pitch ),
+            $self->_float_convert( $vert_speed ),
+            $self->_float_convert( $angular_speed ),
         )
         . "\r";
     $self->_send_cmd( $cmd );
@@ -203,6 +203,15 @@ sub _next_seq
     my $next_seq = $self->seq + 1;
     $self->__set_seq( $next_seq );
     return $next_seq;
+}
+
+# Takes an IEEE-754 float and converts its exact bits in memory to a signed 32-bit integer.
+# Yes, the ARDrone dev docs actually say to put floats across the wire in this format.
+sub _float_convert
+{
+    my ($self, $float) = @_;
+    my $int = unpack( "l", pack( "f", $float ) );
+    return $int;
 }
 
 no Moose;

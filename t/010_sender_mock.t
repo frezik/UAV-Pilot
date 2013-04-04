@@ -28,8 +28,8 @@ my @TESTS = (
     },
     {
         run       => 'at_pcmd',
-        args      => [ 1, 1, 0.5, 0.25, -0.5, -0.9 ],
-        expect    => "AT*PCMD=~SEQ~,3,0.5,0.25,-0.5,-0.9\r",
+        args      => [ 1, 1, -0.8, -0.8, -0.8, -0.8 ],
+        expect    => "AT*PCMD=~SEQ~,3,-1085485875,-1085485875,-1085485875,-1085485875\r",
         test_name => 'Set progressive motion command',
     },
     {
