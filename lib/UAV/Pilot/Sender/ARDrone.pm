@@ -2,6 +2,7 @@ package UAV::Pilot::Sender::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use IO::Socket;
 
 use UAV::Pilot::Exceptions;
 
@@ -25,10 +26,22 @@ has 'seq' => (
     writer  => '__set_seq',
 );
 
+has '_socket' => (
+    is => 'rw',
+);
+
 
 sub connect
 {
     my ($self) = @_;
+    my $socket = IO::Socket::INET->new(
+        Proto    => 'udp',
+        PeerPort => $self->port,
+        PeerAddr => $self->host,
+    ) or UAV::Pilot::->throw(
+        error => 'Could not open socket: ' . $!,
+    );
+    $self->_socket( $socket );
     return 1;
 }
 
@@ -179,7 +192,9 @@ sub at_anim
 
 sub _send_cmd
 {
-    # TODO
+    my ($self, $cmd) = @_;
+    $self->_socket->send( $cmd );
+    return 1;
 }
 
 sub _next_seq

@@ -1,4 +1,4 @@
-use Test::More tests => 12;
+use Test::More tests => 14;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -17,7 +17,7 @@ cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 ok( $ardrone_mock->connect, "Connect to ARDrone" );
 
 
-my $seq = 1;
+my $seq = 0;
 
 my @TESTS = (
     {
@@ -70,6 +70,8 @@ my @TESTS = (
     },
 );
 foreach (@TESTS) {
+    $seq++;
+
     my $method = $_->{run};
     my @args   = @{ $_->{args} };
     my $expect = $_->{expect};
@@ -79,8 +81,6 @@ foreach (@TESTS) {
     $ardrone_mock->$method( @args );
     my $got = $ardrone_mock->last_cmd;
     cmp_ok( $got, 'eq', $expect, $test_name );
-
-    $seq++;
 }
 
 
