@@ -1,1 +1,9 @@
-Don't tell me what to read!
+Perl library for controlling UAVs, specifically ARDrone (maybe others in the future).  See:
+
+http://ardrone2.parrot.com
+
+WARNING! THIS IS PRE-ALPHA CODE!
+This has not yet been tested on an actual ARDrone, since I haven't gotten one yet.  The 
+code and tests here are according to my understanding of the developer docs.  If your 
+ARDrone crashes into your neighbor's house, invades Iranian airspace, or tries to 
+find Sarah Conner, don't blame me.
