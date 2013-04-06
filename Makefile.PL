@@ -16,8 +16,11 @@ WriteMakefile(
         'autoclean::namespace' => 0,
         'Moose'                => 0,
         'Test::More'           => 0,
-        'Throwable'            => 0,
+        'Throwable'            => -1,
     },
+    EXE_FILES           => [
+        'bin/uav',
+    ],
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'UAV-Pilot-*' },
 );
