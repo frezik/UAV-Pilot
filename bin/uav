@@ -1,30 +1,10 @@
 #!/usr/bin/perl
 use v5.14;
+use Term::ReadLine::Perl5;
 
 my $PROMPT   = 'uav> ';
 my $CONTINUE = 1;
 
-
-sub print_prompt
-{
-    my ($prompt) = @_;
-    print $prompt;
-    return 1;
-}
-
-sub take_cmd
-{
-    my $cmd = <>;
-    chomp $cmd;
-    return $cmd;
-}
-
-sub save_cmd_to_history
-{
-    my ($cmd) = @_;
-    # TODO
-    return 1;
-}
 
 sub run_cmd
 {
@@ -34,7 +14,6 @@ sub run_cmd
         $return = 0;
     }
     else {
-        save_cmd_to_history( $cmd );
         # TODO
     }
 
@@ -44,9 +23,8 @@ sub run_cmd
 
 {
     my $continue = 1;
-    while( $continue ) {
-        print_prompt( $PROMPT );
-        my $cmd = take_cmd();
-        $continue = run_cmd( $cmd );
+    my $term = Term::ReadLine::Perl5->new( 'uav' );
+    while( $continue && defined($_ = $term->readline( $PROMPT )) ) {
+        $continue = run_cmd( $_ );
     }
 }

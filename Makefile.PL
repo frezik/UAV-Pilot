@@ -13,10 +13,11 @@ WriteMakefile(
       : ()),
     PL_FILES            => {},
     PREREQ_PM => {
-        'autoclean::namespace' => 0,
-        'Moose'                => 0,
-        'Test::More'           => 0,
-        'Throwable'            => -1,
+        'autoclean::namespace'  => 0,
+        'Moose'                 => 0,
+        'Term::ReadLine::Perl5' => 0,
+        'Test::More'            => 0,
+        'Throwable'             => -1,
     },
     EXE_FILES           => [
         'bin/uav',
