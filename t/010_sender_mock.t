@@ -1,4 +1,4 @@
-use Test::More tests => 13;
+use Test::More tests => 14;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -37,6 +37,12 @@ my @TESTS = (
         args      => [],
         expect    => "AT*FTRIM=~SEQ~\r",
         test_name => 'Set reference to horizontal plane command',
+    },
+    {
+        run       => 'at_calib',
+        args      => [ $ardrone_mock->ARDRONE_CALIBRATION_DEVICE_NUMBER ],
+        expect    => "AT*CALIB=~SEQ~,1\r",
+        test_name => 'Calibration command',
     },
     {
         run       => 'at_config',
