@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 15;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -31,6 +31,12 @@ my @TESTS = (
         args      => [ 1, 1, -0.8, -0.8, -0.8, -0.8 ],
         expect    => "AT*PCMD=~SEQ~,3,-1085485875,-1085485875,-1085485875,-1085485875\r",
         test_name => 'Set progressive motion command',
+    },
+    {
+        run       => 'at_pcmd_mag',
+        args      => [ 1, 1, -0.8, -0.8, -0.8, -0.8, -0.8, -0.8 ],
+        expect    => "AT*PCMD_MAG=~SEQ~,3,-1085485875,-1085485875,-1085485875,-1085485875,-1085485875,-1085485875\r",
+        test_name => 'Set progressive motion command w/magnetometer',
     },
     {
         run       => 'at_ftrim',

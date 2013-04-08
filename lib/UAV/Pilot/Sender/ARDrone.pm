@@ -115,6 +115,63 @@ sub at_pcmd
     return 1;
 }
 
+sub at_pcmd_mag
+{
+    my ($self, $do_progressive, $do_combined_yaw,
+        $roll, $pitch, $vert_speed, $angular_speed,
+        $magneto, $magneto_accuracy) = @_;
+
+    if( ($roll >= 1) || ($roll <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Roll should be between 1.0 and -1.0',
+        );
+    }
+    if( ($pitch >= 1) || ($pitch <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Pitch should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($vert_speed >= 1) || ($vert_speed <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Vertical speed should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($angular_speed >= 1) || ($angular_speed <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Angular speed should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($magneto >= 1) || ($magneto <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Magneto should be between 1.0 and -1.0',
+        );       
+    }
+    if( ($magneto_accuracy >= 1) || ($magneto_accuracy <= -1) ) {
+        UAV::Pilot::NumberOutOfRangeException->throw(
+            error => 'Magneto accuracy should be between 1.0 and -1.0',
+        );       
+    }
+
+    my $cmd_number = ($do_progressive << 0)
+        | ($do_combined_yaw << 1);
+
+    my $cmd = 'AT*PCMD_MAG='
+        . join( ',', 
+            $self->_next_seq,
+            $cmd_number,
+            $self->_float_convert( $roll ),
+            $self->_float_convert( $pitch ),
+            $self->_float_convert( $vert_speed ),
+            $self->_float_convert( $angular_speed ),
+            $self->_float_convert( $magneto  ),
+            $self->_float_convert( $magneto_accuracy ),
+        )
+        . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
 sub at_ftrim
 {
     my ($self) = @_;
