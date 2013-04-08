@@ -1,4 +1,4 @@
-use Test::More tests => 15;
+use Test::More tests => 13;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -55,18 +55,6 @@ my @TESTS = (
         args      => [ ],
         expect    => "AT*COMWDG=~SEQ~\r",
         test_name => 'Reset comm watchdog command',
-    },
-    {
-        run       => 'at_led',
-        args      => [ 1, 1.5, 6 ],
-        expect    => "AT*LED=~SEQ~,1,1.5,6\r",
-        test_name => 'Play LED sequence command',
-    },
-    {
-        run       => 'at_anim',
-        args      => [ 1, 20 ],
-        expect    => "AT*ANIM=~SEQ~,1,20\r",
-        test_name => 'Animation command',
     },
 );
 foreach (@TESTS) {
