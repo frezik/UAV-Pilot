@@ -12,13 +12,15 @@ has 'last_cmd' => (
     writer => '_set_last_cmd',
 );
 has '_saved_commands' => (
-    traits => ['Array'],
-    is     => 'rw',
-    isa    => 'ArrayRef[Str]',
+    traits  => ['Array'],
+    is      => 'rw',
+    isa     => 'ArrayRef[Str]',
+    default => sub { [] },
     handles => {
         '_add_saved_command' => 'push',
     },
 );
+
 
 sub connect
 {
