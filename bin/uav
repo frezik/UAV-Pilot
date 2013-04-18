@@ -2,7 +2,8 @@
 use v5.14;
 use Term::ReadLine::Perl5;
 
-my $PROMPT   = 'uav> ';
+my $PROMPT           = 'uav> ';
+my $MULTILINE_PROMPT = "\t";
 my $CONTINUE = 1;
 
 
@@ -20,11 +21,40 @@ sub run_cmd
     return $return;
 }
 
+{
+    my @cmd = ();
+
+    sub add_cmd
+    {
+        my ($cmd) = @_;
+        push @cmd => $cmd;
+        return 1;
+    }
+
+    sub full_cmd
+    {
+        my $cmd = join( ' ', @cmd );
+        @cmd = ();
+        return $cmd;
+    }
+}
+
 
 {
     my $continue = 1;
     my $term = Term::ReadLine::Perl5->new( 'uav' );
-    while( $continue && defined($_ = $term->readline( $PROMPT )) ) {
-        $continue = run_cmd( $_ );
+
+    my $cur_prompt = $PROMPT;
+    while( $continue && defined($_ = $term->readline( $cur_prompt )) ) {
+        add_cmd( $_ );
+
+        if( /; \s* \z/x ) {
+            my $cmd = full_cmd;
+            $continue = run_cmd( $cmd );
+            $cur_prompt = $PROMPT;
+        }
+        else {
+            $cur_prompt = $MULTILINE_PROMPT;
+        }
     }
 }
