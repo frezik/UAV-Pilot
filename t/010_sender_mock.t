@@ -1,4 +1,4 @@
-use Test::More tests => 15;
+use Test::More tests => 17;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -97,3 +97,14 @@ my $ardrone_port_check = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
 });
 cmp_ok( $ardrone_port_check->port, '==', 5556, "Correct default port" );
+
+$ardrone_mock->saved_commands; # Clear current command list
+$ardrone_mock->at_ref( 1, 0 );
+$ardrone_mock->at_ref( 1, 0 );
+my @last_commands = $ardrone_mock->saved_commands;
+is_deeply( 
+    \@last_commands,
+    [ "AT*REF=9,290718208\r", "AT*REF=10,290718208\r" ],
+    "Gathered previously saved commands",
+);
+cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );
