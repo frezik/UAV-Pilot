@@ -18,6 +18,11 @@ sub takeoff
     $dev->takeoff;
 }
 
+sub land
+{
+    $dev->land;
+}
+
 
 sub run_cmd
 {

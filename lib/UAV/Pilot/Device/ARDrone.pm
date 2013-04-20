@@ -13,6 +13,12 @@ sub takeoff
     return 1;
 }
 
+sub land
+{
+    my ($self) = @_;
+    $self->sender->at_ref( 0, 0 );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
