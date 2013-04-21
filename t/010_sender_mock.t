@@ -1,4 +1,4 @@
-use Test::More tests => 17;
+use Test::More tests => 18;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -31,6 +31,12 @@ my @TESTS = (
         args      => [ 1, 1, -0.8, -0.8, -0.8, -0.8 ],
         expect    => "AT*PCMD=~SEQ~,3,-1085485875,-1085485875,-1085485875,-1085485875\r",
         test_name => 'Set progressive motion command',
+    },
+    {
+        run       => 'at_pcmd',
+        args      => [ 0, 1, -0.8, -0.8, -0.8, -0.8 ],
+        expect    => "AT*PCMD=~SEQ~,7,-1085485875,-1085485875,-1085485875,-1085485875\r",
+        test_name => 'Set absolute motion command',
     },
     {
         run       => 'at_pcmd_mag',
@@ -104,7 +110,7 @@ $ardrone_mock->at_ref( 1, 0 );
 my @last_commands = $ardrone_mock->saved_commands;
 is_deeply( 
     \@last_commands,
-    [ "AT*REF=9,290718208\r", "AT*REF=10,290718208\r" ],
+    [ "AT*REF=10,290718208\r", "AT*REF=11,290718208\r" ],
     "Gathered previously saved commands",
 );
 cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );

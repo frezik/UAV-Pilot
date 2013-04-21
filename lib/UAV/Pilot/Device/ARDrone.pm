@@ -19,6 +19,18 @@ sub land
     $self->sender->at_ref( 0, 0 );
 }
 
+sub pitch
+{
+    my ($self, $pitch) = @_;
+    $self->sender->at_pcmd( 1, 0, 0, $pitch, 0, 0 );
+}
+
+sub roll
+{
+    my ($self, $roll) = @_;
+    $self->sender->at_pcmd( 1, 0, $roll, 0, 0, 0 );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

@@ -74,31 +74,34 @@ sub at_ref
 sub at_pcmd
 {
     my ($self, $do_progressive, $do_combined_yaw,
-        $roll, $pitch, $vert_speed, $angular_speed) = @_;
+        $roll, $pitch, $vert_speed, $yaw) = @_;
 
-    if( ($roll >= 1) || ($roll <= -1) ) {
+    if( ($roll > 1) || ($roll < -1) ) {
         UAV::Pilot::NumberOutOfRangeException->throw(
             error => 'Roll should be between 1.0 and -1.0',
         );
     }
-    if( ($pitch >= 1) || ($pitch <= -1) ) {
+    if( ($pitch > 1) || ($pitch < -1) ) {
         UAV::Pilot::NumberOutOfRangeException->throw(
             error => 'Pitch should be between 1.0 and -1.0',
         );       
     }
-    if( ($vert_speed >= 1) || ($vert_speed <= -1) ) {
+    if( ($vert_speed > 1) || ($vert_speed < -1) ) {
         UAV::Pilot::NumberOutOfRangeException->throw(
             error => 'Vertical speed should be between 1.0 and -1.0',
         );       
     }
-    if( ($angular_speed >= 1) || ($angular_speed <= -1) ) {
+    if( ($yaw > 1) || ($yaw < -1) ) {
         UAV::Pilot::NumberOutOfRangeException->throw(
-            error => 'Angular speed should be between 1.0 and -1.0',
+            error => 'Yaw should be between 1.0 and -1.0',
         );       
     }
 
-    my $cmd_number = ($do_progressive << 0)
-        | ($do_combined_yaw << 1);
+    # According to docs *always* set Progressive bit to 1, or else drone enters 
+    # hover mode.  Set Absolute bit to 1 for absolute control.
+    my $cmd_number = (1 << 0)
+        | ($do_combined_yaw << 1)
+        | (!$do_progressive << 2);
 
     my $cmd = 'AT*PCMD='
         . join( ',', 
@@ -107,7 +110,7 @@ sub at_pcmd
             $self->_float_convert( $roll ),
             $self->_float_convert( $pitch ),
             $self->_float_convert( $vert_speed ),
-            $self->_float_convert( $angular_speed ),
+            $self->_float_convert( $yaw ),
         )
         . "\r";
     $self->_send_cmd( $cmd );
