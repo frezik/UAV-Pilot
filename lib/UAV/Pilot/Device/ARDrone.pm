@@ -31,6 +31,12 @@ sub roll
     $self->sender->at_pcmd( 1, 0, $roll, 0, 0, 0 );
 }
 
+sub yaw
+{
+    my ($self, $yaw) = @_;
+    $self->sender->at_pcmd( 1, 0, 0, 0, 0, $yaw );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
