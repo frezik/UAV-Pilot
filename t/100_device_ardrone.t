@@ -1,4 +1,4 @@
-use Test::More tests => 7;
+use Test::More tests => 8;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -43,6 +43,12 @@ my @TESTS = (
         method => 'yaw',
         args   => [ 1 ],
         expect => [ "AT*PCMD=~SEQ~,1,0,0,0,1065353216\r" ],
+        name   => "Pitch method executed",
+    },
+    {
+        method => 'vert_speed',
+        args   => [ 0.5 ],
+        expect => [ "AT*PCMD=~SEQ~,1,0,0,1056964608,0\r" ],
         name   => "Pitch method executed",
     },
 );

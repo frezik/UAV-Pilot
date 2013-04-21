@@ -37,6 +37,12 @@ sub yaw
     $self->sender->at_pcmd( 1, 0, 0, 0, 0, $yaw );
 }
 
+sub vert_speed
+{
+    my ($self, $speed) = @_;
+    $self->sender->at_pcmd( 1, 0, 0, 0, $speed, 0 );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
