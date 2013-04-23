@@ -1,7 +1,11 @@
 #!/usr/bin/perl
 use v5.14;
 use Term::ReadLine::Perl5;
+use UAV::Pilot::REPLCommands;
+use UAV::Pilot::Sender::ARDrone;
+use UAV::Pilot::Device::ARDrone;
 
+my $IP               = shift || '192.168.1.1';
 my $PROMPT           = 'uav> ';
 my $MULTILINE_PROMPT = "\t";
 my $CONTINUE = 1;
@@ -9,13 +13,13 @@ my $CONTINUE = 1;
 
 sub run_cmd
 {
-    my ($cmd) = @_;
+    my ($cmd, $repl) = @_;
     my $return = 1;
-    if( $cmd =~ /\A(?: exit | quit | q )\z/x ) {
+    if( $cmd =~ /\A(?: exit | quit | q ) \s*;\s*\z/x ) {
         $return = 0;
     }
     else {
-        # TODO
+        $repl->run_cmd( $cmd );
     }
 
     return $return;
@@ -44,13 +48,24 @@ sub run_cmd
     my $continue = 1;
     my $term = Term::ReadLine::Perl5->new( 'uav' );
 
+    my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+        host => $IP,
+    });
+    $ardrone->connect;
+
+    my $repl = UAV::Pilot::REPLCommands->new({
+        device => UAV::Pilot::Device::ARDrone->new({
+            sender => $ardrone,
+        }),
+    });
+
     my $cur_prompt = $PROMPT;
     while( $continue && defined($_ = $term->readline( $cur_prompt )) ) {
         add_cmd( $_ );
 
         if( /; \s* \z/x ) {
             my $cmd = full_cmd;
-            $continue = run_cmd( $cmd );
+            $continue = run_cmd( $cmd, $repl );
             $cur_prompt = $PROMPT;
         }
         else {
