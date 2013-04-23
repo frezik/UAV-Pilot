@@ -1,4 +1,4 @@
-use Test::More tests => 18;
+use Test::More tests => 19;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -17,7 +17,14 @@ cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 ok( $ardrone_mock->connect, "Connect to ARDrone" );
 
 
-my $seq = 0;
+my $seq = 1;
+my @saved_cmds = $ardrone_mock->saved_commands;
+is_deeply(
+    \@saved_cmds,
+    [ "AT*FTRIM=$seq,\r" ],
+    "Connect to drone and set Flat Trim",
+);
+
 
 my @TESTS = (
     {
@@ -47,7 +54,7 @@ my @TESTS = (
     {
         run       => 'at_ftrim',
         args      => [],
-        expect    => "AT*FTRIM=~SEQ~\r",
+        expect    => "AT*FTRIM=~SEQ~,\r",
         test_name => 'Set reference to horizontal plane command',
     },
     {
@@ -110,7 +117,7 @@ $ardrone_mock->at_ref( 1, 0 );
 my @last_commands = $ardrone_mock->saved_commands;
 is_deeply( 
     \@last_commands,
-    [ "AT*REF=10,290718208\r", "AT*REF=11,290718208\r" ],
+    [ "AT*REF=11,290718208\r", "AT*REF=12,290718208\r" ],
     "Gathered previously saved commands",
 );
 cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );

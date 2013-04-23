@@ -25,6 +25,7 @@ has '_saved_commands' => (
 sub connect
 {
     my ($self) = @_;
+    $self->_init_drone;
     return 1;
 }
 

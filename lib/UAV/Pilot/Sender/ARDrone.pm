@@ -48,6 +48,8 @@ sub connect
         error => 'Could not open socket: ' . $!,
     );
     $self->_socket( $socket );
+
+    $self->_init_drone;
     return 1;
 }
 
@@ -179,7 +181,7 @@ sub at_ftrim
 {
     my ($self) = @_;
 
-    my $cmd = 'AT*FTRIM=' . $self->_next_seq . "\r";
+    my $cmd = 'AT*FTRIM=' . $self->_next_seq . ",\r";
     $self->_send_cmd( $cmd );
 
     return 1;
@@ -248,6 +250,13 @@ sub _next_seq
     my $next_seq = $self->seq + 1;
     $self->__set_seq( $next_seq );
     return $next_seq;
+}
+
+sub _init_drone
+{
+    my ($self) = @_;
+    $self->at_ftrim;
+    return 1;
 }
 
 # Takes an IEEE-754 float and converts its exact bits in memory to a signed 32-bit integer.

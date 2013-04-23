@@ -6,14 +6,16 @@ use UAV::Pilot::Device::ARDrone;
 my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
 });
+$ardrone->connect;
 my $dev = UAV::Pilot::Device::ARDrone->new({
     sender => $ardrone,
 });
 isa_ok( $dev => 'UAV::Pilot::Device::ARDrone' );
 isa_ok( $dev => 'UAV::Pilot::Device' );
 
-my $seq = 0;
+$ardrone->saved_commands; # Flush saved commands from connect() call
 
+my $seq = 1;
 my @TESTS = (
     {
         method => 'takeoff',

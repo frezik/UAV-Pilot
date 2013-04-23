@@ -8,6 +8,7 @@ use UAV::Pilot::REPLCommands;
 my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
 });
+$ardrone->connect;
 my $repl = UAV::Pilot::REPLCommands->new({
     device => UAV::Pilot::Device::ARDrone->new({
         sender => $ardrone,
@@ -15,12 +16,13 @@ my $repl = UAV::Pilot::REPLCommands->new({
 });
 isa_ok( $repl => 'UAV::Pilot::REPLCommands' );
 
+$ardrone->saved_commands; # Flush saved commands from connect() call
+
 UAV::Pilot::REPLCommands::run_cmd( 'takeoff;' );
 cmp_ok( scalar($ardrone->saved_commands), '==', 0,
     'run_cmd does nothing when called without $self' );
 
-my $seq = 0;
-
+my $seq = 1; # One command already sent by $ardrone->connect()
 my @TESTS = (
     {
         cmd    => 'takeoff;',
