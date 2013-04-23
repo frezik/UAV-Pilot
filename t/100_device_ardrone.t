@@ -37,13 +37,13 @@ my @TESTS = (
         method => 'roll',
         args   => [ -1 ],
         expect => [ "AT*PCMD=~SEQ~,1,-1082130432,0,0,0\r" ],
-        name   => "Pitch method executed",
+        name   => "Roll method executed",
     },
     {
         method => 'yaw',
         args   => [ 1 ],
         expect => [ "AT*PCMD=~SEQ~,1,0,0,0,1065353216\r" ],
-        name   => "Pitch method executed",
+        name   => "Yaw method executed",
     },
     {
         method => 'vert_speed',

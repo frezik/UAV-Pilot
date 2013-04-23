@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 8;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -31,6 +31,26 @@ my @TESTS = (
         cmd    => 'land;',
         expect => [ "AT*REF=~SEQ~,290717696\r" ],
         name   => "Land command",
+    },
+    {
+        cmd    => 'pitch -1;',
+        expect => [ "AT*PCMD=~SEQ~,1,0,-1082130432,0,0\r" ],
+        name   => "Pitch command executed",
+    },
+    {
+        cmd    => 'roll -1;',
+        expect => [ "AT*PCMD=~SEQ~,1,-1082130432,0,0,0\r" ],
+        name   => "Roll command executed",
+    },
+    {
+        cmd    => 'yaw 1;',
+        expect => [ "AT*PCMD=~SEQ~,1,0,0,0,1065353216\r" ],
+        name   => "Yaw command executed",
+    },
+    {
+        cmd    => 'vert_speed 0.5;',
+        expect => [ "AT*PCMD=~SEQ~,1,0,0,1056964608,0\r" ],
+        name   => "Vert Speed command executed",
     },
 );
 foreach my $test (@TESTS) {

@@ -13,14 +13,38 @@ our $dev;
 ###
 # Commands
 ###
-sub takeoff
+sub takeoff ()
 {
     $dev->takeoff;
 }
 
-sub land
+sub land ()
 {
     $dev->land;
+}
+
+sub pitch ($)
+{
+    my ($val) = @_;
+    $dev->pitch( $val );
+}
+
+sub roll ($)
+{
+    my ($val) = @_;
+    $dev->roll( $val );
+}
+
+sub yaw ($)
+{
+    my ($val) = @_;
+    $dev->yaw( $val );
+}
+
+sub vert_speed ($)
+{
+    my ($val) = @_;
+    $dev->vert_speed( $val );
 }
 
 
