@@ -49,6 +49,18 @@ sub calibrate
     $self->sender->at_calib( $self->sender->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
 }
 
+sub flip_left
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
+        sprintf( '%d,%d',
+            $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_LEFT,
+            $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_LEFT_MAYDAY,
+        ),
+    );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

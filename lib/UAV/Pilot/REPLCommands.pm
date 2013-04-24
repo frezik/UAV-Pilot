@@ -52,6 +52,11 @@ sub calibrate ()
     $dev->calibrate;
 }
 
+sub flip_left ()
+{
+    $dev->flip_left;
+}
+
 
 sub run_cmd
 {
