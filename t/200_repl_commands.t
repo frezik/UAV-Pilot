@@ -1,4 +1,4 @@
-use Test::More tests => 10;
+use Test::More tests => 11;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -60,11 +60,15 @@ my @TESTS = (
         name   => "Calibrate command executed",
     },
     {
+        cmd    => 'phi_m30;',
+        expect => [ qq{AT*CONFIG=~SEQ~,"control:flight_anim","0,1000"\r} ],
+        name   => "Phi m30 command executed",
+    },
+    {
         cmd    => 'flip_left;',
-        expect => [ qq{AT*CONFIG=~SEQ~,"control:flight_anim","3,2"\r} ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"control:flight_anim","18,15"\r} ],
         name   => "Flip left command executed",
     },
-
 );
 foreach my $test (@TESTS) {
     $seq++;

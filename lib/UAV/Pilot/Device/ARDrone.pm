@@ -49,6 +49,18 @@ sub calibrate
     $self->sender->at_calib( $self->sender->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
 }
 
+sub phi_m30
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
+        sprintf( '%d,%d',
+            $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG,
+            $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG_MAYDAY,
+        ),
+    );
+}
+
 sub flip_left
 {
     my ($self) = @_;

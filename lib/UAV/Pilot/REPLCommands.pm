@@ -52,6 +52,11 @@ sub calibrate ()
     $dev->calibrate;
 }
 
+sub phi_m30 ()
+{
+    $dev->phi_m30;
+}
+
 sub flip_left ()
 {
     $dev->flip_left;
