@@ -88,7 +88,7 @@ sub connect
         Proto    => 'udp',
         PeerPort => $self->port,
         PeerAddr => $self->host,
-    ) or UAV::Pilot::->throw(
+    ) or UAV::Pilot::IOException->throw(
         error => 'Could not open socket: ' . $!,
     );
     $self->_socket( $socket );
