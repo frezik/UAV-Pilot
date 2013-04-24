@@ -43,6 +43,12 @@ sub vert_speed
     $self->sender->at_pcmd( 1, 0, 0, 0, $speed, 0 );
 }
 
+sub calibrate
+{
+    my ($self) = @_;
+    $self->sender->at_calib( $self->sender->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

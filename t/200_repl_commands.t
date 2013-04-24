@@ -1,4 +1,4 @@
-use Test::More tests => 8;
+use Test::More tests => 9;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -53,6 +53,11 @@ my @TESTS = (
         cmd    => 'vert_speed 0.5;',
         expect => [ "AT*PCMD=~SEQ~,1,0,0,1056964608,0\r" ],
         name   => "Vert Speed command executed",
+    },
+    {
+        cmd    => 'calibrate;',
+        expect => [ "AT*CALIB=~SEQ~,0\r" ],
+        name   => "Calibrate command executed",
     },
 );
 foreach my $test (@TESTS) {

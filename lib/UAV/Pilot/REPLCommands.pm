@@ -47,6 +47,11 @@ sub vert_speed ($)
     $dev->vert_speed( $val );
 }
 
+sub calibrate ()
+{
+    $dev->calibrate;
+}
+
 
 sub run_cmd
 {
