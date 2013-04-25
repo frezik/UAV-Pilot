@@ -13,15 +13,40 @@ our $dev;
 ###
 # Commands
 ###
-sub takeoff ()
 {
-    $dev->takeoff;
+    my @NO_ARG_STRAIGHT_COMMANDS = qw(
+        takeoff
+        land
+        calibrate
+        phi_m30
+        phi_30
+        theta_m30
+        theta_30
+        theta_20deg_yaw_200
+        theta_20deg_yaw_m200
+        turnaround
+        turnaround_godown
+        yaw_shake
+        yaw_dance
+        phi_dance
+        theta_dance
+        vz_dance
+        wave
+        phi_theta_mixed
+        double_phi_theta_mixed
+        flip_ahead
+        flip_behind
+        flip_left
+        flip_right
+    );
+    foreach my $name (@NO_ARG_STRAIGHT_COMMANDS) {
+        no strict 'refs';
+        *$name = sub () {
+            $dev->$name;
+        };
+    }
 }
 
-sub land ()
-{
-    $dev->land;
-}
 
 sub pitch ($)
 {
@@ -45,21 +70,6 @@ sub vert_speed ($)
 {
     my ($val) = @_;
     $dev->vert_speed( $val );
-}
-
-sub calibrate ()
-{
-    $dev->calibrate;
-}
-
-sub phi_m30 ()
-{
-    $dev->phi_m30;
-}
-
-sub flip_left ()
-{
-    $dev->flip_left;
 }
 
 
