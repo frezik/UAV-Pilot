@@ -10,6 +10,7 @@ use constant {
     ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER => 0,
     ARDRONE_CALIBRATION_DEVICE_NUMBER       => 1,
 
+    ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO                        => 'general:navdata_demo',
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM                         => 'control:flight_anim',
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG             => 0,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG              => 1,
