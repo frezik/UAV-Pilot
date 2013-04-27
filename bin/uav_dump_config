@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+use v5.14;
+use warnings;
+use UAV::Pilot::Sender::ARDrone;
+
+my $HOST = shift || '192.168.1.1';
+my $PORT = shift || undef;
+my $RECV_PORT = 5559;
+
+
+my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+    host => $HOST,
+    ($PORT ? (port => $PORT) : ()),
+});
+$ardrone->connect;
+
+
+my $in = IO::Socket::INET->new(
+    Proto     => 'tcp',
+    LocalPort => $RECV_PORT,
+    Listen    => 5,
+) or die "Could not open listening socket on port $RECV_PORT: $!\n";
+$ardrone->at_ctrl( $ardrone->ARDRONE_CTRL_GET_CONFIG );
+
+while( <$in> ) {
+    print;
+}
+
+$in->close;
