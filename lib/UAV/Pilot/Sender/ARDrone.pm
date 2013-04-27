@@ -10,6 +10,8 @@ use constant {
     ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER => 0,
     ARDRONE_CALIBRATION_DEVICE_NUMBER       => 1,
 
+    ARDRONE_CTRL_GET_CONFIG => 4,
+
     ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO                        => 'general:navdata_demo',
 
     ARDRONE_CONFIG_NETWORK_SSID_SINGLE_PLAYER => 'network:ssid_single_player',
@@ -284,6 +286,16 @@ sub at_comwdg
     my ($self) = @_;
 
     my $cmd = 'AT*COMWDG=' . $self->_next_seq . "\r";
+    $self->_send_cmd( $cmd );
+
+    return 1;
+}
+
+sub at_ctrl
+{
+    my ($self, $val) = @_;
+
+    my $cmd = 'AT*CTRL=' . $self->_next_seq . ",$val" . "\r";
     $self->_send_cmd( $cmd );
 
     return 1;

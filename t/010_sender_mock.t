@@ -1,4 +1,4 @@
-use Test::More tests => 19;
+use Test::More tests => 20;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -81,6 +81,12 @@ my @TESTS = (
         expect    => "AT*COMWDG=~SEQ~\r",
         test_name => 'Reset comm watchdog command',
     },
+    {
+        run       => 'at_ctrl',
+        args      => [ 1 ],
+        expect    => "AT*CTRL=~SEQ~,1\r",
+        test_name => 'Control command',
+    },
 );
 foreach (@TESTS) {
     $seq++;
@@ -117,7 +123,7 @@ $ardrone_mock->at_ref( 1, 0 );
 my @last_commands = $ardrone_mock->saved_commands;
 is_deeply( 
     \@last_commands,
-    [ "AT*REF=11,290718208\r", "AT*REF=12,290718208\r" ],
+    [ "AT*REF=12,290718208\r", "AT*REF=13,290718208\r" ],
     "Gathered previously saved commands",
 );
 cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );
