@@ -11,6 +11,14 @@ use constant {
     ARDRONE_CALIBRATION_DEVICE_NUMBER       => 1,
 
     ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO                        => 'general:navdata_demo',
+
+    ARDRONE_CONFIG_NETWORK_SSID_SINGLE_PLAYER => 'network:ssid_single_player',
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE          => 'network:wifi_mode',
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_AP       => 0,
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_JOIN     => 1,
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_STATION  => 2,
+    ARDRONE_CONFIG_NETWORK_OWNER_MAC          => 'network:owner_mac',
+
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM                         => 'control:flight_anim',
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG             => 0,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG              => 1,
