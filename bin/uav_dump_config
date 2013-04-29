@@ -3,20 +3,20 @@ use v5.14;
 use warnings;
 use UAV::Pilot::Sender::ARDrone;
 
-my $HOST = shift || '192.168.1.1';
-my $PORT = shift || undef;
-my $RECV_PORT = 5559;
-
+my $HOST             = shift || '192.168.1.1';
+my $PORT             = shift || UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_COMMAND;
+my $RECV_PORT        = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CONF;
+my $RECV_SOCKET_TYPE = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CONF_TYPE;
 
 my $ardrone = UAV::Pilot::Sender::ARDrone->new({
     host => $HOST,
-    ($PORT ? (port => $PORT) : ()),
+    port => $PORT,
 });
 $ardrone->connect;
 
 
 my $in = IO::Socket::INET->new(
-    Proto     => 'tcp',
+    Proto     => $RECV_SOCKET_TYPE,
     LocalPort => $RECV_PORT,
     Listen    => 5,
 ) or die "Could not open listening socket on port $RECV_PORT: $!\n";

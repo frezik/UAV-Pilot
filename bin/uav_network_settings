@@ -5,7 +5,7 @@ use UAV::Pilot::Sender::ARDrone;
 use Getopt::Long;
 
 my $HOST         = '192.168.1.1';
-my $PORT         = undef;
+my $PORT         = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_COMMAND;
 my $SSID         = undef;
 my $MODE_AP      = 0;
 my $MODE_JOIN    = 0;

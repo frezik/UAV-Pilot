@@ -4,17 +4,20 @@ use warnings;
 use UAV::Pilot::Sender::ARDrone;
 
 
-my $HOST = shift || '192.168.1.1';
-my $PORT = 5554;
+my $HOST        = shift || '192.168.1.1';
+my $PORT        = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_NAV_DATA;
+my $SOCKET_TYPE = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_NAV_DATA_TYPE;
 
 
 my $sender = UAV::Pilot::Sender::ARDrone->new({
     host => $HOST,
 });
+my $port = $sender->ARDRONE_PORT_NAV_DATA;
 my $socket = IO::Socket::INET->new(
-    Proto    => 'udp',
-    PeerPort => $PORT,
-    PeerAddr => $HOST,
+    Proto     => $SOCKET_TYPE,
+    PeerPort  => $PORT,
+    PeerAddr  => $HOST,
+    LocalPort => $PORT,
 ) or die "Could not open socket: $!\n";
 
 $sender->connect;
