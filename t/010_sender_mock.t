@@ -1,4 +1,4 @@
-use Test::More tests => 20;
+use Test::More tests => 28;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -127,3 +127,14 @@ is_deeply(
     "Gathered previously saved commands",
 );
 cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );
+
+
+cmp_ok( $ardrone_mock->ARDRONE_PORT_COMMAND, '==', 5556, "Command port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_COMMAND_TYPE, 'eq', 'udp', "Command port type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_NAV_DATA, '==', 5554, "Navigation data port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_NAV_DATA_TYPE, 'eq', 'udp',
+    "Navigation data port type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264, '==', 5553, "Video port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264_TYPE, 'eq', 'tcp', "Video port type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_CONF, '==', 5559, "Config port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_CONF_TYPE, 'eq', 'tcp', "Config port type" );

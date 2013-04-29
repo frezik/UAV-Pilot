@@ -12,6 +12,15 @@ use constant {
 
     ARDRONE_CTRL_GET_CONFIG => 4,
 
+    ARDRONE_PORT_COMMAND         => 5556,
+    ARDRONE_PORT_COMMAND_TYPE    => 'udp',
+    ARDRONE_PORT_NAV_DATA        => 5554,
+    ARDRONE_PORT_NAV_DATA_TYPE   => 'udp',
+    ARDRONE_PORT_VIDEO_H264      => 5553,
+    ARDRONE_PORT_VIDEO_H264_TYPE => 'tcp',
+    ARDRONE_PORT_CONF            => 5559,
+    ARDRONE_PORT_CONF_TYPE       => 'tcp',
+
     ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO                        => 'general:navdata_demo',
 
     ARDRONE_CONFIG_NETWORK_SSID_SINGLE_PLAYER => 'network:ssid_single_player',
