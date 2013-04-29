@@ -1,4 +1,4 @@
-use Test::More tests => 29;
+use Test::More tests => 30;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -179,6 +179,12 @@ my @TESTS = (
         expect => [ qq{AT*CONFIG=~SEQ~,"control:flight_anim","19,15"\r} ],
         name   => "flip_right method executed",
     }, 
+    {
+        method => 'emergency',
+        args   => [],
+        expect => [ "AT*REF=~SEQ~,290717952\r" ],
+        name   => "Emergency state toggled executed",
+    },
 );
 foreach my $test (@TESTS) {
     $seq++;

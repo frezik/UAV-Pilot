@@ -49,6 +49,13 @@ sub calibrate
     $self->sender->at_calib( $self->sender->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
 }
 
+sub emergency
+{
+    my ($self) = @_;
+    $self->sender->at_ref( 0, 1 );
+    return 1;
+}
+
 {
     my $send = 'UAV::Pilot::Sender::ARDrone';
     my @FLIGHT_ANIMS = (

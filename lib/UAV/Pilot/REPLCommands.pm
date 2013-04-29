@@ -38,6 +38,7 @@ our $dev;
         flip_behind
         flip_left
         flip_right
+        emergency
     );
     foreach my $name (@NO_ARG_STRAIGHT_COMMANDS) {
         no strict 'refs';
