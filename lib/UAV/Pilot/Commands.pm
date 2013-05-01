@@ -22,90 +22,13 @@ has 'lib_dirs' => (
 
 our ($dev, $s);
 
-###
-# Commands
-###
-{
-    my @NO_ARG_STRAIGHT_COMMANDS = qw(
-        takeoff
-        land
-        calibrate
-        phi_m30
-        phi_30
-        theta_m30
-        theta_30
-        theta_20deg_yaw_200
-        theta_20deg_yaw_m200
-        turnaround
-        turnaround_godown
-        yaw_shake
-        yaw_dance
-        phi_dance
-        theta_dance
-        vz_dance
-        wave
-        phi_theta_mixed
-        double_phi_theta_mixed
-        flip_ahead
-        flip_behind
-        flip_left
-        flip_right
-        emergency
-    );
-    foreach my $name (@NO_ARG_STRAIGHT_COMMANDS) {
-        no strict 'refs';
-        *$name = sub () {
-            $dev->$name;
-        };
-    }
-}
-
-
-sub pitch ($)
-{
-    my ($val) = @_;
-    $dev->pitch( $val );
-}
-
-sub roll ($)
-{
-    my ($val) = @_;
-    $dev->roll( $val );
-}
-
-sub yaw ($)
-{
-    my ($val) = @_;
-    $dev->yaw( $val );
-}
-
-sub vert_speed ($)
-{
-    my ($val) = @_;
-    $dev->vert_speed( $val );
-}
-
-
+#
+# Sole command that can run without loading other libraries
+#
 sub load ($)
 {
     my ($mod_name) = @_;
-    my @search_dirs = @{ $s->lib_dirs };
-    my $mod_file = $mod_name . $s->MOD_EXTENSION;
-
-    my $found = 0;
-    foreach my $dir (@search_dirs) {
-        my $file = File::Spec->catfile( $dir, $mod_file );
-        if( -e $file) {
-            $found = 1;
-            $s->_compile_mod( $file );
-        }
-    }
-
-    die "Could not find module named '$mod_name' in search paths ("
-        . join( ', ', @search_dirs ) . ")\n"
-        if ! $found;
-
-    return $found;
+    $s->load_lib( $mod_name );
 }
 
 
@@ -126,6 +49,28 @@ sub run_cmd
     return 1;
 }
 
+
+sub load_lib
+{
+    my ($self, $mod_name) = @_;
+    my @search_dirs = @{ $s->lib_dirs };
+    my $mod_file = $mod_name . $s->MOD_EXTENSION;
+
+    my $found = 0;
+    foreach my $dir (@search_dirs) {
+        my $file = File::Spec->catfile( $dir, $mod_file );
+        if( -e $file) {
+            $found = 1;
+            $s->_compile_mod( $file );
+        }
+    }
+
+    die "Could not find module named '$mod_name' in search paths ("
+        . join( ', ', @search_dirs ) . ")\n"
+        if ! $found;
+
+    return $found;
+}
 
 sub _compile_mod
 {

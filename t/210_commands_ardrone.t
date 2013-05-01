@@ -1,8 +1,10 @@
-use Test::More tests => 29;
+use Test::More tests => 31;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
 use UAV::Pilot::Commands;
+
+my $LIB_DIR = 'uav_mods';
 
 
 my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
@@ -16,6 +18,15 @@ my $repl = UAV::Pilot::Commands->new({
 });
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
+
+eval {
+    $repl->run_cmd( 'takeoff;' );
+};
+ok( $@, "No commands loaded into namespace yet" );
+
+$repl->add_lib_dir( $LIB_DIR );
+$repl->load_lib( 'ARDrone' );
+pass( "ARDrone basic flight library loaded" );
 
 UAV::Pilot::Commands::run_cmd( 'takeoff;' );
 cmp_ok( scalar($ardrone->saved_commands), '==', 0,
