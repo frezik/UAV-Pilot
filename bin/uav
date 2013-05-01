@@ -1,14 +1,21 @@
 #!/usr/bin/perl
 use v5.14;
 use Term::ReadLine::Perl5;
-use UAV::Pilot::REPLCommands;
+use UAV::Pilot::Commands;
 use UAV::Pilot::Sender::ARDrone;
 use UAV::Pilot::Device::ARDrone;
+use Getopt::Long qw( :config no_ignore_case );
 
-my $IP               = shift || '192.168.1.1';
+my $IP               = '192.168.1.1';
 my $PROMPT           = 'uav> ';
 my $MULTILINE_PROMPT = "\t";
-my $CONTINUE = 1;
+my @LIB_PATHS        = ();
+my @LIBS             = ();
+GetOptions(
+    'ip=s'        => \$IP,
+    'l|load=s'    => \@LIBS,
+    'L|library=s' => \@LIB_PATHS,
+);
 
 
 sub run_cmd
@@ -26,6 +33,23 @@ sub run_cmd
     }
 
     return $return;
+}
+
+sub load_libraries
+{
+    my ($repl, $lib_paths, $libs) = @_;
+
+    $repl->add_lib_dir( $_ ) for @$lib_paths;
+
+    print "Library paths:\n" . join( "\n", map { "\t$_" } @{ $repl->lib_dirs } ) . "\n";
+    foreach my $lib (@$libs) {
+        print "Loading library '$lib' . . . ";
+        $repl->load_lib( $lib );
+        print "OK\n";
+    }
+
+    print "\n";
+    return 1;
 }
 
 {
@@ -56,11 +80,12 @@ sub run_cmd
     });
     $ardrone->connect;
 
-    my $repl = UAV::Pilot::REPLCommands->new({
+    my $repl = UAV::Pilot::Commands->new({
         device => UAV::Pilot::Device::ARDrone->new({
             sender => $ardrone,
         }),
     });
+    load_libraries( $repl, \@LIB_PATHS, \@LIBS );
 
     my $cur_prompt = $PROMPT;
     while( $continue && defined($_ = $term->readline( $cur_prompt )) ) {

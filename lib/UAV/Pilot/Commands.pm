@@ -53,15 +53,15 @@ sub run_cmd
 sub load_lib
 {
     my ($self, $mod_name) = @_;
-    my @search_dirs = @{ $s->lib_dirs };
-    my $mod_file = $mod_name . $s->MOD_EXTENSION;
+    my @search_dirs = @{ $self->lib_dirs };
+    my $mod_file = $mod_name . $self->MOD_EXTENSION;
 
     my $found = 0;
     foreach my $dir (@search_dirs) {
         my $file = File::Spec->catfile( $dir, $mod_file );
         if( -e $file) {
             $found = 1;
-            $s->_compile_mod( $file );
+            $self->_compile_mod( $file );
         }
     }
 
