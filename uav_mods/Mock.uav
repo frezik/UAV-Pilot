@@ -1,0 +1,6 @@
+sub mock ()
+{
+    return 1;
+}
+
+1;

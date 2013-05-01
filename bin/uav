@@ -19,7 +19,10 @@ sub run_cmd
         $return = 0;
     }
     else {
-        $repl->run_cmd( $cmd );
+        eval {
+            $repl->run_cmd( $cmd );
+        };
+        warn $@ if $@;
     }
 
     return $return;

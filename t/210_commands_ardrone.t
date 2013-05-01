@@ -1,24 +1,23 @@
-use Test::More tests => 30;
+use Test::More tests => 29;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
-use UAV::Pilot::REPLCommands;
+use UAV::Pilot::Commands;
 
 
 my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
 });
 $ardrone->connect;
-my $repl = UAV::Pilot::REPLCommands->new({
+my $repl = UAV::Pilot::Commands->new({
     device => UAV::Pilot::Device::ARDrone->new({
         sender => $ardrone,
     }),
 });
-isa_ok( $repl => 'UAV::Pilot::REPLCommands' );
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
 
-UAV::Pilot::REPLCommands::run_cmd( 'takeoff;' );
+UAV::Pilot::Commands::run_cmd( 'takeoff;' );
 cmp_ok( scalar($ardrone->saved_commands), '==', 0,
     'run_cmd does nothing when called without $self' );
 

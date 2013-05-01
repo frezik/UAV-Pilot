@@ -14,6 +14,7 @@ WriteMakefile(
     PL_FILES            => {},
     PREREQ_PM => {
         'autoclean::namespace'  => 0,
+        'File::Spec'            => 0,
         'Moose'                 => 0,
         'MooseX::Event'         => 0,
         'Term::ReadLine::Perl5' => 0,
