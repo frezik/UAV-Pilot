@@ -1,0 +1,18 @@
+Version 0.1
+-----------
+* Event system ("pitch 0.5 for 30 seconds" )
+* Complete Documentation
+* Config dumping (bin/uav_dump_config)
+
+Version 0.2
+-----------
+* Navigation data fetched (bin/nav_data_demo.pl)
+* SDL output of nav data
+
+Version 0.3
+-----------
+* Video
+
+Version 1.0
+-----------
+* Everything
