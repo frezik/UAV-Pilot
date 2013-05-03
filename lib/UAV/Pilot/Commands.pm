@@ -27,8 +27,8 @@ our ($dev, $s);
 #
 sub load ($;$)
 {
-    my ($mod_name, $pack) = @_;
-    $s->load_lib( $mod_name, $pack );
+    my ($mod_name, $args) = @_;
+    $s->load_lib( $mod_name, $args );
 }
 
 
@@ -74,7 +74,8 @@ sub load_lib
 
 sub _compile_mod
 {
-    my ($self, $file, $pack) = @_;
+    my ($self, $file, $args) = @_;
+    my $pack = delete $$args{namespace};
 
     my $input = defined($pack)
         ? qq{package $pack;\n}
@@ -89,6 +90,16 @@ sub _compile_mod
     my $ret = eval $input;
     die $@ if $@;
     die "Parsing <$file> did not return successfully\n" unless $ret;
+
+    $pack = ref($self) unless defined $pack;
+    if( my $call = $pack->can( 'uav_module_init' ) ) {
+        $call->( $pack, $args );
+
+        # Clear uav_module_init.  Would prefer a solution without eval( STRING ), 
+        # though a symbol table manipulation method may be considered just as evil.
+        my $del_str = 'delete $' . $pack . '::{uav_module_init}';
+        eval $del_str;
+    }
 
     return 1;
 }

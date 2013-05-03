@@ -1,4 +1,4 @@
-use Test::More tests => 5;
+use Test::More tests => 7;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender::ARDrone::Mock;
@@ -35,6 +35,15 @@ $repl->run_cmd( q{load 'Mock';} );
 $repl->run_cmd( 'mock;' );
 ok( 1, "Mock command ran" );
 
-$repl->run_cmd( q{load 'Mock' => 'Local'} );
+$repl->run_cmd( q(load 'Mock', { namespace => 'Local' };) );
 $repl->run_cmd( 'Local::mock;' );
 ok( 1, "Mock commands placed in namespace" );
+
+$repl->run_cmd( q(load 'MockInit', { setting => 5 };) );
+cmp_ok( $UAV::Pilot::mock_init_set, '==', 5,
+    "MockInit loaded and ran uav_module_init() with param" );
+
+eval {
+    $repl->run_cmd( 'uav_module_init();' );
+};
+ok( $@, "MockInit uav_module_init() call does not appear" );
