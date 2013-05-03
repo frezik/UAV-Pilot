@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use v5.14;
 use Term::ReadLine::Perl5;
+use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Sender::ARDrone;
 use UAV::Pilot::Device::ARDrone;
@@ -39,6 +40,7 @@ sub load_libraries
 {
     my ($repl, $lib_paths, $libs) = @_;
 
+    $repl->add_lib_dir( UAV::Pilot->default_module_dir );
     $repl->add_lib_dir( $_ ) for @$lib_paths;
 
     print "Library paths:\n" . join( "\n", map { "\t$_" } @{ $repl->lib_dirs } ) . "\n";

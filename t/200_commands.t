@@ -1,5 +1,6 @@
 use Test::More tests => 5;
 use v5.14;
+use UAV::Pilot;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
 use UAV::Pilot::Commands;
@@ -29,7 +30,7 @@ eval {
 };
 ok( $@, "Could not find library named 'Mock' in search dirs" );
 
-$repl->add_lib_dir( $LIB_DIR );
+$repl->add_lib_dir( UAV::Pilot->default_module_dir );
 $repl->run_cmd( q{load 'Mock';} );
 $repl->run_cmd( 'mock;' );
 ok( 1, "Mock command ran" );

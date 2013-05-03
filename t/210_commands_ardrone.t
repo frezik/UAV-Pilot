@@ -1,5 +1,6 @@
 use Test::More tests => 31;
 use v5.14;
+use UAV::Pilot;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
 use UAV::Pilot::Commands;
@@ -24,7 +25,7 @@ eval {
 };
 ok( $@, "No commands loaded into namespace yet" );
 
-$repl->add_lib_dir( $LIB_DIR );
+$repl->add_lib_dir( UAV::Pilot->default_module_dir );
 $repl->load_lib( 'ARDrone' );
 pass( "ARDrone basic flight library loaded" );
 
