@@ -25,10 +25,10 @@ our ($dev, $s);
 #
 # Sole command that can run without loading other libraries
 #
-sub load ($)
+sub load ($;$)
 {
-    my ($mod_name) = @_;
-    $s->load_lib( $mod_name );
+    my ($mod_name, $pack) = @_;
+    $s->load_lib( $mod_name, $pack );
 }
 
 
@@ -52,7 +52,7 @@ sub run_cmd
 
 sub load_lib
 {
-    my ($self, $mod_name) = @_;
+    my ($self, $mod_name, $pack) = @_;
     my @search_dirs = @{ $self->lib_dirs };
     my $mod_file = $mod_name . $self->MOD_EXTENSION;
 
@@ -61,7 +61,7 @@ sub load_lib
         my $file = File::Spec->catfile( $dir, $mod_file );
         if( -e $file) {
             $found = 1;
-            $self->_compile_mod( $file );
+            $self->_compile_mod( $file, $pack );
         }
     }
 
@@ -74,9 +74,12 @@ sub load_lib
 
 sub _compile_mod
 {
-    my ($self, $file) = @_;
+    my ($self, $file, $pack) = @_;
 
-    my $input = qq(# line 1 "$file"\n);
+    my $input = defined($pack)
+        ? qq{package $pack;\n}
+        : '';
+    $input .= qq(# line 1 "$file"\n);
     open( my $in, '<', $file ) or die "Can't open <$file> for reading: $!\n";
     while( <$in> ) {
         $input .= $_;

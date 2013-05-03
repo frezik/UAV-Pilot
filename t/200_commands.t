@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 5;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -33,3 +33,7 @@ $repl->add_lib_dir( $LIB_DIR );
 $repl->run_cmd( q{load 'Mock';} );
 $repl->run_cmd( 'mock;' );
 ok( 1, "Mock command ran" );
+
+$repl->run_cmd( q{load 'Mock' => 'Local'} );
+$repl->run_cmd( 'Local::mock;' );
+ok( 1, "Mock commands placed in namespace" );
