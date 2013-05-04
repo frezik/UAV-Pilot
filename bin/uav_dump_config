@@ -3,24 +3,23 @@ use v5.14;
 use warnings;
 use UAV::Pilot::Sender::ARDrone;
 
-my $HOST             = shift || '192.168.1.1';
-my $PORT             = shift || UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_COMMAND;
-my $RECV_PORT        = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CONF;
-my $RECV_SOCKET_TYPE = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CONF_TYPE;
+my $HOST        = shift || '192.168.1.1';
+my $PORT        = shift || UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CTRL;
+my $SOCKET_TYPE = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CTRL_TYPE;
 
-my $ardrone = UAV::Pilot::Sender::ARDrone->new({
-    host => $HOST,
-    port => $PORT,
-});
-$ardrone->connect;
-
+# This all should work, but doesn't.  Seems that the current AR drone is bugged.  See:
+#
+# https://projects.ardrone.org/boards/1/topics/show/5216
+# https://projects.ardrone.org/boards/1/topics/show/3453
+#
+local $| = 1; # Autoflush
 
 my $in = IO::Socket::INET->new(
-    Proto     => $RECV_SOCKET_TYPE,
-    LocalPort => $RECV_PORT,
-    Listen    => 5,
-) or die "Could not open listening socket on port $RECV_PORT: $!\n";
-$ardrone->at_ctrl( $ardrone->ARDRONE_CTRL_GET_CONFIG );
+    Proto     => $SOCKET_TYPE,
+    LocalPort => $PORT,
+    Port      => $PORT,
+) or die "Could not open socket on port $PORT: $!\n";
+print $in "AT*CTRL=0," . UAV::Pilot::Sender::ARDrone->ARDRONE_CTRL_GET_CONFIG . ",0\r";
 
 while( <$in> ) {
     print;

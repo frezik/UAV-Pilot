@@ -1,4 +1,4 @@
-use Test::More tests => 28;
+use Test::More tests => 32;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -136,5 +136,9 @@ cmp_ok( $ardrone_mock->ARDRONE_PORT_NAV_DATA_TYPE, 'eq', 'udp',
     "Navigation data port type" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264, '==', 5553, "Video port" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264_TYPE, 'eq', 'tcp', "Video port type" );
-cmp_ok( $ardrone_mock->ARDRONE_PORT_CONF, '==', 5559, "Config port" );
-cmp_ok( $ardrone_mock->ARDRONE_PORT_CONF_TYPE, 'eq', 'tcp', "Config port type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_CTRL, '==', 5559, "Control port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_CTRL_TYPE, 'eq', 'tcp', "Control port type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V1, '==', 5555, "Video P264 v1" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V2, '==', 5555, "Video P264 v2" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V1_TYPE, 'eq', 'udp', "Video P264 v1 type" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V2_TYPE, 'eq', 'tcp', "Video P264 v2 type" );
