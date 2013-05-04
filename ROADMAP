@@ -2,7 +2,6 @@ Version 0.1
 -----------
 * Event system ("pitch 0.5 for 30 seconds" )
 * Complete Documentation
-* Config dumping (bin/uav_dump_config)
 
 Version 0.2
 -----------
