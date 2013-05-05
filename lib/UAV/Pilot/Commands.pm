@@ -109,3 +109,75 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 __END__
+
+
+=head1 NAME
+
+  UAV::Pilot::Commands
+
+=head1 SYNOPSIS
+
+    my $device; # Some UAV::Pilot::Device instance, defined elsewhere
+    my $cmds = UAV::Pilot::Commands->new({
+        device => $device,
+    });
+    
+    $cmds->load_lib( 'ARDrone' );
+    $cmds->run_cmd( 'takeoff;' );
+    $cmds->run_cmd( 'land;' );
+
+=head1 DESCRIPTION
+
+Provides an interface for loading UAV extensions and running them, particularly for 
+REPL shells.
+
+=head1 METHODS
+
+=head2 new
+
+    new({
+        device => $device
+    })
+
+Constructor.  Takes a L<UAV::Pilot::Device> instance.
+
+=head2 load_lib
+
+    load_lib( 'ARDrone' )
+
+Loads an extension by name.
+
+=head2 run_cmd
+
+    run_cmd( 'takeoff;' )
+
+Executes a command.  Note that this will execute arbitrary Perl statements.
+
+=head1 COMMANDS
+
+Commands provide an easy interface for writing simple UAV programms in a REPL shell.  
+They are usually thin interfaces over a L<UAV::Pilot::Device>.  If you're writing a 
+complicated script, it's suggested that you skip this interface and write to the 
+L<UAV::Pilot::Device> directly.
+
+=head2 load
+
+    load 'ARDrone';
+
+Load the given library.
+
+=head1 WRITING YOUR OWN EXTENSIONS
+
+Extensions should go under the directory C<UAV/Pilot/Modules/> with a C<.uav> extension. 
+You write them much like any Perl module, but don't use a C<package> statement--the package
+will be controlled by C<UAV::Pilot::Command> when loaded.  Like a Perl module, it should 
+return true as its final statement (put a C<1;> at the end).
+
+Likewise, be careful not to make any assumptions about what package you're in.  Modules 
+may or may not get loaded into different, arbitrary packages.
+
+For ease of use, it's recommended to use function prototypes to reduce the need for 
+parens.
+
+The method C<uav_module_init()> is called with the package name as the first argument.  
+After being called, this sub will be deleted from the package.
