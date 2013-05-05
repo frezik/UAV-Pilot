@@ -1,6 +1,5 @@
 Version 0.1
 -----------
-* Event system ("pitch 0.5 for 30 seconds" )
 * Complete Documentation
 
 Version 0.2
@@ -10,8 +9,12 @@ Version 0.2
 
 Version 0.3
 -----------
+* Event system ("pitch 0.5 for 30 seconds" )
+
+Version 0.4
+-----------
 * Video
 
-Version 4
+Version 5
 -----------
 * Error message formatting in REPL
