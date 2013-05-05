@@ -52,7 +52,7 @@ sub run_cmd
 
 sub load_lib
 {
-    my ($self, $mod_name, $pack) = @_;
+    my ($self, $mod_name, $args) = @_;
     my @search_dirs = @{ $self->lib_dirs };
     my $mod_file = $mod_name . $self->MOD_EXTENSION;
 
@@ -61,7 +61,7 @@ sub load_lib
         my $file = File::Spec->catfile( $dir, $mod_file );
         if( -e $file) {
             $found = 1;
-            $self->_compile_mod( $file, $pack );
+            $self->_compile_mod( $file, $args );
         }
     }
 
@@ -143,9 +143,23 @@ Constructor.  Takes a L<UAV::Pilot::Device> instance.
 
 =head2 load_lib
 
-    load_lib( 'ARDrone' )
+    load_lib( 'ARDrone', {
+        pack => 'AR',
+    })
 
-Loads an extension by name.
+Loads an extension by name.  The C<pack> paramter will load the library into a specific 
+namespace.  If you don't specify it, you won't need to qualify commands with a namespace 
+prefix.  Example:
+
+    load_lib( 'ARDrone', { pack => 'AR' } );
+    run_cmd( 'takeoff;' );     # Error: no subroutine named 'takeoff'
+    run_cmd( 'AR::takeoff;' ); # This works
+    
+    load_lib( 'ARDrone' );
+    run_cmd( 'takeoff;' );     # Now this works, too
+
+Any other parmaeters you pass will be passed to the module's C<uav_module_init()> 
+subroutine.
 
 =head2 run_cmd
 
@@ -162,9 +176,23 @@ L<UAV::Pilot::Device> directly.
 
 =head2 load
 
-    load 'ARDrone';
+    load 'ARDrone', {
+        pack => 'AR',
+    };
 
-Load the given library.
+Direct call to C<load_lib>.  The C<pack> paramter will load the library into a specific 
+namespace.  If you don't specify it, you won't need to qualify commands with a namespace 
+prefix.  Example:
+
+    load 'ARDrone', { pack => 'AR' };
+    takeoff;     # Error: no subroutine named 'takeoff'
+    AR::takeoff; # This works
+    
+    load ARDrone;
+    takeoff;     # Now this works, too
+
+Any other parmaeters you pass will be passed to the module's C<uav_module_init()> 
+subroutine.
 
 =head1 WRITING YOUR OWN EXTENSIONS
 
