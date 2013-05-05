@@ -1,0 +1,19 @@
+#!/usr/bin/perl
+use v5.14;
+use strict;
+use warnings;
+
+use AnyEvent;
+use UAV::Pilot;
+use UAV::Pilot::Sender::ARDrone;
+use UAV::Pilot::Device::ARDrone;
+
+use constant IP  => '192.168.1.1';
+my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+    host => IP,
+});
+$ardrone->connect;
+my $ar = UAV::Pilot::Device::ARDrone->new({
+    sender => $ardrone,
+});
+$ar->emergency;
