@@ -208,4 +208,5 @@ For ease of use, it's recommended to use function prototypes to reduce the need 
 parens.
 
 The method C<uav_module_init()> is called with the package name as the first argument.  
-After being called, this sub will be deleted from the package.
+Subsquent arguments will be the hashref passed to C<load()/load_lib()>.  After being called,
+this sub will be deleted from the package.
