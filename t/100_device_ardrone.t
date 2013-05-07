@@ -2,6 +2,7 @@ use Test::More tests => 30;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
+use Test::Moose;
 
 my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
@@ -11,7 +12,7 @@ my $dev = UAV::Pilot::Device::ARDrone->new({
     sender => $ardrone,
 });
 isa_ok( $dev => 'UAV::Pilot::Device::ARDrone' );
-isa_ok( $dev => 'UAV::Pilot::Device' );
+does_ok( $dev => 'UAV::Pilot::Device' );
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
 

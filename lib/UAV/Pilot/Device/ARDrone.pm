@@ -3,7 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
-extends 'UAV::Pilot::Device';
+with 'UAV::Pilot::Device';
 
 
 sub takeoff
