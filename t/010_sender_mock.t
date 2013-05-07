@@ -1,10 +1,11 @@
-use Test::More tests => 32;
+use Test::More tests => 33;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::Sender;
 use UAV::Pilot::Sender::ARDrone;
 use UAV::Pilot::Sender::ARDrone::Mock;
+use Test::Moose;
 
 my $ardrone_mock = UAV::Pilot::Sender::ARDrone::Mock->new({
     host => 'localhost',
@@ -12,6 +13,7 @@ my $ardrone_mock = UAV::Pilot::Sender::ARDrone::Mock->new({
 });
 ok( $ardrone_mock, "Created object" );
 isa_ok( $ardrone_mock => 'UAV::Pilot::Sender::ARDrone::Mock' );
+does_ok( $ardrone_mock => 'UAV::Pilot::Sender' );
 cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 
 ok( $ardrone_mock->connect, "Connect to ARDrone" );

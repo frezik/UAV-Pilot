@@ -3,8 +3,9 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use IO::Socket;
-
 use UAV::Pilot::Exceptions;
+
+with 'UAV::Pilot::Sender';
 
 use constant {
     ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER => 0,
@@ -78,9 +79,6 @@ use constant {
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT_MAYDAY              => 15,
 };
 
-
-
-extends 'UAV::Pilot::Sender';
 
 has 'port' => (
     is      => 'rw',
