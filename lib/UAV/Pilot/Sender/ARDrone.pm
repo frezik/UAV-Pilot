@@ -349,3 +349,196 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Sender::ARDrone
+
+=head1 SYNOPSIS
+
+    my $sender = UAV::Pilot::Sender::ARDrone->new({
+        host => '192.168.1.1',
+    });
+    $sender->connect;
+    
+    $sender->at_ref( 1, 0 ); # Takeoff
+    $sender->at_pcmd( 1, 1, 1.0, 0, 0, 0 ); # Progressive movement, roll
+    $sender->at_ref( 0, 0 ); # Land
+
+=head1 DESCRIPTION
+
+Low-level interface for controlling the Parrot AR.Drone.  If you want to write an external 
+program or library controlling this UAV, look at L<UAV::Pilot::Device::ARDrone> instead.
+
+=head1 ATTRIBUTES
+
+=head2 host
+
+=head2 port
+
+=head2 seq
+
+=head1 METHODS
+
+=head2 connect
+
+Initiate the connection to the UAV.
+
+=head2 at_ref
+
+    at_ref( $takeoff, $emergency );
+
+Controls takeoff/landing, and also the emergency toggle.  If the AR.Drone shows all 
+red lights and won't respond to commands, send this with the emergency flag to reset it.  
+This can also toggle emergency mode on in case the UAV flys out of control.
+
+=head2 at_pcmd
+
+    at_pcmd( $do_progressive, $do_combined_yaw,
+        $roll, $pitch, $vert_speed, $yaw );
+
+Controls the roll/pitch/vertical speed/yaw.  Sending this once will make the AR.Drone 
+go briefly in that direction and then return to normal.  For constant motion, the 
+AR.Drone developer documents suggest sending the command every 30ms.
+
+The roll/pitch/vert_speed/yaw parameters are numbers between -1.0 and 1.0.  Note that 
+they will be treated as single-precision (16 bit) floats, as per the developer docs.
+
+=head2 at_pcmd_mag
+
+    at_pcmd_mag( $do_progressive, $do_combined_yaw,
+        $roll, $pitch, $vert_speed, $angular_speed,
+        $magneto, $magneto_accuracy );
+
+Same as C<at_pcmd>, but with additional argument for setting the current magneto heading.
+
+For C<$magneto> an angle of 0 means facing north, positive value is facing east, and 
+negative is facing west.  1 and -1 are the same orientation.
+
+The C<$magneto_accuracy> sets the maximum deviation of where the magnetic heading differs 
+from geomagnetic heading in degrees.  Negative values indicate an invalid heading.
+
+=head2 at_ftrim
+
+Tells the AR.Drone that it's lying horizontally.  It must be called after each startup.  
+I<This command MUST NOT be sent when the drone is flying>.
+
+This is automatically called by C<connect()>.
+
+=head2 at_calib
+
+    at_calib( $device )
+
+Calibrates the magnetometer.  This command I<MUST> be sent when the AR.Drone is flying.
+
+The C<$device> parameter should be one of the C<ARDRONE_CALIBRATION_DEVICE_*> constants.
+
+This will cause the AR.Drone to spin around.
+
+=head2 at_config
+
+    at_config( $name, $value );
+
+Set a config option.  See the list of config constants.
+
+=head2 at_config_ids
+
+    at_config_ids( $session_id, $user_id, $app_id );
+
+When using multiconfiguration, send this before every C<at_config()> call.
+
+=head2 at_comwdg
+
+Reset the communication watchdog.
+
+=head2 at_ctrl
+
+A useful but rather under-documented command for initing things like navigation data.
+
+=head1 CONSTANTS
+
+=head2 Calibration Devices
+
+    ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER
+    ARDRONE_CALIBRATION_DEVICE_NUMBER
+
+=head2 Ctrl Commands
+
+    ARDRONE_CTRL_GET_CONFIG
+
+=head2 Networking Ports
+
+    ARDRONE_PORT_COMMAND
+    ARDRONE_PORT_COMMAND_TYPE
+    ARDRONE_PORT_NAV_DATA
+    ARDRONE_PORT_NAV_DATA_TYPE
+    ARDRONE_PORT_VIDEO_P264_V1
+    ARDRONE_PORT_VIDEO_P264_V2
+    ARDRONE_PORT_VIDEO_P264_V1_TYPE
+    ARDRONE_PORT_VIDEO_P264_V2_TYPE
+    ARDRONE_PORT_VIDEO_H264
+    ARDRONE_PORT_VIDEO_H264_TYPE
+    ARDRONE_PORT_CTRL
+    ARDRONE_PORT_CTRL_TYPE
+
+=head2 Configuration
+
+=head3 Misc
+
+    ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO
+
+=head3 Networking
+
+    ARDRONE_CONFIG_NETWORK_SSID_SINGLE_PLAYER
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_AP
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_JOIN
+    ARDRONE_CONFIG_NETWORK_WIFI_MODE_STATION
+    ARDRONE_CONFIG_NETWORK_OWNER_MAC
+
+=head3 Flight Animation
+
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_M30_DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_30_DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_20DEG_YAW_200DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_20DEG_YAW_M200DEG
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_TURNAROUND
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_TURNAROUND_GODOWN
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_YAW_SHAKE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_YAW_DANCE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_DANCE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_DANCE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_VZ_DANCE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_WAVE
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_THETA_MIXED
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_DOUBLE_PHI_THETA_MIXED
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_AHEAD
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_BEHIND
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_LEFT
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT
+
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_M30_DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_30_DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_20DEG_YAW_200DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_20DEG_YAW_M200DEG_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_TURNAROUND_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_TURNAROUND_GODOWN_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_YAW_SHAKE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_YAW_DANCE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_DANCE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_DANCE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_VZ_DANCE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_WAVE_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_THETA_MIXED_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_DOUBLE_PHI_THETA_MIXED_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_AHEAD_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_BEHIND_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_LEFT_MAYDAY
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT_MAYDAY
+
+=cut
