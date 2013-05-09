@@ -11,6 +11,7 @@ my $build = Module::Build->new(
     release_status => 'testing',
     requires       => {
         perl                    => '>= 5.12.0',
+        'File::ShareDir'        => 0,
         'File::Spec'            => 0,
         'Moose'                 => 0,
         'MooseX::Event'         => 0,
@@ -18,6 +19,7 @@ my $build = Module::Build->new(
         'Test::More'            => 0,
         'Throwable'             => 0,
     },
+    share_dir => 'share',
 );
 
 $build->create_build_script;

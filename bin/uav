@@ -133,8 +133,8 @@ access point on IP 192.168.1.1 (which is the default here).
 
 =head2 -L or --library
 
-Path to library modules.  May be specified multiple times.  By default, this will be the 
-C<Modueles/> directory under the same path as the L<UAV::Pilot> installation.
+Path to library modules.  May be specified multiple times.  By default, this will be the
+dist shared dir returned by L<File::ShareDir> for L<UAV::Pilot>.
 
 =head2 -l or --load
 

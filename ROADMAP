@@ -1,8 +1,3 @@
-Version 0.1
------------
-* Use File::ShareDir for fetching modules
-    * Use Module::Build's 'share_dir' param
-
 Version 0.2
 -----------
 * LED animations for ARDrone

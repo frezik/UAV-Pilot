@@ -3,22 +3,16 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use File::Spec;
+use File::ShareDir;
 
-use constant MODULE_NAMESPACE => 'Modules';
+use constant DIST_NAME => 'UAV-Pilot';
 
 
 sub default_module_dir
 {
     my ($class) = @_;
-    my $pack = __PACKAGE__;
-    $pack =~ s/::/\//g;
-    $pack .= '.pm';
-
-    my $pack_path = $INC{$pack};
-    $pack_path =~ s/\.pm\z//;
-
-    my $module_path = File::Spec->catfile( $pack_path, $class->MODULE_NAMESPACE );
-    return $module_path;
+    my $dir = File::ShareDir::dist_dir( $class->DIST_NAME );
+    return $dir;
 }
 
 
@@ -54,7 +48,7 @@ __END__
 
 =head1 DESCRIPTION
 
-Library for controlling Unmanned Arieal Drones.
+Library for controlling Unmanned Aerial Drones.
 
 
 =head1 FIRST FLIGHT OF AR.DRONE
@@ -121,7 +115,7 @@ permitted provided that the following conditions are met:
 
     * Redistributions of source code must retain the above copyright notice, this list of 
       conditions and the following disclaimer.
-    * Redistributions in binary form must reproduce the above copyright notice, this list of 
+    * Redistributions in binary form must reproduce the above copyright notice, this list of
       conditions and the following disclaimer in the documentation and/or other materials 
       provided with the distribution.
 
