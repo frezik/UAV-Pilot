@@ -26,7 +26,54 @@ use constant {
     ARDRONE_PORT_CTRL               => 5559,
     ARDRONE_PORT_CTRL_TYPE          => 'tcp',
 
-    ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO                        => 'general:navdata_demo',
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_CONFIG => 'general:num_version_config',
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_MB     => 'general:num_version_mb',
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_SOFT   => 'general:num_version_soft',
+    ARDRONE_CONFIG_GENERAL_DRONE_SERIAL       => 'general:drone_serial',
+    ARDRONE_CONFIG_GENERAL_SOFT_BUILD_DATE    => 'general:soft_build_date',
+    ARDRONE_CONFIG_GENERAL_MOTOR1_SOFT        => 'general:motor1_soft',
+    ARDRONE_CONFIG_GENERAL_MOTOR1_HARD        => 'general:motor1_hard',
+    ARDRONE_CONFIG_GENERAL_MOTOR1_SUPPLIER    => 'general:motor1_supplier',
+    ARDRONE_CONFIG_GENERAL_ARDRONE_NAME       => 'general:ardrone_name',
+    ARDRONE_CONFIG_GENERAL_FLYING_TIME        => 'general:flying_time',
+    ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO       => 'general:navdata_demo',
+    ARDRONE_CONFIG_GENERAL_NAVDATA_OPTIONS    => 'general:navdata_options',
+    ARDRONE_CONFIG_GENERAL_COM_WATCHDOG       => 'general:com_watchdog',
+    ARDRONE_CONFIG_GENERAL_VIDEO_ENABLE       => 'general:video_enable',
+    ARDRONE_CONFIG_GENERAL_VBAT_MIN           => 'general:vbat_min',
+
+    ARDRONE_CONFIG_CONTROL_ACCS_OFFSET             => 'control:accs_offset',
+    ARDRONE_CONFIG_CONTROL_ACCS_GAINS              => 'control:accs_gains',
+    ARDRONE_CONFIG_CONTROL_GYROS_OFFSET            => 'control:gyros_offset',
+    ARDRONE_CONFIG_CONTROL_GYROS_GAINS             => 'control:gyros_gains',
+    ARDRONE_CONFIG_CONTROL_GYROS110_OFFSET         => 'control:gyros110_offset',
+    ARDRONE_CONFIG_CONTROL_GYROS110_GAINS          => 'control:gyros110_gains',
+    ARDRONE_CONFIG_CONTROL_MAGNETO_OFFSET          => 'control:magneto_offset',
+    ARDRONE_CONFIG_CONTROL_MAGNETO_RADIUS          => 'control:magneto_radius',
+    ARDRONE_CONFIG_CONTROL_GYRO_OFFSET_THR_X       => 'control:gyro_offset_thr_x',
+    ARDRONE_CONFIG_CONTROL_PWM_REF_GYROS           => 'control:pwm_ref_gyros',
+    ARDRONE_CONFIG_CONTROL_OSCTUN_VALUE            => 'control:osctun_value',
+    ARDRONE_CONFIG_CONTROL_OSCTUN_TEST             => 'control:osctun_test',
+    ARDRONE_CONFIG_CONTROL_CONTROL_LEVEL           => 'control:control_level',
+    ARDRONE_CONFIG_CONTROL_EULER_ANGLE_MAX         => 'control:euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_ALTITUDE_MAX            => 'control:altitude_max',
+    ARDRONE_CONFIG_CONTROL_ALTITUDE_MIN            => 'control:altitude_min',
+    ARDRONE_CONFIG_CONTROL_CONTROL_IPHONE_TILT     => 'control:control_iphone_tilt',
+    ARDRONE_CONFIG_CONTROL_CONTROL_VZ_MAX          => 'control:control_vz_max',
+    ARDRONE_CONFIG_CONTROL_CONTROL_YAW             => 'control:control_yaw',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR                 => 'control:outdoor',
+    ARDRONE_CONFIG_CONTROL_FLIGHT_WITHOUT_SHELL    => 'control:flight_without_shell',
+    ARDRONE_CONFIG_CONTROL_AUTONOMOUS_FLIGHT       => 'control:autonomous_flight',
+    ARDRONE_CONFIG_CONTROL_MANUAL_TRIM             => 'control:manual_trim',
+    ARDRONE_CONFIG_CONTROL_INDOOR_EULER_ANGLE_MAX  => 'control:indoor_euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_INDOOR_CONTROL_VZ_MAX   => 'control:indoor_control_vz_max',
+    ARDRONE_CONFIG_CONTROL_INDOOR_CONTROL_YAW      => 'control:indoor_control_yaw',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_EULER_ANGLE_MAX => 'control:outdoor_euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_CONTROL_VZ_MAX  => 'control:outdoor_control_vz_max',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_CONTROL_YAW     => 'control:outdoor_control_yaw',
+    ARDRONE_CONFIG_CONTROL_FLYING_MODE             => 'control:flying_mode',
+    ARDRONE_CONFIG_CONTROL_HOVERING_RANGE          => 'control:hovering_range',
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM             => 'control:flight_anim',
 
     ARDRONE_CONFIG_NETWORK_SSID_SINGLE_PLAYER => 'network:ssid_single_player',
     ARDRONE_CONFIG_NETWORK_WIFI_MODE          => 'network:wifi_mode',
@@ -35,7 +82,6 @@ use constant {
     ARDRONE_CONFIG_NETWORK_WIFI_MODE_STATION  => 2,
     ARDRONE_CONFIG_NETWORK_OWNER_MAC          => 'network:owner_mac',
 
-    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM                         => 'control:flight_anim',
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG             => 0,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG              => 1,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_M30_DEG           => 2,
@@ -483,9 +529,58 @@ A useful but rather under-documented command for initing things like navigation 
 
 =head2 Configuration
 
-=head3 Misc
+=head3 General
 
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_CONFIG
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_MB
+    ARDRONE_CONFIG_GENERAL_NUM_VERSION_SOFT
+    ARDRONE_CONFIG_GENERAL_DRONE_SERIAL
+    ARDRONE_CONFIG_GENERAL_SOFT_BUILD_DATE
+    ARDRONE_CONFIG_GENERAL_MOTOR1_SOFT
+    ARDRONE_CONFIG_GENERAL_MOTOR1_HARD
+    ARDRONE_CONFIG_GENERAL_MOTOR1_SUPPLIER
+    ARDRONE_CONFIG_GENERAL_ARDRONE_NAME
+    ARDRONE_CONFIG_GENERAL_FLYING_TIME
     ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO
+    ARDRONE_CONFIG_GENERAL_NAVDATA_OPTIONS
+    ARDRONE_CONFIG_GENERAL_COM_WATCHDOG
+    ARDRONE_CONFIG_GENERAL_VIDEO_ENABLE
+    ARDRONE_CONFIG_GENERAL_VBAT_MIN
+
+=head3 Control
+
+    ARDRONE_CONFIG_CONTROL_ACCS_OFFSET             => 'control:accs_offset',
+    ARDRONE_CONFIG_CONTROL_ACCS_GAINS              => 'control:accs_gains',
+    ARDRONE_CONFIG_CONTROL_GYROS_OFFSET            => 'control:gyros_offset',
+    ARDRONE_CONFIG_CONTROL_GYROS_GAINS             => 'control:gyros_gains',
+    ARDRONE_CONFIG_CONTROL_GYROS110_OFFSET         => 'control:gyros110_offset',
+    ARDRONE_CONFIG_CONTROL_GYROS110_GAINS          => 'control:gyros110_gains',
+    ARDRONE_CONFIG_CONTROL_MAGNETO_OFFSET          => 'control:magneto_offset',
+    ARDRONE_CONFIG_CONTROL_MAGNETO_RADIUS          => 'control:magneto_radius',
+    ARDRONE_CONFIG_CONTROL_GYRO_OFFSET_THR_X       => 'control:gyro_offset_thr_x',
+    ARDRONE_CONFIG_CONTROL_PWM_REF_GYROS           => 'control:pwm_ref_gyros',
+    ARDRONE_CONFIG_CONTROL_OSCTUN_VALUE            => 'control:osctun_value',
+    ARDRONE_CONFIG_CONTROL_OSCTUN_TEST             => 'control:osctun_test',
+    ARDRONE_CONFIG_CONTROL_CONTROL_LEVEL           => 'control:control_level',
+    ARDRONE_CONFIG_CONTROL_EULER_ANGLE_MAX         => 'control:euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_ALTITUDE_MAX            => 'control:altitude_max',
+    ARDRONE_CONFIG_CONTROL_ALTITUDE_MIN            => 'control:altitude_min',
+    ARDRONE_CONFIG_CONTROL_CONTROL_IPHONE_TILT     => 'control:control_iphone_tilt',
+    ARDRONE_CONFIG_CONTROL_CONTROL_VZ_MAX          => 'control:control_vz_max',
+    ARDRONE_CONFIG_CONTROL_CONTROL_YAW             => 'control:control_yaw',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR                 => 'control:outdoor',
+    ARDRONE_CONFIG_CONTROL_FLIGHT_WITHOUT_SHELL    => 'control:flight_without_shell',
+    ARDRONE_CONFIG_CONTROL_AUTONOMOUS_FLIGHT       => 'control:autonomous_flight',
+    ARDRONE_CONFIG_CONTROL_MANUAL_TRIM             => 'control:manual_trim',
+    ARDRONE_CONFIG_CONTROL_INDOOR_EULER_ANGLE_MAX  => 'control:indoor_euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_INDOOR_CONTROL_VZ_MAX   => 'control:indoor_control_vz_max',
+    ARDRONE_CONFIG_CONTROL_INDOOR_CONTROL_YAW      => 'control:indoor_control_yaw',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_EULER_ANGLE_MAX => 'control:outdoor_euler_angle_max',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_CONTROL_VZ_MAX  => 'control:outdoor_control_vz_max',
+    ARDRONE_CONFIG_CONTROL_OUTDOOR_CONTROL_YAW     => 'control:outdoor_control_yaw',
+    ARDRONE_CONFIG_CONTROL_FLYING_MODE             => 'control:flying_mode',
+    ARDRONE_CONFIG_CONTROL_HOVERING_RANGE          => 'control:hovering_range',
+    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM             => 'control:flight_anim',
 
 =head3 Networking
 
@@ -498,7 +593,6 @@ A useful but rather under-documented command for initing things like navigation 
 
 =head3 Flight Animation
 
-    ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_M30_DEG
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_PHI_30_DEG
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_THETA_M30_DEG
