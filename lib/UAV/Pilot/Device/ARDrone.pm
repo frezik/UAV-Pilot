@@ -183,3 +183,106 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Device::ARDrone
+
+=head1 SYNOPSIS
+
+    my $sender = UAV::Pilot::Sender::ARDrone->new( ... );
+    $sender->connect;
+    my $dev = UAV::Pilot::Device::ARDrone->new({
+        sender => $sender,
+    });
+    
+    $dev->takeoff;
+    $dev->pitch( 0.5 );
+    $dev->wave;
+    $dev->flip_left;
+    $dev->land;
+
+=head1 DESCRIPTION
+
+L<UAV::Pilot::Device> implementation for the Parrot AR.Drone.
+
+=head1 METHODS
+
+=head2 takeoff
+
+Takeoff.
+
+=head2 land
+
+Land.
+
+=head2 pitch
+
+    pitch( 0.5 )
+
+Pitch (front-to-back movement).  Takes a floating point number between -1.0 and 1.0.  On 
+the AR.Drone, negative numbers pitch the nose down and fly forward.
+
+=head2 roll
+
+    roll( -1.0 )
+
+Roll (left-to-right movement).  Takes a floating point number between -1.0 and 1.0.  On 
+the AR.Drone, negative numbers go left.
+
+=head2 yaw
+
+    yaw( -0.25 )
+
+Yaw (spin).  Takes a floating point number between -1.0 and 1.0.  On the AR.Drone, 
+negative numbers spin left.
+
+=head2 vert_speed
+
+    vert_speed( 0.7 )
+
+Change the vertical speed.  Takes a floating point number between -1.0 and 1.0.  On the 
+AR.Drone, negative numbers make it go down.
+
+=head2 calibrate
+
+Calibrates the magnetometer.  This must be done while in flight.  The drone will spin 
+around (yaw movement) while it does this.
+
+=head2 emergency
+
+Toggles the emergency state.  If your UAV goes out of control, call this to immediately 
+shut it off.  When in the emergency state, it will not be responsive to further commands.  
+Call this again to bring it out of this state.
+
+=head1 FLIGHT ANIMATION METHODS
+
+The Parrot AR.Drone comes preprogrammed with a bunch of "flight animations" (complicated 
+achrebatic manuevers).  You can call the methods below to run them.  Note that some of 
+these need a generous amount of horizontal and vertical space, so be sure to be in a 
+wide open area for testing.
+
+I find "wave" and "flip_behind" are particularly good ways to impress house guests :)
+
+    phi_m30_deg
+    phi_30_deg
+    theta_m30_deg
+    theta_30_deg
+    theta_20deg_yaw_200deg
+    theta_20deg_yaw_m200deg
+    turnaround
+    turnaround_godown
+    yaw_shake
+    yaw_dance
+    phi_dance
+    theta_dance
+    vz_dance
+    wave
+    phi_theta_mixed
+    double_phi_theta_mixed
+    flip_ahead
+    flip_behind
+    flip_left
+    flip_right
+
+=cut

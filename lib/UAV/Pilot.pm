@@ -108,6 +108,8 @@ TODO Write how to send commands continuously once we figure out how
 =head1 OTHER LINKS
 
 L<http://www.wumpus-cave.net> - Developer's blog
+L<http://projects.ardrone.org> - AR.Drone Open API
+L<http://ardrone2.parrot.com> - AR.Drone Homepage
 
 =head1 LICENSE
 
