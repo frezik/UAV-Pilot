@@ -26,20 +26,23 @@ my $ar = UAV::Pilot::Device::ARDrone->new({
 $ar->takeoff;
 
 my $t = AE::timer( 5, INT, sub {
-    $ar->pitch( -0.5 );
+    $ar->yaw( -0.5 );
 });
 
 AE::timer( 6, 0, sub {
     undef $t;
     my $t2 = AE::timer( 0, INT, sub {
-        $ar->pitch( 0.5 );
+        $ar->yaw( 0.5 );
     });
 
-    AE::timer( 2, INT, sub {
+    AE::timer( 2, 0, sub {
         undef $t2;
-        $ar->land;
-        $cv->send; # End main event loop
-        exit;
+        $ar->flip_front;
+
+        AE::timer( 5, 0, sub {
+            $ar->land;
+            exit;
+        });
     });
 });
 
