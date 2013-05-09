@@ -1,16 +1,18 @@
 Version 0.1
 -----------
-* LED animations for ARDrone
 * All config-related constants defined
 
 Version 0.2
 -----------
+* LED animations for ARDrone
 * Navigation data fetched (bin/nav_data_demo.pl)
 * SDL output of nav data
 
 Version 0.3
 -----------
 * Event system ("pitch 0.5 for 30 seconds" )
+* Joystick control
+* Wiimote control
 
 Version 0.4
 -----------
