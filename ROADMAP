@@ -7,6 +7,7 @@ Version 0.2
 * LED animations for ARDrone
 * Navigation data fetched (bin/nav_data_demo.pl)
 * SDL output of nav data
+* USERBOX:userbox_cmd config constants
 
 Version 0.3
 -----------
