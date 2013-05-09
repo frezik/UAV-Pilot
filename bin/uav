@@ -111,8 +111,8 @@ __END__
 
     uav \
         --ip 192.168.1.1 \
-        -L/path/to/libraries
-        -lARDrone
+        -L /path/to/libraries
+        -l ARDrone
 
 =head1 DESCRIPTION
 

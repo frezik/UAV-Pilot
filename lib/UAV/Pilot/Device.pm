@@ -3,8 +3,8 @@ use v5.14;
 use Moose::Role;
 
 has 'sender' => (
-    is  => 'ro',
-    isa => 'UAV::Pilot::Sender',
+    is   => 'ro',
+    does => 'UAV::Pilot::Sender',
 );
 
 

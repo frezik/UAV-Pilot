@@ -7,8 +7,8 @@ use File::Spec;
 use constant MOD_EXTENSION => '.uav';
 
 has 'device' => (
-    is  => 'ro',
-    isa => 'UAV::Pilot::Device',
+    is   => 'ro',
+    does => 'UAV::Pilot::Device',
 );
 has 'lib_dirs' => (
     is      => 'ro',
