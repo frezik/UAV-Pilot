@@ -103,3 +103,42 @@ sub load_libraries
         }
     }
 }
+
+__END__
+
+
+=head1 SYNOPSIS
+
+    uav \
+        --ip 192.168.1.1 \
+        -L/path/to/libraries
+        -lARDrone
+
+=head1 DESCRIPTION
+
+Launches a shell for controlling a UAV.  Perl statements may be typed at the prompt, ending 
+with a semi-colon.  With the Parrot AR.Drone, try:
+
+    uav> takeoff;
+    uav> pitch -0.5;
+    uav> wave;
+    uav> land;
+
+=head1 OPTIONS
+
+=head2 --ip
+
+Host IP to connect to.  Out of the box, the Parrot AR.Drone will be its own wireless 
+access point on IP 192.168.1.1 (which is the default here).
+
+=head2 -L or --library
+
+Path to library modules.  May be specified multiple times.  By default, this will be the 
+C<Modueles/> directory under the same path as the L<UAV::Pilot> installation.
+
+=head2 -l or --load
+
+Library to load.  May be specified multiple times.  It will need to be under one of the 
+directories specified by the C<--library> option (or the default library path).
+
+=cut
