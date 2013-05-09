@@ -1,0 +1,23 @@
+use v5.12;
+use warnings;
+use Module::Build;
+
+my $build = Module::Build->new(
+    module_name    => 'UAV::Pilot',
+    dist_abstract  => 'Control UAVs',
+    dist_author    => q{Timm Murray <tmurray@wumpus-cave.net>},
+    dist_version   => '0.1',
+    license        => 'bsd',
+    release_status => 'testing',
+    requires       => {
+        perl                    => '>= 5.12.0',
+        'File::Spec'            => 0,
+        'Moose'                 => 0,
+        'MooseX::Event'         => 0,
+        'Term::ReadLine::Perl5' => 0,
+        'Test::More'            => 0,
+        'Throwable'             => 0,
+    },
+);
+
+$build->create_build_script;

@@ -1,6 +1,7 @@
 Version 0.1
 -----------
-* All config-related constants defined
+* Use File::ShareDir for fetching modules
+    * Use Module::Build's 'share_dir' param
 
 Version 0.2
 -----------
