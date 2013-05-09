@@ -1,6 +1,7 @@
 Version 0.1
 -----------
 * LED animations for ARDrone
+* All config-related constants defined
 
 Version 0.2
 -----------
