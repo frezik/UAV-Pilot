@@ -8,7 +8,7 @@ Version 0.3
 -----------
 * Event system ("pitch 0.5 for 30 seconds" )
 * Joystick control
-* Wiimote control
+* Wiimote control (?)
 
 Version 0.4
 -----------
@@ -17,3 +17,4 @@ Version 0.4
 Version 5
 -----------
 * Error message formatting in REPL
+* Facial Recognition with Image::ObjectDetect
