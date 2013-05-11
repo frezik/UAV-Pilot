@@ -33,29 +33,31 @@
     }
 }
 
-
-sub pitch ($)
 {
-    my ($val) = @_;
-    $dev->pitch( $val );
+    my @SINGLE_ARG_STRAIGHT_COMMANDS = qw(
+        pitch
+        roll
+        yaw
+        vert_speed
+    );
+    foreach my $name (@SINGLE_ARG_STRAIGHT_COMMANDS) {
+        no strict 'refs';
+        *$name = sub ($) {
+            $dev->$name( @_ );
+        };
+    }
 }
 
-sub roll ($)
 {
-    my ($val) = @_;
-    $dev->roll( $val );
-}
-
-sub yaw ($)
-{
-    my ($val) = @_;
-    $dev->yaw( $val );
-}
-
-sub vert_speed ($)
-{
-    my ($val) = @_;
-    $dev->vert_speed( $val );
+    my @TWO_ARG_STRAIGHT_COMMANDS = qw(
+        led_blink_green_red
+    );
+    foreach my $name (@TWO_ARG_STRAIGHT_COMMANDS) {
+        no strict 'refs';
+        *$name = sub ($$) {
+            $dev->$name( @_ );
+        };
+    }
 }
 
 

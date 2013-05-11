@@ -166,6 +166,28 @@ use constant {
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_BEHIND_MAYDAY             => 15,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_LEFT_MAYDAY               => 15,
     ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT_MAYDAY              => 15,
+
+    ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN_RED              => 0,
+    ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN                  => 1,
+    ARDRONE_CONFIG_LED_ANIMATION_BLINK_RED                    => 2,
+    ARDRONE_CONFIG_LED_ANIMATION_BLINK_ORANGE                 => 3,
+    ARDRONE_CONFIG_LED_ANIMATION_SNAKE_GREEN_RED              => 4,
+    ARDRONE_CONFIG_LED_ANIMATION_FIRE                         => 5,
+    ARDRONE_CONFIG_LED_ANIMATION_STANDARD                     => 6,
+    ARDRONE_CONFIG_LED_ANIMATION_RED                          => 7,
+    ARDRONE_CONFIG_LED_ANIMATION_GREEN                        => 8,
+    ARDRONE_CONFIG_LED_ANIMATION_RED_SNAKE                    => 9,
+    ARDRONE_CONFIG_LED_ANIMATION_BLANK                        => 10,
+    ARDRONE_CONFIG_LED_ANIMATION_RIGHT_MISSILE                => 11,
+    ARDRONE_CONFIG_LED_ANIMATION_LEFT_MISSILE                 => 12,
+    ARDRONE_CONFIG_LED_ANIMATION_DOUBLE_MISSILE               => 13,
+    ARDRONE_CONFIG_LED_ANIMATION_FRONT_LEFT_GREEN_OTHERS_RED  => 14,
+    ARDRONE_CONFIG_LED_ANIMATION_FRONT_RIGHT_GREEN_OTHERS_RED => 15,
+    ARDRONE_CONFIG_LED_ANIMATION_REAR_RIGHT_GREEN_OTHERS_RED  => 16,
+    ARDRONE_CONFIG_LED_ANIMATION_REAR_LEFT_GREEN_OTHERS_RED   => 17,
+    ARDRONE_CONFIG_LED_ANIMATION_LEFT_GREEN_RIGHT_RED         => 18,
+    ARDRONE_CONFIG_LED_ANIMATION_LEFT_RED_RIGHT_GREEN         => 19,
+    ARDRONE_CONFIG_LED_ANIMATION_BLINK_STANDARD               => 20,
 };
 
 
@@ -264,10 +286,10 @@ sub at_pcmd
         . join( ',', 
             $self->_next_seq,
             $cmd_number,
-            $self->_float_convert( $roll ),
-            $self->_float_convert( $pitch ),
-            $self->_float_convert( $vert_speed ),
-            $self->_float_convert( $yaw ),
+            $self->float_convert( $roll ),
+            $self->float_convert( $pitch ),
+            $self->float_convert( $vert_speed ),
+            $self->float_convert( $yaw ),
         )
         . "\r";
     $self->_send_cmd( $cmd );
@@ -319,12 +341,12 @@ sub at_pcmd_mag
         . join( ',', 
             $self->_next_seq,
             $cmd_number,
-            $self->_float_convert( $roll ),
-            $self->_float_convert( $pitch ),
-            $self->_float_convert( $vert_speed ),
-            $self->_float_convert( $angular_speed ),
-            $self->_float_convert( $magneto  ),
-            $self->_float_convert( $magneto_accuracy ),
+            $self->float_convert( $roll ),
+            $self->float_convert( $pitch ),
+            $self->float_convert( $vert_speed ),
+            $self->float_convert( $angular_speed ),
+            $self->float_convert( $magneto  ),
+            $self->float_convert( $magneto_accuracy ),
         )
         . "\r";
     $self->_send_cmd( $cmd );
@@ -401,6 +423,15 @@ sub at_ctrl
     return 1;
 }
 
+# Takes an IEEE-754 float and converts its exact bits in memory to a signed 32-bit integer.
+# Yes, the ARDrone dev docs actually say to put floats across the wire in this format.
+sub float_convert
+{
+    my ($self, $float) = @_;
+    my $int = unpack( "l", pack( "f", $float ) );
+    return $int;
+}
+
 
 sub _send_cmd
 {
@@ -422,15 +453,6 @@ sub _init_drone
     my ($self) = @_;
     $self->at_ftrim;
     return 1;
-}
-
-# Takes an IEEE-754 float and converts its exact bits in memory to a signed 32-bit integer.
-# Yes, the ARDrone dev docs actually say to put floats across the wire in this format.
-sub _float_convert
-{
-    my ($self, $float) = @_;
-    my $int = unpack( "l", pack( "f", $float ) );
-    return $int;
 }
 
 no Moose;
@@ -543,6 +565,17 @@ Reset the communication watchdog.
 =head2 at_ctrl
 
 A useful but rather under-documented command for initing things like navigation data.
+
+=head2 float_convert
+
+    float_convert( 2.0 )
+
+Takes a 32-bit, single-precision floating point number.  The binary form is then 
+directly converted into an integer.  For example, 0.5 converts into 1056964608.
+
+The protocol requires floating point numbers to be transferred this way in some cases.  
+The API will take care of most of these cases for you, but there are some configuration 
+settings that you'll have to convert yourself (like LED animations).
 
 =head1 CONSTANTS
 

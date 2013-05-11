@@ -56,6 +56,19 @@ sub emergency
     return 1;
 }
 
+sub led_blink_green_red
+{
+    my ($self, $freq, $duration) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
+        sprintf( '%d,%d,%d',
+            $self->sender->ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN_RED,
+            $self->sender->float_convert( $freq ),
+            $duration,
+        ),
+    );
+}
+
 {
     my $send = 'UAV::Pilot::Sender::ARDrone';
     my @FLIGHT_ANIMS = (
@@ -284,5 +297,33 @@ I find "wave" and "flip_behind" are particularly good ways to impress house gues
     flip_behind
     flip_left
     flip_right
+
+=head1 LED ANIMATION METHODS
+
+The LEDs on the Parrot AR.Drone can be directly controlled using these animation methods.  
+They all take two parameters: the frequency (in Hz) as a floating point number, and 
+the duration.
+
+    led_blink_green_red
+    led_blink_green
+    led_blink_red
+    led_blink_orange
+    led_snake_green_red
+    led_fire
+    led_standard
+    led_red
+    led_green
+    led_red_snake
+    led_blank
+    led_right_missile
+    led_left_missile
+    led_double_missile
+    led_front_left_green_others_red
+    led_front_right_green_others_red
+    led_rear_right_green_others_red
+    led_rear_left_green_others_red
+    led_left_green_right_red
+    led_left_red_right_green
+    led_blink_standard
 
 =cut

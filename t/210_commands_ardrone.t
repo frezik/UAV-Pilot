@@ -1,4 +1,4 @@
-use Test::More tests => 31;
+use Test::More tests => 32;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Sender::ARDrone::Mock;
@@ -174,6 +174,11 @@ my @TESTS = (
         cmd    => 'emergency;',
         expect => [ "AT*REF=~SEQ~,290717952\r" ],
         name   => "Emergency command",
+    },
+    {
+        cmd    => 'led_blink_green_red 2.0, 2;',
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","0,1073741824,2"\r} ],
+        name   => "led_blink_green_red command",
     },
 );
 foreach my $test (@TESTS) {

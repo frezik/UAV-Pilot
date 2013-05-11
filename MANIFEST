@@ -15,11 +15,9 @@ lib/UAV/Pilot/Sender.pm
 lib/UAV/Pilot/Sender/ARDrone.pm
 lib/UAV/Pilot/Sender/ARDrone/Mock.pm
 LICENSE
-Makefile.PL
 MANIFEST			This list of files
 README
 ROADMAP
-run_tests.pl
 share/ARDrone.uav
 share/Mock.uav
 share/MockInit.uav
