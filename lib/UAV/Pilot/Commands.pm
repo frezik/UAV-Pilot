@@ -196,7 +196,12 @@ subroutine.
 
 =head1 WRITING YOUR OWN EXTENSIONS
 
-Extensions should go under the directory C<UAV/Pilot/Modules/> with a C<.uav> extension. 
+Extensions should go in the directory specified by:
+
+    File::ShareDir::dist_dir( 'UAV-Pilot' )
+
+They should have a C<.uav> extension.
+
 You write them much like any Perl module, but don't use a C<package> statement--the package
 will be controlled by C<UAV::Pilot::Command> when loaded.  Like a Perl module, it should 
 return true as its final statement (put a C<1;> at the end).
