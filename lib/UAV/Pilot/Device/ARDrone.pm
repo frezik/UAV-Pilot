@@ -56,19 +56,6 @@ sub emergency
     return 1;
 }
 
-sub led_blink_green_red
-{
-    my ($self, $freq, $duration) = @_;
-    $self->sender->at_config(
-        $self->sender->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
-        sprintf( '%d,%d,%d',
-            $self->sender->ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN_RED,
-            $self->sender->float_convert( $freq ),
-            $duration,
-        ),
-    );
-}
-
 {
     my $send = 'UAV::Pilot::Sender::ARDrone';
     my @FLIGHT_ANIMS = (
@@ -172,7 +159,6 @@ sub led_blink_green_red
             anim   => $send->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT,
             mayday => $send->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM_FLIP_RIGHT_MAYDAY,
         },
-
     );
     foreach my $def (@FLIGHT_ANIMS) {
         my $name   = $def->{name};
@@ -185,6 +171,114 @@ sub led_blink_green_red
             $self->sender->at_config(
                 $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
                 sprintf( '%d,%d', $anim, $mayday ),
+            );
+        };
+    }
+}
+
+{
+    my $send = 'UAV::Pilot::Sender::ARDrone';
+
+    my @LED_ANIMS = (
+        {
+            name => 'led_blink_green_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN_RED,
+        },
+        {
+            name => 'led_blink_green',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLINK_GREEN,
+        },
+        {
+            name => 'led_blink_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLINK_RED,
+        },
+        {
+            name => 'led_blink_orange',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLINK_ORANGE,
+        },
+        {
+            name => 'led_snake_green_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_SNAKE_GREEN_RED,
+        },
+        {
+            name => 'led_fire',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_FIRE,
+        },
+        {
+            name => 'led_standard',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_STANDARD,
+        },
+        {
+            name => 'led_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_RED,
+        },
+        {
+            name => 'led_green',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_GREEN,
+        },
+        {
+            name => 'led_red_snake',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_RED_SNAKE,
+        },
+        {
+            name => 'led_blank',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLANK,
+        },
+        {
+            name => 'led_right_missile',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_RIGHT_MISSILE,
+        },
+        {
+            name => 'led_left_missile',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_LEFT_MISSILE,
+        },
+        {
+            name => 'led_double_missile',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_DOUBLE_MISSILE,
+        },
+        {
+            name => 'led_front_left_green_others_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_FRONT_LEFT_GREEN_OTHERS_RED,
+        },
+        {
+            name => 'led_front_right_green_others_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_FRONT_RIGHT_GREEN_OTHERS_RED,
+        },
+        {
+            name => 'led_rear_left_green_others_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_REAR_LEFT_GREEN_OTHERS_RED,
+        },
+        {
+            name => 'led_rear_right_green_others_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_REAR_RIGHT_GREEN_OTHERS_RED,
+        },
+        {
+            name => 'led_left_green_right_red',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_LEFT_GREEN_RIGHT_RED,
+        },
+        {
+            name => 'led_left_red_right_green',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_LEFT_RED_RIGHT_GREEN,
+        },
+        {
+            name => 'led_blink_standard',
+            anim => $send->ARDRONE_CONFIG_LED_ANIMATION_BLINK_STANDARD,
+        },
+    );
+    foreach my $def (@LED_ANIMS) {
+        my $name = $def->{name};
+        my $anim = $def->{anim};
+
+        no strict 'refs';
+        *$name = sub {
+            my ($self, $freq, $duration) = @_;
+            $self->sender->at_config(
+                $self->sender->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
+                sprintf( '%d,%d,%d',
+                    $anim,
+                    $self->sender->float_convert( $freq ),
+                    $duration,
+                ),
             );
         };
     }

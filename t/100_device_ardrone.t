@@ -1,4 +1,4 @@
-use Test::More tests => 31;
+use Test::More tests => 51;
 use v5.14;
 use UAV::Pilot::Sender::ARDrone::Mock;
 use UAV::Pilot::Device::ARDrone;
@@ -191,6 +191,126 @@ my @TESTS = (
         args   => [ 2.0, 2 ],
         expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","0,1073741824,2"\r} ],
         name   => "led_blink_green_red method executed",
+    },
+    {
+        method => 'led_blink_green',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","1,1073741824,2"\r} ],
+        name   => "led_blink_green method executed",
+    },
+    {
+        method => 'led_blink_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","2,1073741824,2"\r} ],
+        name   => "led_blink_red method executed",
+    },
+    {
+        method => 'led_blink_orange',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","3,1073741824,2"\r} ],
+        name   => "led_blink_orange method executed",
+    },
+    {
+        method => 'led_snake_green_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","4,1073741824,2"\r} ],
+        name   => "led_snake_green_red method executed",
+    },
+    {
+        method => 'led_fire',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","5,1073741824,2"\r} ],
+        name   => "led_fire method executed",
+    },
+    {
+        method => 'led_standard',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","6,1073741824,2"\r} ],
+        name   => "led_standard method executed",
+    },
+    {
+        method => 'led_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","7,1073741824,2"\r} ],
+        name   => "led_red method executed",
+    },
+    {
+        method => 'led_green',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","8,1073741824,2"\r} ],
+        name   => "led_green method executed",
+    },
+    {
+        method => 'led_red_snake',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","9,1073741824,2"\r} ],
+        name   => "led_red_snake method executed",
+    },
+    {
+        method => 'led_blank',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","10,1073741824,2"\r} ],
+        name   => "led_blank method executed",
+    },
+    {
+        method => 'led_right_missile',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","11,1073741824,2"\r} ],
+        name   => "led_right_missile method executed",
+    },
+    {
+        method => 'led_left_missile',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","12,1073741824,2"\r} ],
+        name   => "led_left_missile method executed",
+    },
+    {
+        method => 'led_double_missile',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","13,1073741824,2"\r} ],
+        name   => "led_double_missile method executed",
+    },
+    {
+        method => 'led_front_left_green_others_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","14,1073741824,2"\r} ],
+        name   => "led_front_left_green_others_red method executed",
+    },
+    {
+        method => 'led_front_right_green_others_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","15,1073741824,2"\r} ],
+        name   => "led_front_right_green_others_red method executed",
+    },
+    {
+        method => 'led_rear_right_green_others_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","16,1073741824,2"\r} ],
+        name   => "led_rear_right_green_others_red method executed",
+    },
+    {
+        method => 'led_rear_left_green_others_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","17,1073741824,2"\r} ],
+        name   => "led_rear_left_green_others_red method executed",
+    },
+    {
+        method => 'led_left_green_right_red',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","18,1073741824,2"\r} ],
+        name   => "led_left_green_right_red method executed",
+    },
+    {
+        method => 'led_left_red_right_green',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","19,1073741824,2"\r} ],
+        name   => "led_left_red_right_green method executed",
+    },
+    {
+        method => 'led_blink_standard',
+        args   => [ 2.0, 2 ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","20,1073741824,2"\r} ],
+        name   => "led_blink_standard method executed",
     },
 );
 foreach my $test (@TESTS) {
