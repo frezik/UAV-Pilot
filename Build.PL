@@ -13,6 +13,7 @@ my $build = Module::Build->new(
         perl                    => '>= 5.12.0',
         'File::ShareDir'        => 0,
         'File::Spec'            => 0,
+        'IO::Socket::Multicast' => 0,
         'Moose'                 => 0,
         'MooseX::Event'         => 0,
         'Term::ReadLine::Perl5' => 0,

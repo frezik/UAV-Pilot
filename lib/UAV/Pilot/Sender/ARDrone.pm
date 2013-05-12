@@ -8,11 +8,15 @@ use UAV::Pilot::Exceptions;
 with 'UAV::Pilot::Sender';
 
 use constant {
+    TRUE  => 'TRUE',
+    FALSE => 'FALSE',
+
     ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER => 0,
     ARDRONE_CALIBRATION_DEVICE_NUMBER       => 1,
 
     ARDRONE_CTRL_GET_CONFIG => 4,
 
+    ARDRONE_MULTICAST_ADDR          => '224.1.1.1',
     ARDRONE_PORT_COMMAND            => 5556,
     ARDRONE_PORT_COMMAND_TYPE       => 'udp',
     ARDRONE_PORT_NAV_DATA           => 5554,
