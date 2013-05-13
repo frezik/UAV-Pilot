@@ -14,6 +14,8 @@ lib/UAV/Pilot/Exceptions.pm
 lib/UAV/Pilot/Sender.pm
 lib/UAV/Pilot/Sender/ARDrone.pm
 lib/UAV/Pilot/Sender/ARDrone/Mock.pm
+lib/UAV/Pilot/Sender/ARDrone/NavPacket.pm
+lib/UAV/Pilot/Sender/ARDrone/NavPacket/Option.pm
 LICENSE
 MANIFEST			This list of files
 README
@@ -24,6 +26,7 @@ share/MockInit.uav
 scripts/float_convert.pl
 t/001_load.t
 t/010_sender_mock.t
+t/020_nav_packet.t
 t/100_device_ardrone.t
 t/200_commands.t
 t/210_commands_ardrone.t
