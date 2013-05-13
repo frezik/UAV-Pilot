@@ -24,11 +24,10 @@ my $packet_data = make_packet( join('',
     'd004800f',   # Drone state
     '336f0000',   # Sequence number
     '01000000',   # Vision flag
-    'ffff',       # Option 1 ID
-    '0800',       # Option 1 size
-    'c1',         # Option 1 data
-    '0300',       # Checksum ID
-    '00',         # Checksum length
+    # No options on this packet besides checksum
+    'ffff',       # Checksum ID
+    '0800',       # Checksum size
+    'c1030000',   # Checksum data
 ) );
 my $packet = UAV::Pilot::Sender::ARDrone::NavPacket->new({
     packet => $packet_data
@@ -44,12 +43,12 @@ TODO: {
     cmp_ok( $packet->checksum_id,     '==', 0x0003,     "Checksum ID" );
     cmp_ok( $packet->checksum_length, '==', 0x00,       "Checksum length" );
 
-    my ($first_opt, @rest_options) = @{ $packet->options };
-    isa_ok( $first_opt => 'UAV::Pilot::Sender::ARDrone::NavPacket::Option' );
-    cmp_ok( scalar(@rest_options), '==', 0, "Only one option found" );
-    cmp_ok( $first_opt->id,   '==', 0xffff, "First option ID parsed" );
-    cmp_ok( $first_opt->size, '==', 0x0008, "First option size parsed" );
-    cmp_ok( $first_opt->data, '==', 0xc1,   "First option data parsed" );
+    my ($checksum, @options) = @{ $packet->options };
+    isa_ok( $checksum => 'UAV::Pilot::Sender::ARDrone::NavPacket::Option' );
+    cmp_ok( scalar(@options), '==', 0, "Only one option found" );
+    cmp_ok( $checksum->id,   '==', 0xffff,     "First option ID parsed" );
+    cmp_ok( $checksum->size, '==', 0x0008,     "First option size parsed" );
+    cmp_ok( $checksum->data, '==', 0xc1030000, "First option data parsed" );
 }
 
 
