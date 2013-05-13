@@ -41,13 +41,25 @@ $sender->at_config(
 say "Sent init packet, waiting for status packet . . . ";
 my $buf = '';
 while(1) {
-    last if $socket->recv( \$buf, 1024 );
+    last if $socket->recv( $buf, 1024 );
     say "Nothing yet . . . ";
     sleep 1;
 }
-say "Got status packet: $buf";
+say "Got status packet: " . to_hex( $buf );
 
 say "Ready to receive data from $HOST:$PORT";
-while( my $in = $socket->read( \$buf, 4096 ) ) {
-    say "Got packet: $buf";
+while( my $in = $socket->recv( $buf, 4096 ) ) {
+    my $hex_str = to_hex( $buf );
+    say "Got packet: " . $hex_str;
+}
+
+
+sub to_hex
+{
+    my ($in) = @_;
+    return join( '',
+        map {
+            sprintf '%02x', $_;
+        } unpack( 'C*', $in )
+    );
 }
