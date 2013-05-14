@@ -79,7 +79,7 @@ has 'sequence_num' => (
 );
 has 'vision_flag' => (
     is  => 'ro',
-    isa => 'Bool',
+    isa => 'Int',
 );
 has 'checksum_id' => (
     is  => 'ro',
@@ -233,15 +233,54 @@ sub BUILDARGS
         got_header => $header,
     ) if $class->EXPECT_HEADER_MAGIC_NUM != $header;
 
-    $vision_flag = 1 if $vision_flag;
-
     my %new_args = (
         header       => $header,
-        state        => $state,
+        drone_state  => $state,
         sequence_num => $seq,
         vision_flag  => $vision_flag,
+        %{ $class->_parse_state( $state ) },
     );
     return \%new_args;
+}
+
+
+sub _parse_state
+{
+    my ($class, $state) = @_;
+    return {
+        state_flying                       => ($state & 1),
+        state_video_enabled                => (($state >> 1)  & 1),
+        state_vision_enabled               => (($state >> 2)  & 1),
+        state_control_algorithm            => (($state >> 3)  & 1),
+        state_altitude_control_active      => (($state >> 4)  & 1),
+        state_user_feedback_on             => (($state >> 5)  & 1),
+        state_control_recieved             => (($state >> 6)  & 1),
+        state_trim_received                => (($state >> 7)  & 1),
+        state_trim_running                 => (($state >> 8)  & 1),
+        state_trim_succeeded               => (($state >> 9)  & 1),
+        state_nav_data_demo_only           => (($state >> 10) & 1),
+        state_nav_data_bootstrap           => (($state >> 11) & 1),
+        state_motors_down                  => (($state >> 12) & 1),
+        # 13 unknown (reserved for future use?)
+        state_gyrometers_down              => (($state >> 14) & 1),
+        state_battery_too_low              => (($state >> 15) & 1),
+        state_battery_too_high             => (($state >> 16) & 1),
+        state_timer_elapsed                => (($state >> 17) & 1),
+        state_not_enough_power             => (($state >> 18) & 1),
+        state_angles_out_of_range          => (($state >> 19) & 1),
+        state_too_much_wind                => (($state >> 20) & 1),
+        state_ultrasonic_sensor_deaf       => (($state >> 21) & 1),
+        state_cutout_system_detected       => (($state >> 22) & 1),
+        state_pic_version_ok               => (($state >> 23) & 1),
+        state_at_coded_thread_on           => (($state >> 24) & 1),
+        state_nav_data_thread_on           => (($state >> 25) & 1),
+        state_video_thread_on              => (($state >> 26) & 1),
+        state_acquisition_thread_on        => (($state >> 27) & 1),
+        state_control_watchdog_delayed     => (($state >> 28) & 1),
+        state_adc_watchdog_delayed         => (($state >> 29) & 1),
+        state_communcation_problem_occured => (($state >> 30) & 1),
+        state_emergency                    => (($state >> 31) & 1),
+    };
 }
 
 

@@ -1,4 +1,4 @@
-use Test::More tests => 44;
+use Test::More tests => 45;
 use v5.14;
 use warnings;
 
@@ -39,7 +39,7 @@ isa_ok( $packet => 'UAV::Pilot::Sender::ARDrone::NavPacket' );
 
 # Header tests
 cmp_ok( $packet->header,          '==', 0x55667788, "Header (magic number) parsed" );
-#cmp_ok( $packet->drone_state,     '==', 0x0f8004d0, "Drone state parsed" );
+cmp_ok( $packet->drone_state,     '==', 0x0f8004d0, "Drone state parsed" );
 cmp_ok( $packet->sequence_num,    '==', 0x00006f33, "Sequence number parsed" );
 cmp_ok( $packet->vision_flag,     '==', 0x00000001, "Vision flag parsed" );
 cmp_ok( $packet->checksum_id,     '==', 0x0003,     "Checksum ID" );
