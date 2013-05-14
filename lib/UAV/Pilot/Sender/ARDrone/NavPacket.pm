@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 use UAV::Pilot::Sender::ARDrone::NavPacket::Option;
+use UAV::Pilot::Exceptions;
 
 use constant { # Values used as Option IDs
     NAVDATA_DEMO           => 0,
@@ -62,6 +63,7 @@ use constant { # Bits for the drone state field
     NAVDATA_STATE_COMMUNICATION_PROBLEM_OCURRED => 30,
     NAVDATA_STATE_EMERGENCY                     => 31,
 };
+use constant EXPECT_HEADER_MAGIC_NUM => 0x55667788;
 
 has 'header' => (
     is  => 'ro',
@@ -77,7 +79,7 @@ has 'sequence_num' => (
 );
 has 'vision_flag' => (
     is  => 'ro',
-    isa => 'Int',
+    isa => 'Bool',
 );
 has 'checksum_id' => (
     is  => 'ro',
@@ -94,6 +96,153 @@ has 'options' => (
         [UAV::Pilot::Sender::ARDrone::NavPacket::Option->new],
     },
 );
+has 'state_flying' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_video_enabled' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_vision_enabled' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_control_algorithm' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_altitude_control_active' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_user_feedback_on' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_control_received' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_trim_received' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_trim_running' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_trim_succeeded' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_nav_data_demo_only' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_nav_data_bootstrap' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_motors_down' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_gyrometers_down' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_battery_too_low' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_battery_too_high' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_timer_elapsed' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_not_enough_power' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_angles_out_of_range' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_too_much_wind' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_ultrasonic_sensor_deaf' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_cutout_system_detected' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_pic_version_ok' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_at_coded_thread_on' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_nav_data_thread_on' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_video_thread_on' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_acquisition_thread_on' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_control_watchdog_delayed' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_adc_watchdog_delayed' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_communication_problem_occured' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+has 'state_emergency' => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
+
+sub BUILDARGS
+{
+    my ($class, $args) = @_;
+    my $packet = $args->{packet};
+
+    my ($header, $state, $seq, $vision_flag) = unpack 'VVVV', $packet;
+    UAV::Pilot::NavPacketException::BadHeader->throw(
+        error      => "Header '$header' did not match " . $class->EXPECT_HEADER_MAGIC_NUM,
+        got_header => $header,
+    ) if $class->EXPECT_HEADER_MAGIC_NUM != $header;
+
+    $vision_flag = 1 if $vision_flag;
+
+    my %new_args = (
+        header       => $header,
+        state        => $state,
+        sequence_num => $seq,
+        vision_flag  => $vision_flag,
+    );
+    return \%new_args;
+}
 
 
 no Moose;

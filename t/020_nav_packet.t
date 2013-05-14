@@ -1,4 +1,4 @@
-use Test::More tests => 43;
+use Test::More tests => 44;
 use v5.14;
 use warnings;
 
@@ -12,14 +12,18 @@ eval {
 };
 if( $@ && $@->isa( 'UAV::Pilot::NavPacketException::BadHeader' ) ) {
     pass( 'Caught Bad Header exception' );
+    diag( "Exception message: " . $@->error );
+    cmp_ok( $@->got_header, '==', 0x88776655, "BadHeader exception has got_header value" );
 }
 else {
     fail( 'Did not catch Bad Header exception' );
+    fail( 'Fail matching magic number, too [placeholder failure for test count]' );
 }
 
 
 my $packet_data = make_packet( join('',
-    '89776655',   # Header
+    # These are in little-endian order
+    '88776655',   # Header
     'd004800f',   # Drone state
     '336f0000',   # Sequence number
     '01000000',   # Vision flag
