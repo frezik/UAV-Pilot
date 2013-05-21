@@ -228,10 +228,10 @@ sub BUILDARGS
     my $packet = $args->{packet};
 
     my @packet_bytes = unpack "C*", $packet;
-    my $header      = $class->_convert_endian( @packet_bytes[0..3]  );
-    my $state       = $class->_convert_endian( @packet_bytes[4..7]  );
-    my $seq         = $class->_convert_endian( @packet_bytes[8..11]  );
-    my $vision_flag = $class->_convert_endian( @packet_bytes[12..15] );
+    my $header      = $class->_convert_endian_32bit( @packet_bytes[0..3]  );
+    my $state       = $class->_convert_endian_32bit( @packet_bytes[4..7]  );
+    my $seq         = $class->_convert_endian_32bit( @packet_bytes[8..11]  );
+    my $vision_flag = $class->_convert_endian_32bit( @packet_bytes[12..15] );
     UAV::Pilot::NavPacketException::BadHeader->throw(
         error      => "Header '$header' did not match " . $class->EXPECT_HEADER_MAGIC_NUM,
         got_header => $header,
@@ -287,7 +287,7 @@ sub _parse_state
     };
 }
 
-sub _convert_endian
+sub _convert_endian_32bit
 {
     my ($class, @bytes) = @_;
     my $val = $bytes[0]
