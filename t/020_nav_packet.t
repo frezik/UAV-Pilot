@@ -101,5 +101,5 @@ cmp_ok( $checksum->data, '==', 0x000030c1, "First option data parsed" );
 sub make_packet
 {
     my ($hex_str) = @_;
-    pack 'h*', $hex_str;
+    pack 'H*', $hex_str;
 }
