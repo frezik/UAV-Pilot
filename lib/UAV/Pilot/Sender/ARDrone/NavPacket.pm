@@ -81,14 +81,6 @@ has 'vision_flag' => (
     is  => 'ro',
     isa => 'Int',
 );
-has 'checksum_id' => (
-    is  => 'ro',
-    isa => 'Int',
-);
-has 'checksum_length' => (
-    is  => 'ro',
-    isa => 'Int',
-);
 has 'options' => (
     is  => 'ro',
     isa => 'ArrayRef[UAV::Pilot::Sender::ARDrone::NavPacket::Option]',
@@ -237,11 +229,15 @@ sub BUILDARGS
         got_header => $header,
     ) if $class->EXPECT_HEADER_MAGIC_NUM != $header;
 
+    my @option_bytes = @packet_bytes[16..$#packet_bytes];
+    my @options = $class->_parse_options( @option_bytes );
+
     my %new_args = (
         header       => $header,
         drone_state  => $state,
         sequence_num => $seq,
         vision_flag  => $vision_flag,
+        options      => \@options,
         %{ $class->_parse_state( $state ) },
     );
     return \%new_args;
@@ -287,6 +283,33 @@ sub _parse_state
     };
 }
 
+sub _parse_options
+{
+    my ($class, @bytes) = @_;
+    my @options = ();
+
+    while( @bytes ) {
+        my $id = $class->_convert_endian_16bit( shift(@bytes), shift(@bytes) );
+        my $size = $class->_convert_endian_16bit( shift(@bytes), shift(@bytes) );
+
+        my @data = reverse splice @bytes, 0, $size;
+        my $data = 0;
+        foreach (@data) {
+            $data <<= 8;
+            $data |= $_;
+        }
+
+        my $opt = UAV::Pilot::Sender::ARDrone::NavPacket::Option->new({
+            id   => $id,
+            size => $size,
+            data => $data,
+        });
+        push @options => $opt;
+    }
+
+    return @options;
+}
+
 sub _convert_endian_32bit
 {
     my ($class, @bytes) = @_;
@@ -294,6 +317,13 @@ sub _convert_endian_32bit
         | ($bytes[1] << 8)
         | ($bytes[2] << 16)
         | ($bytes[3] << 24);
+    return $val;
+}
+
+sub _convert_endian_16bit
+{
+    my ($class, @bytes) = @_;
+    my $val = $bytes[0] | ($bytes[1] << 8);
     return $val;
 }
 

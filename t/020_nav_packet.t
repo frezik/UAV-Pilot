@@ -1,4 +1,4 @@
-use Test::More tests => 45;
+use Test::More tests => 43;
 use v5.14;
 use warnings;
 
@@ -42,8 +42,6 @@ cmp_ok( $packet->header,          '==', 0x55667788, "Header (magic number) parse
 cmp_ok( $packet->drone_state,     '==', 0x0f8004d0, "Drone state parsed" );
 cmp_ok( $packet->sequence_num,    '==', 0x00006f33, "Sequence number parsed" );
 cmp_ok( $packet->vision_flag,     '==', 0x00000001, "Vision flag parsed" );
-cmp_ok( $packet->checksum_id,     '==', 0x0003,     "Checksum ID" );
-cmp_ok( $packet->checksum_length, '==', 0x00,       "Checksum length" );
 
 # Drone state tests.  Numbers before each test are a binary conversion of 0x0f8004d0,
 # converted to big endian
@@ -95,7 +93,7 @@ isa_ok( $checksum => 'UAV::Pilot::Sender::ARDrone::NavPacket::Option' );
 cmp_ok( scalar(@options), '==', 0, "Only one option found" );
 cmp_ok( $checksum->id,   '==', 0xffff,     "First option ID parsed" );
 cmp_ok( $checksum->size, '==', 0x0008,     "First option size parsed" );
-cmp_ok( $checksum->data, '==', 0x000030c1, "First option data parsed" );
+cmp_ok( $checksum->data, '==', 0x000003c1, "First option data parsed" );
 
 
 sub make_packet
