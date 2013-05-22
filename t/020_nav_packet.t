@@ -6,13 +6,14 @@ use UAV::Pilot::Sender::ARDrone::NavPacket;
 
 my $bad_header = make_packet( '55667788' );
 eval {
+    local $SIG{__WARN__} = sub {}; # Temporarily suppress warnings
     UAV::Pilot::Sender::ARDrone::NavPacket->new({
         packet => $bad_header
     });
 };
 if( $@ && $@->isa( 'UAV::Pilot::NavPacketException::BadHeader' ) ) {
     pass( 'Caught Bad Header exception' );
-    diag( "Exception message: " . $@->error );
+    #diag( "Exception message: " . $@->error );
     cmp_ok( $@->got_header, '==', 0x88776655, "BadHeader exception has got_header value" );
 }
 else {
