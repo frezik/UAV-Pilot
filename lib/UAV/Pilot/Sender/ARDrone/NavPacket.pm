@@ -254,7 +254,7 @@ sub _parse_state
         state_control_algorithm            => (($state >> 28) & 1),
         state_altitude_control_active      => (($state >> 27) & 1),
         state_user_feedback_on             => (($state >> 26) & 1),
-        state_control_recieved             => (($state >> 25) & 1),
+        state_control_received             => (($state >> 25) & 1),
         state_trim_received                => (($state >> 24) & 1),
         state_trim_running                 => (($state >> 23) & 1),
         state_trim_succeeded               => (($state >> 22) & 1),
