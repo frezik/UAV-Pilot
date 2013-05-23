@@ -15,7 +15,6 @@ lib/UAV/Pilot/Sender.pm
 lib/UAV/Pilot/Sender/ARDrone.pm
 lib/UAV/Pilot/Sender/ARDrone/Mock.pm
 lib/UAV/Pilot/Sender/ARDrone/NavPacket.pm
-lib/UAV/Pilot/Sender/ARDrone/NavPacket/Option.pm
 LICENSE
 MANIFEST			This list of files
 README

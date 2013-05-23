@@ -3,7 +3,6 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
-use UAV::Pilot::Sender::ARDrone::NavPacket::Option;
 use UAV::Pilot::Exceptions;
 
 use constant { # Values used as Option IDs
@@ -80,13 +79,6 @@ has 'sequence_num' => (
 has 'vision_flag' => (
     is  => 'ro',
     isa => 'Int',
-);
-has 'options' => (
-    is  => 'ro',
-    isa => 'ArrayRef[UAV::Pilot::Sender::ARDrone::NavPacket::Option]',
-    default => sub {
-        [UAV::Pilot::Sender::ARDrone::NavPacket::Option->new],
-    },
 );
 has 'state_flying' => (
     is  => 'ro',
@@ -212,6 +204,54 @@ has 'state_emergency' => (
     is  => 'ro',
     isa => 'Bool',
 );
+has 'checksum' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'control_state' => (
+    is  => 'ro',
+    isa => 'Maybe[Int]',
+);
+has 'battery_voltage_percentage' => (
+    is  => 'ro',
+    isa => 'Maybe[Int]',
+);
+has 'pitch' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'roll' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'yaw' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'altitude' => (
+    is  => 'ro',
+    isa => 'Maybe[Int]',
+);
+has 'velocity_x' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'velocity_y' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'velocity_z' => (
+    is  => 'ro',
+    isa => 'Maybe[Num]',
+);
+has 'video_frame_index' => (
+    is  => 'ro',
+    isa => 'Maybe[Int]',
+);
+has 'camera_detection_type' => (
+    is  => 'ro',
+    isa => 'Int',
+);
 
 
 sub BUILDARGS
@@ -230,15 +270,14 @@ sub BUILDARGS
     ) if $class->EXPECT_HEADER_MAGIC_NUM != $header;
 
     my @option_bytes = @packet_bytes[16..$#packet_bytes];
-    my @options = $class->_parse_options( @option_bytes );
 
     my %new_args = (
         header       => $header,
         drone_state  => $state,
         sequence_num => $seq,
         vision_flag  => $vision_flag,
-        options      => \@options,
         %{ $class->_parse_state( $state ) },
+        %{ $class->_parse_options( @option_bytes ) },
     );
     return \%new_args;
 }
@@ -286,28 +325,77 @@ sub _parse_state
 sub _parse_options
 {
     my ($class, @bytes) = @_;
-    my @options = ();
+    my %args;
 
     while( @bytes ) {
         my $id = $class->_convert_endian_16bit( shift(@bytes), shift(@bytes) );
         my $size = $class->_convert_endian_16bit( shift(@bytes), shift(@bytes) );
 
-        my @data = reverse splice @bytes, 0, $size;
-        my $data = 0;
-        foreach (@data) {
-            $data <<= 8;
-            $data |= $_;
-        }
+        my @data = splice @bytes, 0, $size;
 
-        my $opt = UAV::Pilot::Sender::ARDrone::NavPacket::Option->new({
-            id   => $id,
-            size => $size,
-            data => $data,
-        });
-        push @options => $opt;
+        %args = (
+            %args,
+            %{ $class->_parse_option( $id, @data ) },
+        );
     }
 
-    return @options;
+    return \%args;
+}
+
+sub _parse_option
+{
+    my ($self, $id, @bytes) = @_;
+    my $ret = 
+        $self->NAVDATA_CKS  == $id ? $self->_parse_option_checksum( @bytes ) :
+        $self->NAVDATA_DEMO == $id ? $self->_parse_option_demo( @bytes )     :
+        {};
+    return $ret;
+}
+
+sub _parse_option_checksum
+{
+    my ($self, @data) = @_;
+    @data = reverse @data;
+
+    my $data = 0;
+    foreach (@data) {
+        $data <<= 8;
+        $data |= $_;
+    }
+
+    return { checksum => $data };
+}
+
+sub _parse_option_demo
+{
+    my ($self, @data) = @_;
+    return {} unless scalar(@data) >= 64;
+    my %args;
+
+    $args{control_state}              = $self->_convert_endian_32bit( @data[0..3]   );
+    $args{battery_voltage_percentage} = $self->_convert_endian_32bit( @data[4..7]   );
+    $args{pitch}                      = $self->_convert_endian_32bit( @data[8..11]  );
+    $args{roll}                       = $self->_convert_endian_32bit( @data[12..15] );
+    $args{yaw}                        = $self->_convert_endian_32bit( @data[16..19] );
+    $args{altitude}                   = $self->_convert_endian_32bit( @data[20..23] );
+    $args{velocity_x}                 = $self->_convert_endian_32bit( @data[24..27] );
+    $args{velocity_y}                 = $self->_convert_endian_32bit( @data[28..31] );
+    $args{velocity_z}                 = $self->_convert_endian_32bit( @data[32..35] );
+    $args{video_frame_index}          = $self->_convert_endian_32bit( @data[36..39] );
+    # Bytes 40 - 47 are for deprecated parameters
+    $args{camera_detection_type}      = $self->_convert_endian_32bit( @data[48..51] );
+    # Bytes 52 - 63 are for deprecated parameters
+
+    $args{$_} = $self->_to_float( $args{$_} ) for qw{
+        pitch
+        roll
+        yaw
+        velocity_x
+        velocity_y
+        velocity_z
+    };
+
+    return \%args;
 }
 
 sub _convert_endian_32bit
@@ -325,6 +413,12 @@ sub _convert_endian_16bit
     my ($class, @bytes) = @_;
     my $val = $bytes[0] | ($bytes[1] << 8);
     return $val;
+}
+
+sub _to_float
+{
+    my ($self, $val) = @_;
+    return unpack( "f", pack( "l", $val ) );
 }
 
 

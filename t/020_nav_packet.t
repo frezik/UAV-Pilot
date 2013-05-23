@@ -1,4 +1,4 @@
-use Test::More tests => 43;
+use Test::More tests => 41;
 use v5.14;
 use warnings;
 
@@ -89,12 +89,73 @@ ok(!$packet->state_emergency,                     "Emergency state" );
 
 
 # Options test
-my ($checksum, @options) = @{ $packet->options };
-isa_ok( $checksum => 'UAV::Pilot::Sender::ARDrone::NavPacket::Option' );
-cmp_ok( scalar(@options), '==', 0, "Only one option found" );
-cmp_ok( $checksum->id,   '==', 0xffff,     "First option ID parsed" );
-cmp_ok( $checksum->size, '==', 0x0008,     "First option size parsed" );
-cmp_ok( $checksum->data, '==', 0x000003c1, "First option data parsed" );
+cmp_ok( $packet->checksum, '==', 0x000003c1, "Checksum parsed" );
+
+
+# Parsing Demo option
+my $demo_packet_data = make_packet( join('',
+    '88776655', # Header
+    'd004800f', # Drone state
+    '346f0000', # Sequence number
+    '01000000', # Vision flag
+    # Options
+    '0000', # Demo ID
+    '9400', # Demo Size (148 bytes)
+    '00000200', # Control State (landed, flying, hovering, etc.)
+    '59000000', # Battery Voltage Filtered (mV? Percentage?)
+    'cdcc4cbf', # Pitch (-0.8)
+    '00209ec4', # Roll
+    '00941a47', # Yaw
+    '00000000', # Altitude (cm)
+    '00000000', # Estimated linear velocity (x)
+    '00000000', # Estimated linear velocity (y)
+    '00000000', # Estimated linear velocity (z)
+    '00000000', # Streamed Frame Index
+    '000000000000000000000000', # Deprecated camera detection params
+    '00000000', # Camera Detection, Type of Tag
+    '0000000000000000', # Deprecated camera detection params
+    # Demo tag is 64 bytes up to here.  The C code for navdata_demo_t struct is done, but 
+    # we still have 84 bytes to go . . .
+    '0000000000000000',
+    '0000000000000000',
+    '0000000000000000',
+    '0000000003000000',
+    '0e4f453fe9fb22bf',
+    'e7ffcdbcd111233f',
+    '3455453f70f5003c',
+    'c67a6b3c9feab4bc',
+    '3ee97f3f00000000',
+    '0000000000000000',
+    '10004801',
+    # 148 bytes, end of demo option
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000', '0000',
+    '0000', '0000',
+    # I guess it really likes sending zeros
+    'ffff',     # Checksum ID
+    '0800',     # Checksum Length
+    '201b0000', # Checksum Data
+) );
+my $demo_packet = UAV::Pilot::Sender::ARDrone::NavPacket->new({
+    packet => $demo_packet_data
+});
+cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt parsed" );
+cmp_ok( $demo_packet->pitch, '==', -0.800000011920929, "Pitch parsed" );
+
 
 
 sub make_packet
