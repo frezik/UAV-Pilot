@@ -16,7 +16,7 @@ does_ok( $dev => 'UAV::Pilot::Control' );
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
 
-my $seq = 1;
+my $seq = 2;
 my @TESTS = (
     {
         method => 'takeoff',

@@ -25,6 +25,7 @@ has '_saved_commands' => (
 sub connect
 {
     my ($self) = @_;
+    $self->_init_nav_data;
     $self->_init_drone;
     return 1;
 }
@@ -35,6 +36,17 @@ sub _send_cmd
     my ($self, $cmd) = @_;
     $self->_set_last_cmd( $cmd );
     $self->_add_saved_command( $cmd );
+    return 1;
+}
+
+sub _init_nav_data
+{
+    my ($self) = @_;
+
+    $self->at_config(
+        $self->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
+        $self->TRUE,
+    );
     return 1;
 }
 

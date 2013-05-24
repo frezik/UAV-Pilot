@@ -230,6 +230,7 @@ sub connect
     );
     $self->_socket( $socket );
 
+    $self->_init_nav_data;
     $self->_init_drone;
     return 1;
 }
@@ -458,6 +459,17 @@ sub _init_drone
     $self->at_ftrim;
     return 1;
 }
+
+sub _init_nav_data
+{
+    my ($self) = @_;
+    $self->at_config(
+        $self->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
+        $self->TRUE,
+    );
+    return 1;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

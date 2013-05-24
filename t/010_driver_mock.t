@@ -19,12 +19,15 @@ cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 ok( $ardrone_mock->connect, "Connect to ARDrone" );
 
 
-my $seq = 1;
+my $seq = 2;
 my @saved_cmds = $ardrone_mock->saved_commands;
 is_deeply(
     \@saved_cmds,
-    [ "AT*FTRIM=$seq,\r" ],
-    "Connect to drone and set Flat Trim",
+    [
+        qq{AT*CONFIG=1,"general:navdata_demo","TRUE"\r},
+        "AT*FTRIM=2,\r",
+    ],
+    "Connect to drone and set Flat Trim, navdata demo config",
 );
 
 
@@ -125,7 +128,7 @@ $ardrone_mock->at_ref( 1, 0 );
 my @last_commands = $ardrone_mock->saved_commands;
 is_deeply( 
     \@last_commands,
-    [ "AT*REF=12,290718208\r", "AT*REF=13,290718208\r" ],
+    [ "AT*REF=13,290718208\r", "AT*REF=14,290718208\r" ],
     "Gathered previously saved commands",
 );
 cmp_ok( scalar($ardrone_mock->saved_commands), '==', 0, "No more saved commands" );

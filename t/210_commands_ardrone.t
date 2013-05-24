@@ -33,7 +33,7 @@ UAV::Pilot::Commands::run_cmd( 'takeoff;' );
 cmp_ok( scalar($ardrone->saved_commands), '==', 0,
     'run_cmd does nothing when called without $self' );
 
-my $seq = 1; # One command already sent by $ardrone->connect()
+my $seq = 2; # Commands already sent by $ardrone->connect()
 my @TESTS = (
     {
         cmd    => 'takeoff;',
