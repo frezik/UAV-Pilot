@@ -24,8 +24,8 @@ share/Mock.uav
 share/MockInit.uav
 scripts/float_convert.pl
 t/001_load.t
-t/010_sender_mock.t
+t/010_driver_mock.t
 t/020_nav_packet.t
-t/100_device_ardrone.t
+t/100_control_ardrone.t
 t/200_commands.t
 t/210_commands_ardrone.t
