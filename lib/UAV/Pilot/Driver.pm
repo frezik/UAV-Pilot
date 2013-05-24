@@ -1,4 +1,4 @@
-package UAV::Pilot::Sender;
+package UAV::Pilot::Driver;
 use v5.14;
 use Moose::Role;
 
@@ -9,10 +9,10 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Sender
+  UAV::Pilot::Driver
 
 =head1 DESCRIPTION
 
 This is a role for a low-level interface to a given UAV.  These are primarily for those 
 developing the C<UAV::Pilot> API against a new UAV.  Programmers seeking to use an existing 
-UAV should look at L<UAV::Pilot::Sender>.
+UAV should look at L<UAV::Pilot::Control>.

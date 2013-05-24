@@ -1,9 +1,9 @@
-package UAV::Pilot::Sender::ARDrone::Mock;
+package UAV::Pilot::Driver::ARDrone::Mock;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 
-extends 'UAV::Pilot::Sender::ARDrone';
+extends 'UAV::Pilot::Driver::ARDrone';
 
 
 has 'last_cmd' => (

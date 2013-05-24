@@ -1,11 +1,11 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
-use UAV::Pilot::Sender::ARDrone;
+use UAV::Pilot::Driver::ARDrone;
 
 my $HOST        = shift || '192.168.1.1';
-my $PORT        = shift || UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CTRL;
-my $SOCKET_TYPE = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_CTRL_TYPE;
+my $PORT        = shift || UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_CTRL;
+my $SOCKET_TYPE = UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_CTRL_TYPE;
 
 # This all should work, but doesn't.  Seems that the current AR drone is bugged.  See:
 #
@@ -19,7 +19,7 @@ my $in = IO::Socket::INET->new(
     LocalPort => $PORT,
     Port      => $PORT,
 ) or die "Could not open socket on port $PORT: $!\n";
-print $in "AT*CTRL=0," . UAV::Pilot::Sender::ARDrone->ARDRONE_CTRL_GET_CONFIG . ",0\r";
+print $in "AT*CTRL=0," . UAV::Pilot::Driver::ARDrone->ARDRONE_CTRL_GET_CONFIG . ",0\r";
 
 while( <$in> ) {
     print;

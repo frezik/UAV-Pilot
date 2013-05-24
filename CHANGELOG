@@ -1,3 +1,9 @@
+Version 0.2
+-----------
+* Device renamed to Control
+* Sender renamed to Driver
+* Fetch demo navigation data
+
 Version 0.1
 -----------
 * Piloting commands work

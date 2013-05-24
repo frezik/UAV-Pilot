@@ -2,12 +2,12 @@ use Test::More tests => 41;
 use v5.14;
 use warnings;
 
-use UAV::Pilot::Sender::ARDrone::NavPacket;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 my $bad_header = make_packet( '55667788' );
 eval {
     local $SIG{__WARN__} = sub {}; # Temporarily suppress warnings
-    UAV::Pilot::Sender::ARDrone::NavPacket->new({
+    UAV::Pilot::Driver::ARDrone::NavPacket->new({
         packet => $bad_header
     });
 };
@@ -33,10 +33,10 @@ my $packet_data = make_packet( join('',
     '0800',       # Checksum size
     'c1030000',   # Checksum data
 ) );
-my $packet = UAV::Pilot::Sender::ARDrone::NavPacket->new({
+my $packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
     packet => $packet_data
 });
-isa_ok( $packet => 'UAV::Pilot::Sender::ARDrone::NavPacket' );
+isa_ok( $packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
 
 # Header tests
 cmp_ok( $packet->header,          '==', 0x55667788, "Header (magic number) parsed" );
@@ -150,7 +150,7 @@ my $demo_packet_data = make_packet( join('',
     '0800',     # Checksum Length
     '201b0000', # Checksum Data
 ) );
-my $demo_packet = UAV::Pilot::Sender::ARDrone::NavPacket->new({
+my $demo_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
     packet => $demo_packet_data
 });
 cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt parsed" );

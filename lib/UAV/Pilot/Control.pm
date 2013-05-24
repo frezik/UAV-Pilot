@@ -1,10 +1,10 @@
-package UAV::Pilot::Device;
+package UAV::Pilot::Control;
 use v5.14;
 use Moose::Role;
 
 has 'sender' => (
     is   => 'ro',
-    does => 'UAV::Pilot::Sender',
+    does => 'UAV::Pilot::Driver',
 );
 
 
@@ -14,7 +14,7 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Device
+  UAV::Pilot::Control
 
 =head1 DESCRIPTION
 
@@ -25,6 +25,6 @@ module that does this role.
 
 =head2 sender
 
-Instantiated C<UAV::Pilot::Sender> object.
+Instantiated C<UAV::Pilot::Driver> object.
 
 =cut

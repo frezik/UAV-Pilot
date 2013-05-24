@@ -5,8 +5,8 @@ use warnings;
 
 use AnyEvent;
 use UAV::Pilot;
-use UAV::Pilot::Sender::ARDrone;
-use UAV::Pilot::Device::ARDrone;
+use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Control::ARDrone;
 
 # According to SDK docs, smooth flight needs commands sent every 30ms
 use constant INT => 1 / 30;
@@ -15,11 +15,11 @@ use constant IP  => '192.168.1.1';
 
 my $cv = AE::cv;
 
-my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+my $ardrone = UAV::Pilot::Driver::ARDrone->new({
     host => IP,
 });
 $ardrone->connect;
-my $ar = UAV::Pilot::Device::ARDrone->new({
+my $ar = UAV::Pilot::Control::ARDrone->new({
     sender => $ardrone,
 });
 

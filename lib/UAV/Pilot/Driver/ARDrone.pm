@@ -1,11 +1,11 @@
-package UAV::Pilot::Sender::ARDrone;
+package UAV::Pilot::Driver::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 use IO::Socket;
 use UAV::Pilot::Exceptions;
 
-with 'UAV::Pilot::Sender';
+with 'UAV::Pilot::Driver';
 
 use constant {
     TRUE  => 'TRUE',
@@ -467,11 +467,11 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Sender::ARDrone
+  UAV::Pilot::Driver::ARDrone
 
 =head1 SYNOPSIS
 
-    my $sender = UAV::Pilot::Sender::ARDrone->new({
+    my $sender = UAV::Pilot::Driver::ARDrone->new({
         host => '192.168.1.1',
     });
     $sender->connect;
@@ -483,7 +483,7 @@ __END__
 =head1 DESCRIPTION
 
 Low-level interface for controlling the Parrot AR.Drone.  If you want to write an external 
-program or library controlling this UAV, look at L<UAV::Pilot::Device::ARDrone> instead.
+program or library controlling this UAV, look at L<UAV::Pilot::Control::ARDrone> instead.
 
 =head1 ATTRIBUTES
 

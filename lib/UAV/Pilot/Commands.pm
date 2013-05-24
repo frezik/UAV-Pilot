@@ -8,7 +8,7 @@ use constant MOD_EXTENSION => '.uav';
 
 has 'device' => (
     is   => 'ro',
-    does => 'UAV::Pilot::Device',
+    does => 'UAV::Pilot::Control',
 );
 has 'lib_dirs' => (
     is      => 'ro',
@@ -117,7 +117,7 @@ __END__
 
 =head1 SYNOPSIS
 
-    my $device; # Some UAV::Pilot::Device instance, defined elsewhere
+    my $device; # Some UAV::Pilot::Control instance, defined elsewhere
     my $cmds = UAV::Pilot::Commands->new({
         device => $device,
     });
@@ -139,7 +139,7 @@ REPL shells.
         device => $device
     })
 
-Constructor.  Takes a L<UAV::Pilot::Device> instance.
+Constructor.  Takes a L<UAV::Pilot::Control> instance.
 
 =head2 load_lib
 
@@ -170,9 +170,9 @@ Executes a command.  Note that this will execute arbitrary Perl statements.
 =head1 COMMANDS
 
 Commands provide an easy interface for writing simple UAV programms in a REPL shell.  
-They are usually thin interfaces over a L<UAV::Pilot::Device>.  If you're writing a 
+They are usually thin interfaces over a L<UAV::Pilot::Control>.  If you're writing a 
 complicated script, it's suggested that you skip this interface and write to the 
-L<UAV::Pilot::Device> directly.
+L<UAV::Pilot::Control> directly.
 
 =head2 load
 

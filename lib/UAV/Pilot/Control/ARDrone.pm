@@ -1,9 +1,9 @@
-package UAV::Pilot::Device::ARDrone;
+package UAV::Pilot::Control::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 
-with 'UAV::Pilot::Device';
+with 'UAV::Pilot::Control';
 
 
 sub takeoff
@@ -57,7 +57,7 @@ sub emergency
 }
 
 {
-    my $send = 'UAV::Pilot::Sender::ARDrone';
+    my $send = 'UAV::Pilot::Driver::ARDrone';
     my @FLIGHT_ANIMS = (
         {
             name   => 'phi_m30',
@@ -177,7 +177,7 @@ sub emergency
 }
 
 {
-    my $send = 'UAV::Pilot::Sender::ARDrone';
+    my $send = 'UAV::Pilot::Driver::ARDrone';
 
     my @LED_ANIMS = (
         {
@@ -293,13 +293,13 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Device::ARDrone
+  UAV::Pilot::Control::ARDrone
 
 =head1 SYNOPSIS
 
-    my $sender = UAV::Pilot::Sender::ARDrone->new( ... );
+    my $sender = UAV::Pilot::Driver::ARDrone->new( ... );
     $sender->connect;
-    my $dev = UAV::Pilot::Device::ARDrone->new({
+    my $dev = UAV::Pilot::Control::ARDrone->new({
         sender => $sender,
     });
     
@@ -311,7 +311,7 @@ __END__
 
 =head1 DESCRIPTION
 
-L<UAV::Pilot::Device> implementation for the Parrot AR.Drone.
+L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
 

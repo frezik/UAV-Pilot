@@ -8,13 +8,13 @@ Build.PL
 CHANGELOG
 lib/UAV/Pilot.pm
 lib/UAV/Pilot/Commands.pm
-lib/UAV/Pilot/Device.pm
-lib/UAV/Pilot/Device/ARDrone.pm
+lib/UAV/Pilot/Control.pm
+lib/UAV/Pilot/Control/ARDrone.pm
 lib/UAV/Pilot/Exceptions.pm
-lib/UAV/Pilot/Sender.pm
-lib/UAV/Pilot/Sender/ARDrone.pm
-lib/UAV/Pilot/Sender/ARDrone/Mock.pm
-lib/UAV/Pilot/Sender/ARDrone/NavPacket.pm
+lib/UAV/Pilot/Driver.pm
+lib/UAV/Pilot/Driver/ARDrone.pm
+lib/UAV/Pilot/Driver/ARDrone/Mock.pm
+lib/UAV/Pilot/Driver/ARDrone/NavPacket.pm
 LICENSE
 MANIFEST			This list of files
 README

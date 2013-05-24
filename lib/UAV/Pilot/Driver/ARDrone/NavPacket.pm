@@ -1,4 +1,4 @@
-package UAV::Pilot::Sender::ARDrone::NavPacket;
+package UAV::Pilot::Driver::ARDrone::NavPacket;
 use v5.14;
 use Moose;
 use namespace::autoclean;

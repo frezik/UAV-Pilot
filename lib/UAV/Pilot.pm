@@ -27,15 +27,15 @@ __END__
 
 =head1 SYNOPSIS
 
-  use UAV::Pilot::Sender::ARDrone;
-  use UAV::Pilot::Device::ARDrone;
+  use UAV::Pilot::Driver::ARDrone;
+  use UAV::Pilot::Control::ARDrone;
   
-  my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+  my $ardrone = UAV::Pilot::Driver::ARDrone->new({
       host => '192.168.1.1',
   });
   $ardrone->connect;
   
-  my $dev = UAV::Pilot::Device::ARDrone->new({
+  my $dev = UAV::Pilot::Control::ARDrone->new({
       sender => $ardrone,
   });
   

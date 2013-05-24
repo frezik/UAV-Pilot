@@ -3,8 +3,8 @@ use v5.14;
 use Term::ReadLine::Perl5;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
-use UAV::Pilot::Sender::ARDrone;
-use UAV::Pilot::Device::ARDrone;
+use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Control::ARDrone;
 use Getopt::Long qw( :config no_ignore_case );
 
 my $IP               = '192.168.1.1';
@@ -77,13 +77,13 @@ sub load_libraries
     my $continue = 1;
     my $term = Term::ReadLine::Perl5->new( 'uav' );
 
-    my $ardrone = UAV::Pilot::Sender::ARDrone->new({
+    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
     });
     $ardrone->connect;
 
     my $repl = UAV::Pilot::Commands->new({
-        device => UAV::Pilot::Device::ARDrone->new({
+        device => UAV::Pilot::Control::ARDrone->new({
             sender => $ardrone,
         }),
     });

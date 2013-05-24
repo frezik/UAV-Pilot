@@ -1,18 +1,18 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
-use UAV::Pilot::Sender::ARDrone;
+use UAV::Pilot::Driver::ARDrone;
 use IO::Socket::Multicast;
 
 
 my $HOST           = shift || '192.168.1.1';
-my $MULTICAST_ADDR = UAV::Pilot::Sender::ARDrone->ARDRONE_MULTICAST_ADDR;
-my $PORT           = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_NAV_DATA;
-my $SOCKET_TYPE    = UAV::Pilot::Sender::ARDrone->ARDRONE_PORT_NAV_DATA_TYPE;
+my $MULTICAST_ADDR = UAV::Pilot::Driver::ARDrone->ARDRONE_MULTICAST_ADDR;
+my $PORT           = UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_NAV_DATA;
+my $SOCKET_TYPE    = UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_NAV_DATA_TYPE;
 my $IFACE          = 'wlan0';
 
 
-my $sender = UAV::Pilot::Sender::ARDrone->new({
+my $sender = UAV::Pilot::Driver::ARDrone->new({
     host => $HOST,
 });
 my $port = $sender->ARDRONE_PORT_NAV_DATA;

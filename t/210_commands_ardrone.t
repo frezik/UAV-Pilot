@@ -1,19 +1,19 @@
 use Test::More tests => 52;
 use v5.14;
 use UAV::Pilot;
-use UAV::Pilot::Sender::ARDrone::Mock;
-use UAV::Pilot::Device::ARDrone;
+use UAV::Pilot::Driver::ARDrone::Mock;
+use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::Commands;
 
 my $LIB_DIR = 'uav_mods';
 
 
-my $ardrone = UAV::Pilot::Sender::ARDrone::Mock->new({
+my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
 });
 $ardrone->connect;
 my $repl = UAV::Pilot::Commands->new({
-    device => UAV::Pilot::Device::ARDrone->new({
+    device => UAV::Pilot::Control::ARDrone->new({
         sender => $ardrone,
     }),
 });

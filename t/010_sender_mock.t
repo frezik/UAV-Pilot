@@ -2,18 +2,18 @@ use Test::More tests => 33;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
-use UAV::Pilot::Sender;
-use UAV::Pilot::Sender::ARDrone;
-use UAV::Pilot::Sender::ARDrone::Mock;
+use UAV::Pilot::Driver;
+use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Driver::ARDrone::Mock;
 use Test::Moose;
 
-my $ardrone_mock = UAV::Pilot::Sender::ARDrone::Mock->new({
+my $ardrone_mock = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
     port => 7776,
 });
 ok( $ardrone_mock, "Created object" );
-isa_ok( $ardrone_mock => 'UAV::Pilot::Sender::ARDrone::Mock' );
-does_ok( $ardrone_mock => 'UAV::Pilot::Sender' );
+isa_ok( $ardrone_mock => 'UAV::Pilot::Driver::ARDrone::Mock' );
+does_ok( $ardrone_mock => 'UAV::Pilot::Driver' );
 cmp_ok( $ardrone_mock->port, '==', 7776, "Port set" );
 
 ok( $ardrone_mock->connect, "Connect to ARDrone" );
@@ -114,7 +114,7 @@ if( $@ && $@->isa( 'UAV::Pilot::NumberOutOfRangeException' ) ) {
         "Sequence was not incrmented for Out of Range error" );
 }
 
-my $ardrone_port_check = UAV::Pilot::Sender::ARDrone::Mock->new({
+my $ardrone_port_check = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
 });
 cmp_ok( $ardrone_port_check->port, '==', 5556, "Correct default port" );
