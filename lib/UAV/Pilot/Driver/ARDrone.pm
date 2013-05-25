@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use IO::Socket;
+use IO::Socket::Multicast;
 use UAV::Pilot::Exceptions;
 
 with 'UAV::Pilot::Driver';
@@ -205,6 +206,11 @@ has 'host' => (
     is  => 'rw',
     isa => 'Str',
 );
+has 'iface' => (
+    is      => 'ro',
+    isa     => 'Str',
+    default => 'wlan0',
+);
 
 has 'seq' => (
     is      => 'ro',
@@ -217,7 +223,8 @@ has '_socket' => (
     is => 'rw',
 );
 has '_nav_socket' => (
-    is => 'rw',
+    is  => 'rw',
+    isa => 'IO::Socket',
 );
 has 'last_nav_packet' => (
     is     => 'ro',
@@ -475,10 +482,36 @@ sub _init_drone
 sub _init_nav_data
 {
     my ($self) = @_;
+    my $host = $self->host;
+    my $multicast_addr = $self->ARDRONE_MULTICAST_ADDR;
+    my $port           = $self->ARDRONE_PORT_NAV_DATA;
+    my $socket_type    = $self->ARDRONE_PORT_NAV_DATA_TYPE;
+    my $iface          = $self->iface;
+
+    # Init navigation data socket with the UAV
+    my $nav_sock = IO::Socket::Multicast->new(
+        Proto     => $socket_type,
+        PeerPort  => $port,
+        PeerAddr  => $host,
+        LocalAddr => $multicast_addr,
+        LocalPort => $port,
+        ReuseAddr => 1,
+    ) or die "Could not open socket: $!\n";
+    $nav_sock->mcast_add( $multicast_addr, $iface )
+        or die "Could not subscribe to '$multicast_addr': $!\n";
+    $nav_sock->send( 'foo' );
+
+    # Set UAV to demo nav data mode, which sends most of the data we care about
     $self->at_config(
         $self->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
         $self->TRUE,
     );
+
+    # Receive first status packet from UAV
+    my $buf = '';
+    my $in = $nav_sock->recv( $buf, 1024 );
+
+    $self->_nav_socket( $nav_sock );
     return 1;
 }
 
