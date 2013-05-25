@@ -2,6 +2,7 @@ package UAV::Pilot::Driver::ARDrone::Mock;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 extends 'UAV::Pilot::Driver::ARDrone';
 
@@ -39,6 +40,17 @@ sub _send_cmd
     return 1;
 }
 
+sub read_nav_packet
+{
+    my ($self, @packet) = @_;
+    my $packet = pack( 'H*', join('', @packet) );
+    my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+        packet => $packet,
+    });
+    $self->_set_last_nav_packet( $nav_packet );
+    return 1;
+}
+
 sub _init_nav_data
 {
     my ($self) = @_;
@@ -47,6 +59,7 @@ sub _init_nav_data
         $self->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
         $self->TRUE,
     );
+
     return 1;
 }
 

@@ -216,6 +216,14 @@ has 'seq' => (
 has '_socket' => (
     is => 'rw',
 );
+has '_nav_socket' => (
+    is => 'rw',
+);
+has 'last_nav_packet' => (
+    is     => 'ro',
+    isa    => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
+    writer => '_set_last_nav_packet',
+);
 
 
 sub connect
@@ -437,6 +445,10 @@ sub float_convert
     return $int;
 }
 
+sub read_nav_packet
+{
+}
+
 
 sub _send_cmd
 {
@@ -592,6 +604,14 @@ directly converted into an integer.  For example, 0.5 converts into 1056964608.
 The protocol requires floating point numbers to be transferred this way in some cases.  
 The API will take care of most of these cases for you, but there are some configuration 
 settings that you'll have to convert yourself (like LED animations).
+
+=head2 read_nav_packet
+
+Fetch and parse the latest nav packet off the nav socket.  Returns true if there was a new 
+nav packet to read, false otherwise.  You can get the last available nav packet by calling 
+C<last_nav_packet()>.
+
+This is a non-blocking IO operation.
 
 =head1 CONSTANTS
 

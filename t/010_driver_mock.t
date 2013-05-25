@@ -1,4 +1,4 @@
-use Test::More tests => 33;
+use Test::More tests => 36;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -147,3 +147,22 @@ cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V1, '==', 5555, "Video P264 v1" )
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V2, '==', 5555, "Video P264 v2" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V1_TYPE, 'eq', 'udp', "Video P264 v1 type" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_P264_V2_TYPE, 'eq', 'tcp', "Video P264 v2 type" );
+
+
+my $last_nav_packet = $ardrone_mock->last_nav_packet;
+ok(! $last_nav_packet, "No nav packet yet" );
+
+$ardrone_mock->read_nav_packet(
+    # These are in little-endian order
+    '88776655',   # Header
+    'd004800f',   # Drone state
+    '336f0000',   # Sequence number
+    '01000000',   # Vision flag
+    # No options on this packet besides checksum
+    'ffff',       # Checksum ID
+    '0800',       # Checksum size
+    'c1030000',   # Checksum data
+);
+$last_nav_packet = $ardrone_mock->last_nav_packet;
+isa_ok( $last_nav_packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
+cmp_ok( $last_nav_packet->header, '==', 0x55667788, "Header (magic number) parsed" );
