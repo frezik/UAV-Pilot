@@ -454,6 +454,23 @@ sub float_convert
 
 sub read_nav_packet
 {
+    my ($self) = @_;
+
+    my $ret = 1;
+    my $buf = '';
+    my $in = $self->_nav_socket->recv( $buf, 4096 );
+
+    if( $in ) {
+        my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+            packet => $buf,
+        });
+        $self->_set_last_nav_packet( $nav_packet );
+    }
+    else {
+        $ret = 0;
+    }
+
+    return $ret;
 }
 
 
@@ -510,6 +527,12 @@ sub _init_nav_data
     # Receive first status packet from UAV
     my $buf = '';
     my $in = $nav_sock->recv( $buf, 1024 );
+
+    if(! defined $nav_sock->blocking( 0 ) ) {
+        UAV::Pilot::IOException->throw({
+            error => "Could not set nav socket to non-blocking IO: $!",
+        });
+    }
 
     $self->_nav_socket( $nav_sock );
     return 1;

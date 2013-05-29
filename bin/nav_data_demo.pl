@@ -2,6 +2,7 @@
 use v5.14;
 use warnings;
 use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 use IO::Socket::Multicast;
 
 
@@ -12,54 +13,19 @@ my $SOCKET_TYPE    = UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_NAV_DATA_TYPE;
 my $IFACE          = 'wlan0';
 
 
+say "Connectting to $HOST . . . ";
 my $sender = UAV::Pilot::Driver::ARDrone->new({
     host => $HOST,
 });
-my $port = $sender->ARDRONE_PORT_NAV_DATA;
-say "Opening $SOCKET_TYPE socket on $HOST:$PORT, local port $PORT . . . ";
-my $socket = IO::Socket::Multicast->new(
-    Proto     => $SOCKET_TYPE,
-    PeerPort  => $PORT,
-    PeerAddr  => $HOST,
-    LocalAddr => $MULTICAST_ADDR,
-    LocalPort => $PORT,
-    ReuseAddr => 1,
-) or die "Could not open socket: $!\n";
-
-say "Adding self to multicast address $MULTICAST_ADDR . . . ";
-$socket->mcast_add( $MULTICAST_ADDR, $IFACE )
-    or die "Could not subscribe to '$MULTICAST_ADDR' multicast: $!\n";
-
 $sender->connect;
 
-$socket->send( "foo" );
-$sender->at_config(
-    $sender->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
-    $sender->TRUE,
-);
+say "Ready to receive data from $HOST";
+my $continue = 1;
+while( $continue ) {
+    if( $sender->read_nav_packet ) {
+        my $last_nav_packet = $sender->last_nav_packet;
+        say "Got nav packet: " . $last_nav_packet->to_string;
+    }
 
-say "Sent init packet, waiting for status packet . . . ";
-my $buf = '';
-while(1) {
-    last if $socket->recv( $buf, 1024 );
-    say "Nothing yet . . . ";
     sleep 1;
-}
-say "Got status packet: " . to_hex( $buf );
-
-say "Ready to receive data from $HOST:$PORT";
-while( my $in = $socket->recv( $buf, 4096 ) ) {
-    my $hex_str = to_hex( $buf );
-    say "Got packet: " . $hex_str;
-}
-
-
-sub to_hex
-{
-    my ($in) = @_;
-    return join( '',
-        map {
-            sprintf '%02x', $_;
-        } unpack( 'C*', $in )
-    );
 }

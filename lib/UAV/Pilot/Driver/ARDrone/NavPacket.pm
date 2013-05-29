@@ -283,6 +283,21 @@ sub BUILDARGS
 }
 
 
+sub to_string
+{
+    my ($self) = @_;
+    my @strs = ();
+
+    push @strs => "Battery: "  . $self->battery_voltage_percentage . '%';
+    push @strs => "Pitch: "    . $self->pitch;
+    push @strs => "Roll: "     . $self->roll;
+    push @strs => "Yaw: "      . $self->yaw;
+    push @strs => "Altitude: " . $self->altitude;
+
+    return join ', ', @strs;
+}
+
+
 sub _parse_state
 {
     my ($class, $state) = @_;
