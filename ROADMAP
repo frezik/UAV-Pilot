@@ -1,6 +1,5 @@
 Version 0.2
 -----------
-* Navigation data fetched (bin/nav_data_demo.pl)
 * SDL output of nav data
 * USERBOX:userbox_cmd config constants
 
