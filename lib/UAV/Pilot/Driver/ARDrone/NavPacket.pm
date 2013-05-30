@@ -297,6 +297,14 @@ sub to_string
     return join ', ', @strs;
 }
 
+sub render_SDL
+{
+    my ($self, $sdl) = @_;
+    $sdl->clear_screen;
+    # TODO
+    return 1;
+}
+
 
 sub _parse_state
 {

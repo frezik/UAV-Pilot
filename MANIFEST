@@ -10,6 +10,7 @@ lib/UAV/Pilot.pm
 lib/UAV/Pilot/Commands.pm
 lib/UAV/Pilot/Control.pm
 lib/UAV/Pilot/Control/ARDrone.pm
+lib/UAV/Pilot/Control/ARDrone/SDLNavOutput.pm
 lib/UAV/Pilot/Exceptions.pm
 lib/UAV/Pilot/Driver.pm
 lib/UAV/Pilot/Driver/ARDrone.pm

@@ -20,6 +20,9 @@ my $build = Module::Build->new(
         'Test::More'            => 0,
         'Throwable'             => 0,
     },
+    recommends => {
+        'SDL' => '>= 2.5',
+    },
     share_dir => 'share',
 );
 
