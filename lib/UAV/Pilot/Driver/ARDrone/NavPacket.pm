@@ -300,7 +300,15 @@ sub to_string
 sub render_SDL
 {
     my ($self, $sdl) = @_;
-    $sdl->clear_screen;
+
+    $sdl->draw_new_frame( sub {
+        $sdl->write_label( 'ROLL',     50,  150  );
+        $sdl->write_label( 'PITCH',    150, 150 );
+        $sdl->write_label( 'YAW',      250, 150 );
+        $sdl->write_label( 'ALTITUDE', 350, 150 );
+        $sdl->write_label( 'BATTERY',  450, 150 );
+    });
+
     # TODO
     return 1;
 }
