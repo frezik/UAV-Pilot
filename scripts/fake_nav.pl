@@ -67,7 +67,7 @@ my $nav = UAV::Pilot::Driver::ARDrone::NavPacket->new({
 });
 
 my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
-$nav->render_SDL( $sdl );
+$sdl->render( $nav );
 
 sleep 10;
 

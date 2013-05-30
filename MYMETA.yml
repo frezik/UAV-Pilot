@@ -1,0 +1,67 @@
+---
+abstract: 'Control UAVs'
+author:
+  - 'Timm Murray <tmurray@wumpus-cave.net>'
+build_requires: {}
+dynamic_config: 0
+generated_by: 'Module::Build version 0.4003, CPAN::Meta::Converter version 2.120630'
+license: bsd
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: UAV-Pilot
+provides:
+  UAV::Pilot:
+    file: lib/UAV/Pilot.pm
+    version: 0
+  UAV::Pilot::Commands:
+    file: lib/UAV/Pilot/Commands.pm
+    version: 0
+  UAV::Pilot::Control:
+    file: lib/UAV/Pilot/Control.pm
+    version: 0
+  UAV::Pilot::Control::ARDrone:
+    file: lib/UAV/Pilot/Control/ARDrone.pm
+    version: 0
+  UAV::Pilot::Control::ARDrone::SDLNavOutput:
+    file: lib/UAV/Pilot/Control/ARDrone/SDLNavOutput.pm
+    version: 0
+  UAV::Pilot::Driver:
+    file: lib/UAV/Pilot/Driver.pm
+    version: 0
+  UAV::Pilot::Driver::ARDrone:
+    file: lib/UAV/Pilot/Driver/ARDrone.pm
+    version: 0
+  UAV::Pilot::Driver::ARDrone::Mock:
+    file: lib/UAV/Pilot/Driver/ARDrone/Mock.pm
+    version: 0
+  UAV::Pilot::Driver::ARDrone::NavPacket:
+    file: lib/UAV/Pilot/Driver/ARDrone/NavPacket.pm
+    version: 0
+  UAV::Pilot::Exception:
+    file: lib/UAV/Pilot/Exceptions.pm
+    version: 0
+  UAV::Pilot::IOException:
+    file: lib/UAV/Pilot/Exceptions.pm
+    version: 0
+  UAV::Pilot::NavPacketException::BadHeader:
+    file: lib/UAV/Pilot/Exceptions.pm
+    version: 0
+  UAV::Pilot::NumberOutOfRangeException:
+    file: lib/UAV/Pilot/Exceptions.pm
+    version: 0
+recommends:
+  SDL: 2.5
+requires:
+  File::ShareDir: 1.00
+  File::Spec: 0
+  IO::Socket::Multicast: 0
+  Moose: 0
+  MooseX::Event: 0
+  Term::ReadLine::Perl5: 0
+  Test::More: 0
+  Throwable: 0
+  perl: v5.12.0
+resources:
+  license: http://opensource.org/licenses/bsd-license.php
+version: 0.1

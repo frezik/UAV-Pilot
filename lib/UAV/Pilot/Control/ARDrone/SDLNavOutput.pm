@@ -74,12 +74,25 @@ sub BUILDARGS
 }
 
 
+sub render
+{
+    my ($self, $nav) = @_;
+    $self->_clear_screen;
+
+    $self->_write_label( 'ROLL',     50,  150  );
+    $self->_write_label( 'PITCH',    150, 150 );
+    $self->_write_label( 'YAW',      250, 150 );
+    $self->_write_label( 'ALTITUDE', 350, 150 );
+    $self->_write_label( 'BATTERY',  450, 150 );
+
+    SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
+    return 1;
+}
 sub draw_new_frame
 {
     my ($self, $callback) = @_;
     $self->_clear_screen;
     $callback->($self);
-    SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
     return 1;
 }
 
@@ -95,7 +108,7 @@ sub _clear_screen
     return 1;
 }
 
-sub write_label
+sub _write_label
 {
     my ($self, $text, $x, $y) = @_;
     my $label = $self->_label;
