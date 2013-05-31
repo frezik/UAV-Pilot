@@ -25,6 +25,7 @@ ROADMAP
 share/ARDrone.uav
 share/Mock.uav
 share/MockInit.uav
+scripts/fake_nav.pl
 scripts/float_convert.pl
 t/001_load.t
 t/010_driver_mock.t

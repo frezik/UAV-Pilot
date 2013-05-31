@@ -87,13 +87,6 @@ sub render
     SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
     return 1;
 }
-sub draw_new_frame
-{
-    my ($self, $callback) = @_;
-    $self->_clear_screen;
-    $callback->($self);
-    return 1;
-}
 
 
 sub _clear_screen
