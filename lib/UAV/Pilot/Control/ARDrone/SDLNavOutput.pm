@@ -15,7 +15,7 @@ use constant {
     SDL_HEIGHT => 200,
     SDL_DEPTH  => 24,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
-    BG_COLOR   => [ 255, 255, 255 ],
+    BG_COLOR   => [ 0,   0,   0   ],
     TEXT_COLOR => [ 0,   0,   255 ],
     TEXT_SIZE  => 20,
 };
@@ -27,7 +27,6 @@ has 'sdl' => (
 );
 has '_bg_color' => (
     is  => 'ro',
-    isa => 'SDL::Color',
 );
 has '_bg_rect' => (
     is  => 'ro',
@@ -57,7 +56,7 @@ sub BUILDARGS
         return 1;
     });
 
-    my $bg_color = SDL::Color->new( @bg_color_parts );
+    my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
     my $bg_rect = SDL::Rect->new( 0, 0, $class->SDL_WIDTH, $class->SDL_HEIGHT );
 
     my $label = SDLx::Text->new(
