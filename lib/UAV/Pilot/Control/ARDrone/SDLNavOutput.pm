@@ -2,12 +2,14 @@ package UAV::Pilot::Control::ARDrone::SDLNavOutput;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use File::Spec;
 use SDL;
 use SDLx::App;
 use SDLx::Text;
 use SDL::Event;
 use SDL::Events;
 use SDL::Video qw{ :surface :video };
+use UAV::Pilot;
 
 use constant {
     SDL_TITLE  => 'Nav Output',
@@ -18,6 +20,7 @@ use constant {
     BG_COLOR   => [ 0,   0,   0   ],
     TEXT_COLOR => [ 0,   0,   255 ],
     TEXT_SIZE  => 20,
+    TEXT_FONT  => 'typeone.ttf',
 };
 
 
@@ -59,7 +62,12 @@ sub BUILDARGS
     my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
     my $bg_rect = SDL::Rect->new( 0, 0, $class->SDL_WIDTH, $class->SDL_HEIGHT );
 
+    my $font_path = File::Spec->catfile(
+        UAV::Pilot->default_module_dir,
+        $class->TEXT_FONT,
+    );
     my $label = SDLx::Text->new(
+        font    => $font_path,
         color   => [ @txt_color_parts ],
         size    => $class->TEXT_SIZE,
         h_align => 'center',
