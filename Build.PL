@@ -14,6 +14,7 @@ my $build = Module::Build->new(
         'File::ShareDir'        => 0,
         'File::Spec'            => 0,
         'IO::Socket::Multicast' => 0,
+        'Math::Trig'            => 0,
         'Moose'                 => 0,
         'MooseX::Event'         => 0,
         'Term::ReadLine::Perl5' => 0,

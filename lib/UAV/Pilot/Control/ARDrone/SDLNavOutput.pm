@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use File::Spec;
+use Math::Trig ();
 use SDL;
 use SDLx::App;
 use SDLx::Text;
@@ -323,14 +324,14 @@ sub _draw_circle_value
     my $radius = $self->CIRCLE_VALUE_RADIUS;
     my $color  = $self->DRAW_CIRCLE_VALUE_COLOR;
 
-    # TODO calculate these
-    my $line_x = 0;
-    my $line_y = 0;
+    my $angle  = Math::Trig::pip2 * $value; # Note use of radians, not degrees
+    my $line_x = $center_x - (sin($angle) * $radius);
+    my $line_y = $center_y - (cos($angle) * $radius);
 
     $app->draw_circle( [$center_x, $center_y], $radius, $color );
     $app->draw_line( [$center_x, $center_y], [$center_x, $center_y - $radius], $color );
 
-    #$app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $self->DRAW_VALUE_COLOR );
+    $app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $self->DRAW_VALUE_COLOR );
 
     return 1;
 }
