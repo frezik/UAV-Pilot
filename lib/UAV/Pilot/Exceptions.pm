@@ -66,4 +66,6 @@ C<UAV::Pilot::Exception>, which does the role C<Throwable>.
 
 =head2 UAV::Pilot::IOException
 
+=head2 UAV::Pilot::NavPacketException::BadHeader
+
 =cut
