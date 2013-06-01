@@ -389,26 +389,17 @@ sub _parse_option_demo
 
     $args{control_state}              = $self->_convert_endian_32bit( @data[0..3]   );
     $args{battery_voltage_percentage} = $self->_convert_endian_32bit( @data[4..7]   );
-    $args{pitch}                      = $self->_convert_endian_32bit( @data[8..11]  );
-    $args{roll}                       = $self->_convert_endian_32bit( @data[12..15] );
-    $args{yaw}                        = $self->_convert_endian_32bit( @data[16..19] );
+    $args{pitch}                      = $self->_to_float_32bit( @data[8..11]  );
+    $args{roll}                       = $self->_to_float_32bit( @data[12..15] );
+    $args{yaw}                        = $self->_to_float_32bit( @data[16..19] );
     $args{altitude}                   = $self->_convert_endian_32bit( @data[20..23] );
-    $args{velocity_x}                 = $self->_convert_endian_32bit( @data[24..27] );
-    $args{velocity_y}                 = $self->_convert_endian_32bit( @data[28..31] );
-    $args{velocity_z}                 = $self->_convert_endian_32bit( @data[32..35] );
+    $args{velocity_x}                 = $self->_to_float_32bit( @data[24..27] );
+    $args{velocity_y}                 = $self->_to_float_32bit( @data[28..31] );
+    $args{velocity_z}                 = $self->_to_float_32bit( @data[32..35] );
     $args{video_frame_index}          = $self->_convert_endian_32bit( @data[36..39] );
     # Bytes 40 - 47 are for deprecated parameters
     $args{camera_detection_type}      = $self->_convert_endian_32bit( @data[48..51] );
     # Bytes 52 - 63 are for deprecated parameters
-
-    $args{$_} = $self->_to_float( $args{$_} ) for qw{
-        pitch
-        roll
-        yaw
-        velocity_x
-        velocity_y
-        velocity_z
-    };
 
     return \%args;
 }
@@ -430,10 +421,15 @@ sub _convert_endian_16bit
     return $val;
 }
 
-sub _to_float
+sub _to_float_32bit
 {
-    my ($self, $val) = @_;
-    return unpack( "f", pack( "l", $val ) );
+    my ($self, @bytes) = @_;
+    my $val = $bytes[3]
+        | ($bytes[2] << 8)
+        | ($bytes[1] << 16)
+        | ($bytes[0] << 24);
+    my $float = unpack( "f", pack( "l", $val ) );
+    return $float;
 }
 
 

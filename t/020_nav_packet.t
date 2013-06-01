@@ -1,4 +1,4 @@
-use Test::More tests => 41;
+use Test::More tests => 43;
 use v5.14;
 use warnings;
 
@@ -103,8 +103,8 @@ my $demo_packet_data = make_packet( join('',
     '9400', # Demo Size (148 bytes)
     '00000200', # Control State (landed, flying, hovering, etc.)
     '59000000', # Battery Voltage Filtered (mV? Percentage?)
-    'cdcc4cbf', # Pitch (-0.8)
-    '00209ec4', # Roll
+    'bf4ccccd', # Pitch (-0.8)
+    '00209ec4', # Roll (4.20758336247455e-29)
     '00941a47', # Yaw
     '00000000', # Altitude (cm)
     '00000000', # Estimated linear velocity (x)
@@ -155,6 +155,8 @@ my $demo_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
 });
 cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt parsed" );
 cmp_ok( $demo_packet->pitch, '==', -0.800000011920929, "Pitch parsed" );
+cmp_ok( $demo_packet->roll, '>', 2.99569025183973e-39, "Roll parsed (less than float)" );
+cmp_ok( $demo_packet->roll, '<', 2.99569025183975e-39, "Roll parsed (greater than float)" );
 
 
 

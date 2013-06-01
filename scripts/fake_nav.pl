@@ -19,7 +19,7 @@ my $packet = make_packet( join('',
     '9400', # Demo Size (148 bytes)
     '00000200', # Control State (landed, flying, hovering, etc.)
     '59000000', # Battery Voltage Filtered (mV? Percentage?)
-    'cdcc4cbf', # Pitch (-0.8)
+    'bf4ccccd', # Pitch (-0.8)
     '00209ec4', # Roll
     '00941a47', # Yaw
     '00000000', # Altitude (cm)
@@ -67,6 +67,7 @@ my $nav = UAV::Pilot::Driver::ARDrone::NavPacket->new({
 });
 
 my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
+print "Nav Data\n--------\n" . $nav->to_string . "\n";
 $sdl->render( $nav );
 
 sleep 10;
