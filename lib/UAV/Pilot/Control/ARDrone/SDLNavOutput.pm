@@ -18,6 +18,7 @@ use constant {
     SDL_DEPTH  => 24,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
+    DRAW_VALUE_COLOR => [ 0x33, 0xff, 0x33 ],
     TEXT_LABEL_COLOR => [ 0,   0,   255 ],
     TEXT_VALUE_COLOR => [ 255, 0,   0   ],
     TEXT_SIZE  => 20,
@@ -34,6 +35,15 @@ use constant {
     YAW_VALUE_X       => 250,
     ALTITUDE_VALUE_X  => 350,
     BATTERY_VALUE_X   => 450,
+
+    ROLL_DISPLAY_X      => 50,
+    PITCH_DISPLAY_X     => 150,
+    YAW_DISPLAY_X       => 250,
+    ALTITUDE_DISPLAY_X  => 350,
+    BATTERY_DISPLAY_X   => 450,
+
+    LINE_VALUE_HALF_MAX_HEIGHT => 10,
+    LINE_VALUE_HALF_LENGTH     => 40,
 };
 
 
@@ -120,9 +130,16 @@ sub render
     $self->_write_value_float_round( $nav->roll,     $self->ROLL_VALUE_X,     50 );
     $self->_write_value_float_round( $nav->pitch,    $self->PITCH_VALUE_X,    50 );
     $self->_write_value_float_round( $nav->yaw,      $self->YAW_VALUE_X,      50 );
-    $self->_write_value( $nav->altitude, $self->ALTITUDE_VALUE_X, 50 );
+    $self->_write_value( $nav->altitude . ' cm', $self->ALTITUDE_VALUE_X, 50 );
     $self->_write_value( $nav->battery_voltage_percentage . '%',
         $self->BATTERY_VALUE_X,  50 );
+
+    $self->_draw_line_value(        $nav->roll,    $self->ROLL_DISPLAY_X,    100 );
+    $self->_draw_line_value(        $nav->pitch,   $self->PITCH_DISPLAY_X,   100 );
+    $self->_draw_circle_value(      $nav->yaw,     $self->YAW_DISPLAY_X,     100 );
+    # Should we draw anything for altitude?
+    $self->_draw_bar_percent_value( $nav->battery_voltage_percentage,
+        $self->BATTERY_DISPLAY_X, 100 );
 
     SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
     return 1;
@@ -172,6 +189,40 @@ sub _write_value_float_round
 
     $txt->write_xy( $app, $x, $y, $rounded );
 
+    return 1;
+}
+
+sub _draw_line_value
+{
+    my ($self, $value, $center_x, $center_y) = @_;
+    my $app = $self->sdl;
+
+    my $y_addition = int( $self->LINE_VALUE_HALF_MAX_HEIGHT * $value );
+    my $right_y = $center_y - $y_addition;
+    my $left_y  = $center_y + $y_addition;
+
+    my $right_x = $center_x + $self->LINE_VALUE_HALF_LENGTH;
+    my $left_x  = $center_x - $self->LINE_VALUE_HALF_LENGTH;
+
+    $app->draw_line( [$left_x, $left_y], [$right_x, $right_y], $self->DRAW_VALUE_COLOR );
+    return 1;
+}
+
+sub _draw_circle_value
+{
+    my ($self, $value, $center_x, $center_y) = @_;
+    my $app = $self->sdl;
+
+    # TODO
+    return 1;
+}
+
+sub _draw_bar_percent_value
+{
+    my ($self, $value, $center_x, $center_y) = @_;
+    my $app = $self->sdl;
+
+    # TODO
     return 1;
 }
 
