@@ -438,3 +438,26 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Driver::ARDrone::NavPacket
+
+=head1 SYNOPSIS
+
+  my $nav = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+      packet => '...',
+  });
+  say "Roll: " . $nav->roll;
+  say "Pitch: " . $nav->pitch;
+  say "Yaw: " . $nav->yaw;
+
+=head1 DESCRIPTION
+
+Parses nav packets from the Parrot AR.Drone.  Specifically handles packets with the 
+option for demo data, which provides basic roll/pitch/yaw/altitude, among a few other 
+things.
+
+Other nav packet types will be parsed in the future.
+
+=cut
