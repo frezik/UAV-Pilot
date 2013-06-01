@@ -18,7 +18,8 @@ use constant {
     SDL_DEPTH  => 24,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
-    DRAW_VALUE_COLOR => [ 0x33, 0xff, 0x33 ],
+    DRAW_VALUE_COLOR        => [ 0x33, 0xff, 0x33 ],
+    DRAW_CIRCLE_VALUE_COLOR => [ 0xa8, 0xa8, 0xa8 ],
     TEXT_LABEL_COLOR => [ 0,   0,   255 ],
     TEXT_VALUE_COLOR => [ 255, 0,   0   ],
     TEXT_SIZE  => 20,
@@ -44,6 +45,8 @@ use constant {
 
     LINE_VALUE_HALF_MAX_HEIGHT => 10,
     LINE_VALUE_HALF_LENGTH     => 40,
+
+    CIRCLE_VALUE_RADIUS => 40,
 };
 
 
@@ -127,12 +130,12 @@ sub render
     $self->_write_label( 'ALTITUDE', $self->ALTITUDE_LABEL_X, 150 );
     $self->_write_label( 'BATTERY',  $self->BATTERY_LABEL_X,  150 );
 
-    $self->_write_value_float_round( $nav->roll,     $self->ROLL_VALUE_X,     50 );
-    $self->_write_value_float_round( $nav->pitch,    $self->PITCH_VALUE_X,    50 );
-    $self->_write_value_float_round( $nav->yaw,      $self->YAW_VALUE_X,      50 );
-    $self->_write_value( $nav->altitude . ' cm', $self->ALTITUDE_VALUE_X, 50 );
+    $self->_write_value_float_round( $nav->roll,     $self->ROLL_VALUE_X,     30 );
+    $self->_write_value_float_round( $nav->pitch,    $self->PITCH_VALUE_X,    30 );
+    $self->_write_value_float_round( $nav->yaw,      $self->YAW_VALUE_X,      30 );
+    $self->_write_value( $nav->altitude . ' cm', $self->ALTITUDE_VALUE_X,     30 );
     $self->_write_value( $nav->battery_voltage_percentage . '%',
-        $self->BATTERY_VALUE_X,  50 );
+        $self->BATTERY_VALUE_X, 30 );
 
     $self->_draw_line_value(        $nav->roll,    $self->ROLL_DISPLAY_X,    100 );
     $self->_draw_line_value(        $nav->pitch,   $self->PITCH_DISPLAY_X,   100 );
@@ -212,8 +215,18 @@ sub _draw_circle_value
 {
     my ($self, $value, $center_x, $center_y) = @_;
     my $app = $self->sdl;
+    my $radius = $self->CIRCLE_VALUE_RADIUS;
+    my $color  = $self->DRAW_CIRCLE_VALUE_COLOR;
 
-    # TODO
+    # TODO calculate these
+    my $line_x = 0;
+    my $line_y = 0;
+
+    $app->draw_circle( [$center_x, $center_y], $radius, $color );
+    $app->draw_line( [$center_x, $center_y], [$center_x, $center_y - $radius], $color );
+
+    #$app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $self->DRAW_VALUE_COLOR );
+
     return 1;
 }
 
