@@ -370,3 +370,31 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Control::ARDrone::SDLNavOutput
+
+=head1 SYNOPSIS
+
+  my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new( ... );
+  my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
+  $sdl->render( $nav_packet );
+
+=head1 DESCRIPTION
+
+Graphically renders a C<UAV::Pilot::Driver::ARDrone::NavPacket> using SDL.
+
+=head1 METHODS
+
+=head2 new
+
+Constructor
+
+=head2 render
+
+  render( $nav_packet )
+
+Updates the graphic with the given nav packet data.
+
+=cut

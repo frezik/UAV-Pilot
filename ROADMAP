@@ -2,6 +2,7 @@ Version 0.2
 -----------
 * Command to show nav data in SDL window
 * USERBOX:userbox_cmd config constants
+* Documentation
 
 Version 0.3
 -----------
