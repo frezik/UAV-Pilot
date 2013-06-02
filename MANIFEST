@@ -18,8 +18,6 @@ lib/UAV/Pilot/Driver/ARDrone/Mock.pm
 lib/UAV/Pilot/Driver/ARDrone/NavPacket.pm
 LICENSE
 MANIFEST			This list of files
-MYMETA.json
-MYMETA.yml
 README
 ROADMAP
 share/ARDrone.uav

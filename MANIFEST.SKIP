@@ -11,5 +11,8 @@
 \bbuild.com$
 ^MANIFEST\.SKIP
 
+# Avoid developer scripts
+\bscripts/
+
 # Avoid archives of this distribution
 \bUAV-Pilot-[\d\.\_]+
