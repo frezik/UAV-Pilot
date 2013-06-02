@@ -1,4 +1,4 @@
-use Test::More tests => 36;
+use Test::More tests => 40;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -166,3 +166,12 @@ $ardrone_mock->read_nav_packet(
 $last_nav_packet = $ardrone_mock->last_nav_packet;
 isa_ok( $last_nav_packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
 cmp_ok( $last_nav_packet->header, '==', 0x55667788, "Header (magic number) parsed" );
+
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_STOP, 'eq', 'USERBOX_CMD_STOP',
+    "Userbox stop config command" );
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_CANCEL, 'eq', 'USERBOX_CMD_CANCEL',
+    "Userbox cancel config command" );
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_START, 'eq', 'USERBOX_CMD_START',
+    "Userbox start config command" );
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_SCREENSHOT, 'eq', 'USERBOX_CMD_SCREENSHOT',
+    "userbox screenshot config command" );

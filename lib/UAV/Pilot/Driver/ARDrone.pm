@@ -31,6 +31,11 @@ use constant {
     ARDRONE_PORT_CTRL               => 5559,
     ARDRONE_PORT_CTRL_TYPE          => 'tcp',
 
+    ARDRONE_USERBOX_CMD_STOP       => 'USERBOX_CMD_STOP',
+    ARDRONE_USERBOX_CMD_CANCEL     => 'USERBOX_CMD_CANCEL',
+    ARDRONE_USERBOX_CMD_START      => 'USERBOX_CMD_START',
+    ARDRONE_USERBOX_CMD_SCREENSHOT => 'USERBOX_CMD_SCREENSHOT',
+
     ARDRONE_CONFIG_GENERAL_NUM_VERSION_CONFIG => 'general:num_version_config',
     ARDRONE_CONFIG_GENERAL_NUM_VERSION_MB     => 'general:num_version_mb',
     ARDRONE_CONFIG_GENERAL_NUM_VERSION_SOFT   => 'general:num_version_soft',
