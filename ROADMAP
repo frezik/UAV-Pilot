@@ -6,12 +6,13 @@ Version 0.3
 -----------
 * Event system ("pitch 0.5 for 30 seconds" )
 * Command to show nav data in SDL window (needs event system to work)
-* Joystick control
+* Joystick control (more events)
 * Wiimote control (?)
 
 Version 0.4
 -----------
 * Video
+* USERBOX:userbox_cmd API
 
 Version 5
 -----------
