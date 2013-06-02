@@ -1,7 +1,3 @@
-Version 0.2
------------
-* USERBOX:userbox_cmd config constants
-
 Version 0.3
 -----------
 * Event system ("pitch 0.5 for 30 seconds" )
