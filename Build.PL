@@ -11,6 +11,7 @@ my $build = Module::Build->new(
     release_status => 'testing',
     requires       => {
         perl                    => '>= 5.12.0',
+        'namespace::autoclean'  => 0,
         'File::ShareDir'        => 0,
         'File::Spec'            => 0,
         'IO::Socket::Multicast' => 0,
