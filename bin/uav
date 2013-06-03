@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use v5.14;
 use Term::ReadLine::Perl5;
+use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
@@ -89,19 +90,23 @@ sub load_libraries
     });
     load_libraries( $repl, \@LIB_PATHS, \@LIBS );
 
-    my $cur_prompt = $PROMPT;
-    while( $continue && defined($_ = $term->readline( $cur_prompt )) ) {
-        add_cmd( $_ );
+    my $readline; $readline = AnyEvent::ReadLine::Gnu->new(
+        prompt => $PROMPT,
+        on_line => sub {
+            my ($line) = @_;
+            add_cmd( $line );
+            if( $line =~ /; \s* \z/x ) {
+                my $cmd = full_cmd;
+                $readline->hide;
+                my $do_continue = run_cmd( $cmd, $repl );
+                $readline->show;
 
-        if( /; \s* \z/x ) {
-            my $cmd = full_cmd;
-            $continue = run_cmd( $cmd, $repl );
-            $cur_prompt = $PROMPT;
-        }
-        else {
-            $cur_prompt = $MULTILINE_PROMPT;
-        }
-    }
+                AE::cv->send( $do_continue ) unless $do_continue;
+            }
+        },
+    );
+
+    AE::cv->recv;
 }
 
 __END__
