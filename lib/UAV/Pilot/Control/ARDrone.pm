@@ -56,6 +56,13 @@ sub emergency
     return 1;
 }
 
+sub reset_watchdog
+{
+    my ($self) = @_;
+    $self->sender->at_comwdg();
+    return 1;
+}
+
 {
     my $send = 'UAV::Pilot::Driver::ARDrone';
     my @FLIGHT_ANIMS = (
