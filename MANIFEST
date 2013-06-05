@@ -10,6 +10,7 @@ lib/UAV/Pilot.pm
 lib/UAV/Pilot/Commands.pm
 lib/UAV/Pilot/Control.pm
 lib/UAV/Pilot/Control/ARDrone.pm
+lib/UAV/Pilot/Control/ARDrone/Event.pm
 lib/UAV/Pilot/Control/ARDrone/SDLNavOutput.pm
 lib/UAV/Pilot/Driver.pm
 lib/UAV/Pilot/Driver/ARDrone.pm
@@ -29,6 +30,8 @@ t/001_load.t
 t/010_driver_mock.t
 t/020_nav_packet.t
 t/100_control_ardrone.t
+t/110_event_loop.t
+t/120_event_loop_controls.t
 t/200_commands.t
 t/210_commands_ardrone.t
 META.yml

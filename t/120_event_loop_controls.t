@@ -1,4 +1,4 @@
-use Test::More tests => 2;
+use Test::More tests => 3;
 use v5.14;
 use AnyEvent;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -24,7 +24,7 @@ foreach (@saved_cmds) {
 }
 ok(! $found, "Pitch command not yet sent" );
 
-my $test_timer; $test_timer = AnyEvent->timer(
+my $control_timer; $control_timer = AnyEvent->timer(
     after => 3,
     cb    => sub {
         my @saved_cmds = $ardrone->saved_commands;
@@ -34,7 +34,23 @@ my $test_timer; $test_timer = AnyEvent->timer(
             $found = 1 if /\AAT\*PCMD=\d+,\d+,\d+,-1085485875/;
         }
         ok( $found, "Pitch command sent" );
+
+        $dev->hover;
+    },
+);
+my $hover_timer; $hover_timer = AnyEvent->timer(
+    after => 4,
+    cb    => sub {
+        my @saved_cmds = $ardrone->saved_commands;
+
+        my $found = 0;
+        foreach (@saved_cmds) {
+            $found = 1 if /\AAT\*PCMD=/;
+        }
+        ok(! $found, "Hover mode, no movement command sent" );
+
         $cv->send( "end program" );
     },
 );
+
 $cv->recv;

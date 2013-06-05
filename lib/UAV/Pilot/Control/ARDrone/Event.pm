@@ -38,12 +38,7 @@ has '_cur_vert_speed' => (
 sub _init_event_loop
 {
     my ($self) = @_;
-    $self->$_( 0 ) for qw{
-        pitch
-        roll
-        yaw
-        vert_speed
-    };
+    $self->hover;
 
     my $cv = AnyEvent->condvar;
 
@@ -77,6 +72,18 @@ sub _init_event_loop
     );
 
     return $cv;
+}
+
+sub hover
+{
+    my ($self) = @_;
+    $self->$_( 0 ) for qw{
+        pitch
+        roll
+        yaw
+        vert_speed
+    };
+    return 1;
 }
 
 
