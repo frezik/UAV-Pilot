@@ -2,9 +2,27 @@ package UAV::Pilot::Control::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use AnyEvent;
 
 with 'UAV::Pilot::Control';
 
+
+sub init_event_loop
+{
+    my ($self) = @_;
+    my $cv = AnyEvent->condvar;
+
+    my $timer; $timer = AnyEvent->timer(
+        after    => 1,
+        interval => 1.5,
+        cb => sub {
+            $self->reset_watchdog;
+            $timer;
+        },
+    );
+
+    return $cv;
+}
 
 sub takeoff
 {
@@ -322,6 +340,10 @@ L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
 
+=head2 init_event_loop
+
+Sets up an AnyEvent loop for handling commands.  Returns the AnyEvent condition var.
+
 =head2 takeoff
 
 Takeoff.
@@ -368,6 +390,14 @@ around (yaw movement) while it does this.
 Toggles the emergency state.  If your UAV goes out of control, call this to immediately 
 shut it off.  When in the emergency state, it will not be responsive to further commands.  
 Call this again to bring it out of this state.
+
+=head2 reset_watchdog
+
+Sends a command to reset the watchdog process.  You need to send some command at least 
+every 2 seconds, or else the AR.Drone thinks the connection was lost.  If you don't have 
+anything else to send, send this one.
+
+If you run C<start_event_loop()>, the reset will happen for you.
 
 =head1 FLIGHT ANIMATION METHODS
 
