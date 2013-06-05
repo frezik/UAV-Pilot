@@ -15,16 +15,25 @@ my $dev = UAV::Pilot::Control::ARDrone->new({
 });
 
 my $cv = $dev->init_event_loop;
-isa_ok( $dev => 'UAV::Pilot::Control::ARDrone::Event' );
-my $timer; $timer = AnyEvent->timer(
+
+$dev->pitch( -0.8 );
+my $found = 0;
+my @saved_cmds = $ardrone->saved_commands;
+foreach (@saved_cmds) {
+    $found = 1 if /\AAT\*PCMD=\d+,\d+,\d+,-1085485875/;
+}
+ok(! $found, "Pitch command not yet sent" );
+
+my $test_timer; $test_timer = AnyEvent->timer(
     after => 3,
     cb    => sub {
         my @saved_cmds = $ardrone->saved_commands;
+
         my $found = 0;
         foreach (@saved_cmds) {
-            $found = 1 if /\AAT\*COMWDG=/;
+            $found = 1 if /\AAT\*PCMD=\d+,\d+,\d+,-1085485875/;
         }
-        ok( $found, "Com watchdog command sent" );
+        ok( $found, "Pitch command sent" );
         $cv->send( "end program" );
     },
 );
