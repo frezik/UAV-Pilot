@@ -35,7 +35,7 @@ has '_cur_vert_speed' => (
 );
 
 
-sub _init_event_loop
+sub init_event_loop
 {
     my ($self) = @_;
     $self->hover;
@@ -92,3 +92,38 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Control::ARDrone::Event
+
+=head1 SYNOPSIS
+
+    my $sender = UAV::Pilot::Driver::ARDrone->new( ... );
+    $sender->connect;
+    my $dev = UAV::Pilot::Control::ARDrone::Event->new({
+        sender => $sender,
+    });
+    
+    my $cv = $uav->init_event_loop;
+    $cv->pitch( -0.8 );
+    $cv->recv; # Will now pitch forward until you kill the process
+
+=head1 DESCRIPTION
+
+AnyEvent-based version of C<UAV::Pilot::Control::ARDrone>.  With the normal module, you 
+need to send movement commands yourself every 30ms to maintain smooth control.  By using 
+an event loop, this module handles the timing for you.
+
+=head1 METHODS
+
+=head2 init_event_loop
+
+Sets up the event loop and returns the AnyEvent::CondVar.  You will need to call C<recv()> 
+on that condvar to start the event loop running.
+
+=head2 hover
+
+Stops all movement.
+
+=cut

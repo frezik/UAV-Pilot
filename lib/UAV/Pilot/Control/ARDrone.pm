@@ -2,17 +2,9 @@ package UAV::Pilot::Control::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
-use UAV::Pilot::Control::ARDrone::Event;
 
 with 'UAV::Pilot::Control';
 
-
-sub init_event_loop
-{
-    my ($self) = @_;
-    bless $self => 'UAV::Pilot::Control::ARDrone::Event';
-    return $self->_init_event_loop;
-}
 
 sub takeoff
 {
@@ -329,12 +321,6 @@ __END__
 L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
-
-=head2 init_event_loop
-
-Sets up an AnyEvent loop for handling commands.  Returns the AnyEvent condition var.
-
-After calling this, the object will be a class of C<UAV::Pilot::Control::ARDrone::Event>.
 
 =head2 takeoff
 

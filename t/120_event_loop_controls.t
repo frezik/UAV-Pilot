@@ -2,7 +2,6 @@ use Test::More tests => 3;
 use v5.14;
 use AnyEvent;
 use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::Control::ARDrone::Event;
 use Test::Moose;
 
@@ -10,7 +9,7 @@ my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
 });
 $ardrone->connect;
-my $dev = UAV::Pilot::Control::ARDrone->new({
+my $dev = UAV::Pilot::Control::ARDrone::Event->new({
     sender => $ardrone,
 });
 
