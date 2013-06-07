@@ -1,4 +1,4 @@
-use Test::More tests => 52;
+use Test::More tests => 53;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -280,7 +280,11 @@ my @TESTS = (
         expect => [ qq{AT*CONFIG=~SEQ~,"leds:leds_anim","20,1073741824,2"\r} ],
         name   => "led_blink_standard command",
     },
-
+    {
+        cmd    => 'hover;',
+        expect => [ ],
+        name   => "hover command",
+    },
 );
 foreach my $test (@TESTS) {
     $seq++;

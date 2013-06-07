@@ -24,6 +24,7 @@
         flip_left
         flip_right
         emergency
+        hover
     );
     foreach my $name (@NO_ARG_STRAIGHT_COMMANDS) {
         no strict 'refs';
