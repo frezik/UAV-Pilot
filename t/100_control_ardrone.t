@@ -1,4 +1,4 @@
-use Test::More tests => 52;
+use Test::More tests => 53;
 use v5.14;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Control::ARDrone;
@@ -317,6 +317,12 @@ my @TESTS = (
         args   => [ ],
         expect => [ qq{AT*COMWDG=~SEQ~\r} ],
         name   => "reset_watchdog method executed",
+    },
+    {
+        method => 'hover',
+        args   => [ ],
+        expect => [ ],
+        name   => "hover method executed",
     },
 );
 foreach my $test (@TESTS) {

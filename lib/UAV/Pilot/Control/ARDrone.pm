@@ -63,6 +63,12 @@ sub reset_watchdog
     return 1;
 }
 
+sub hover
+{
+    my ($self) = @_;
+    return 1;
+}
+
 {
     my $send = 'UAV::Pilot::Driver::ARDrone';
     my @FLIGHT_ANIMS = (
@@ -376,6 +382,10 @@ every 2 seconds, or else the AR.Drone thinks the connection was lost.  If you do
 anything else to send, send this one.
 
 If you run C<start_event_loop()>, the reset will happen for you.
+
+=head2 hover
+
+Stops the UAV and hovers in place.
 
 =head1 FLIGHT ANIMATION METHODS
 
