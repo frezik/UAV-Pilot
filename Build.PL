@@ -19,6 +19,7 @@ my $build = Module::Build->new(
         'IO::Socket::Multicast'   => 0,
         'Math::Trig'              => 0,
         'Moose'                   => 0,
+        'MooseX::Clone'           => 0,
         'MooseX::Event'           => 0,
         'Test::More'              => 0,
         'Throwable'               => 0,

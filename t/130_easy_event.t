@@ -11,21 +11,29 @@ my $event = UAV::Pilot::EasyEvent->new({
 isa_ok( $event => 'UAV::Pilot::EasyEvent' );
 
 my @event_msgs;
-$event = $event->after_time({
+my $new_event = $event->add_timer({
     duration       => 100,
     duration_units => $event->UNITS_MILLISECOND,
     cb => sub {
         push @event_msgs => "First event";
     },
 });
-$event = $event->after_time({
+my $new_event2 = $new_event->add_timer({
     duration => 50,
     duration_units => $event->UNITS_MILLISECOND,
     cb => sub {
         push @event_msgs => "Second event";
     },
-})->after_time({
+});
+$new_event2->add_timer({
     duration => 25,
+    duration_units => $event->UNITS_MILLISECOND,
+    cb => sub {
+        push @event_msgs => "Fourth event";
+    },
+});
+$new_event2->add_timer({
+    duration => 10,
     duration_units => $event->UNITS_MILLISECOND,
     cb => sub {
         push @event_msgs => "Third event";
@@ -35,17 +43,18 @@ $event = $event->after_time({
 my $timer; $timer = AnyEvent->timer(
     after => 1,
     cb => sub {
-        local $TODO = "Implement EasyEvent::after_time()";
         is_deeply(
             \@event_msgs,
             [
                 "First event",
                 "Second event",
                 "Third event",
+                "Fourth event",
             ],
         );
         $cv->send( "End program" );
     },
 );
 
-$event->run;
+$event->activate_events;
+$cv->recv;
