@@ -14,3 +14,4 @@ Version 5
 -----------
 * Error message formatting in REPL
 * Facial Recognition with Image::ObjectDetect
+* EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
