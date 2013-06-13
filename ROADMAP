@@ -1,6 +1,6 @@
 Version 0.3
 -----------
-* Event system ("pitch 0.5 for 30 seconds" )
+* Document EasyEvent
 * Joystick program configures buttons
 * Joystick program shows SDL nav
 * Wiimote control (?)
