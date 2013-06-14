@@ -2,8 +2,7 @@ Version 0.3
 -----------
 * Document EasyEvent
 * Document UAV::Pilot::Joystick
-* Joystick program configures buttons
-* Joystick program shows SDL nav
+* Process SDL events so QUIT is handled properly
 * Command for Joystick
 * Wiimote control (?)
 

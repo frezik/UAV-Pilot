@@ -5,11 +5,43 @@ use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 use UAV::Pilot::Control::ARDrone::Event;
 use UAV::Pilot::Joystick;
+use Getopt::Long ();
+
+use constant NAV_UPDATE_INTERVAL => 1 / 30;
 
 
-my $IP = '192.168.1.1';
+my $IP       = '192.168.1.1';
+my $SHOW_NAV = 0;
+Getopt::Long::GetOptions(
+    'host=s'   => \$IP,
+    'show-nav' => \$SHOW_NAV,
+);
+
+
+sub show_nav
+{
+    my ($driver, $cv) = @_;
+    eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
+    die $@ if $@;
+
+    my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
+    my $timer; $timer = AnyEvent->timer(
+        duration => 0.1,
+        interval => NAV_UPDATE_INTERVAL,
+        cb => sub {
+            if( $driver->read_nav_packet ) {
+                my $nav_packet = $driver->last_nav_packet;
+                $sdl->render( $nav_packet );
+            }
+            $timer;
+        },
+    );
+
+    return 1;
+}
 
 
 {
@@ -30,6 +62,7 @@ my $IP = '192.168.1.1';
     });
     $joystick->init_timer;
 
+    show_nav( $ardrone, $cv ) if $SHOW_NAV;
     say "Ready to fly";
     $cv->recv;
     $joystick->close;

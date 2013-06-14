@@ -26,7 +26,8 @@ my $build = Module::Build->new(
         'YAML'                    => 0,
     },
     recommends => {
-        'SDL' => '>= 2.5',
+        'SDL'          => '>= 2.5',
+        'Getopt::Long' => 0,
     },
     share_dir => 'share',
 );
