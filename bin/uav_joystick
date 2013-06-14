@@ -30,6 +30,7 @@ my $IP = '192.168.1.1';
     });
     $joystick->init_timer;
 
+    say "Ready to fly";
     $cv->recv;
     $joystick->close;
 }

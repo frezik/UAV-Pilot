@@ -15,6 +15,15 @@ sub default_module_dir
     return $dir;
 }
 
+sub default_config_dir
+{
+    my ($class) = @_;
+    my $dir = File::HomeDir->my_dist_config( $class->DIST_NAME, {
+        create => 1,
+    });
+    return $dir,
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

@@ -14,6 +14,7 @@ my $build = Module::Build->new(
         'namespace::autoclean'    => 0,
         'AnyEvent'                => 0,
         'AnyEvent::ReadLine::Gnu' => 0,
+        'File::HomeDir'           => 0,
         'File::ShareDir'          => 0,
         'File::Spec'              => 0,
         'IO::Socket::Multicast'   => 0,
@@ -22,6 +23,7 @@ my $build = Module::Build->new(
         'MooseX::Event'           => 0,
         'Test::More'              => 0,
         'Throwable'               => 0,
+        'YAML'                    => 0,
     },
     recommends => {
         'SDL' => '>= 2.5',

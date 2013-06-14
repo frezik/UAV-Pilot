@@ -4,11 +4,22 @@ use Moose;
 use namespace::autoclean;
 use SDL;
 use SDL::Joystick;
+use File::HomeDir;
+use YAML ();
 
 SDL::init_sub_system( SDL_INIT_JOYSTICK );
 
-use constant MAX_AXIS_INT   => 32767;
-use constant TIMER_INTERVAL => 1 / 60;
+use constant MAX_AXIS_INT      => 32767;
+use constant TIMER_INTERVAL    => 1 / 60;
+use constant DEFAULT_CONF_FILE => 'sdl_joystick.yml';
+use constant DEFAULT_CONF      => {
+    joystick_num  => 0,
+    roll_axis     => 0,
+    pitch_axis    => 1,
+    yaw_axis      => 2,
+    throttle_axis => 3,
+    takeoff_btn   => 0,
+};
 
 
 has 'condvar' => (
@@ -146,12 +157,24 @@ sub _sdl_axis_to_float
 sub _process_args
 {
     my ($self, $args) = @_;
+    my $conf_dir = UAV::Pilot->default_config_dir;
+    my $conf_path = File::Spec->catfile( $conf_dir, $self->DEFAULT_CONF_FILE );
+    my $conf_args = $self->_get_conf( $conf_path );
+
     my %new_args = (
+        %$conf_args,
         condvar      => $args->{condvar},
         controller   => $args->{controller},
-        joystick_num => 0,
     );
     return \%new_args;
+}
+
+sub _get_conf
+{
+    my ($self, $conf_path) = @_;
+    YAML::DumpFile( $conf_path, $self->DEFAULT_CONF ) unless -e $conf_path;
+    my $conf = YAML::LoadFile( $conf_path );
+    return $conf;
 }
 
 
