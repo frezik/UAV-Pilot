@@ -77,6 +77,10 @@ has 'joystick' => (
     is  => 'ro',
     isa => 'SDL::Joystick',
 );
+has '_prev_takeoff_btn_status' => (
+    is  => 'rw',
+    isa => 'Bool',
+);
 
 
 sub BUILDARGS
@@ -91,50 +95,41 @@ sub BUILDARGS
     return $new_args;
 }
 
-sub init_timer
+
+sub process_events
 {
     my ($self) = @_;
+    SDL::Joystick::update();
+    my $joystick = $self->joystick;
     my $dev = $self->controller;
-    my $prev_takeoff_btn = 0;
 
-    my $timer; $timer = AnyEvent->timer(
-        after => 1,
-        interval => $self->TIMER_INTERVAL,
-        cb => sub {
-            SDL::Joystick::update();
-            my $joystick = $self->joystick;
+    my $roll = $self->_sdl_axis_to_float( $joystick->get_axis(
+        $self->roll_axis ) );
+    my $pitch = $self->_sdl_axis_to_float( $joystick->get_axis(
+        $self->pitch_axis ) );
+    my $yaw = $self->_sdl_axis_to_float( $joystick->get_axis(
+        $self->yaw_axis ) );
+    my $throttle = - $self->_sdl_axis_to_float( $joystick->get_axis(
+        $self->throttle_axis ) );
+    my $takeoff_btn = $joystick->get_button( $self->takeoff_btn );
 
-            my $roll = $self->_sdl_axis_to_float( $joystick->get_axis(
-                $self->roll_axis ) );
-            my $pitch = $self->_sdl_axis_to_float( $joystick->get_axis(
-                $self->pitch_axis ) );
-            my $yaw = $self->_sdl_axis_to_float( $joystick->get_axis(
-                $self->yaw_axis ) );
-            my $throttle = - $self->_sdl_axis_to_float( $joystick->get_axis(
-                $self->throttle_axis ) );
-            my $takeoff_btn = $joystick->get_button( $self->takeoff_btn );
+    # Only takeoff/land after we let off the button
+    if( $self->_prev_takeoff_btn_status && ($takeoff_btn == 0) ) {
+        if( $self->is_in_air ) {
+            $self->unset_is_in_air;
+            $dev->land;
+        }
+        else {
+            $self->set_is_in_air;
+            $dev->takeoff;
+        }
+    }
+    $self->_prev_takeoff_btn_status( $takeoff_btn );
 
-            # Only takeoff/land after we let off the button
-            if( $prev_takeoff_btn && ($takeoff_btn == 0) ) {
-                if( $self->is_in_air ) {
-                    $self->unset_is_in_air;
-                    $dev->land;
-                }
-                else {
-                    $self->set_is_in_air;
-                    $dev->takeoff;
-                }
-            }
-            $prev_takeoff_btn = $takeoff_btn;
-
-            $dev->roll( $roll );
-            $dev->pitch( $pitch );
-            $dev->yaw( $yaw );
-            $dev->vert_speed( $throttle );
-            
-            $timer;
-        },
-    );
+    $dev->roll( $roll );
+    $dev->pitch( $pitch );
+    $dev->yaw( $yaw );
+    $dev->vert_speed( $throttle );
 
     return 1;
 }

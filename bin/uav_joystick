@@ -7,7 +7,8 @@ use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 use UAV::Pilot::Control::ARDrone::Event;
-use UAV::Pilot::Joystick;
+use UAV::Pilot::SDL::Events;
+use UAV::Pilot::SDL::Joystick;
 use Getopt::Long ();
 
 use constant NAV_UPDATE_INTERVAL => 1 / 30;
@@ -55,14 +56,18 @@ sub show_nav
     });
 
     my $cv = $dev->init_event_loop;
+    my $sdl_events = UAV::Pilot::SDL::Events->new({
+        condvar => $cv,
+    });
 
-    my $joystick = UAV::Pilot::Joystick->new({
+    my $joystick = UAV::Pilot::SDL::Joystick->new({
         condvar    => $cv,
         controller => $dev,
     });
-    $joystick->init_timer;
+    $sdl_events->register( $joystick );
 
     show_nav( $ardrone, $cv ) if $SHOW_NAV;
+    $sdl_events->start_event_loop;
     say "Ready to fly";
     $cv->recv;
     $joystick->close;
