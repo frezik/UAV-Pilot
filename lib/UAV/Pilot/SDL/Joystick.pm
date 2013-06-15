@@ -1,4 +1,4 @@
-package UAV::Pilot::Joystick;
+package UAV::Pilot::SDL::Joystick;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -21,6 +21,8 @@ use constant DEFAULT_CONF      => {
     takeoff_btn   => 0,
 };
 
+
+with 'UAV::Pilot::SDL::EventHandler';
 
 has 'condvar' => (
     is  => 'ro',

@@ -192,7 +192,10 @@ sub BUILDARGS
         flags  => $class->SDL_FLAGS,
     );
     $sdl->add_event_handler( sub {
-        return 0 if $_[0]->type == SDL_QUIT;
+        my ($event, $app) = @_;
+        if( $event->type == SDL_QUIT ) {
+            $app->stop;
+        }
         return 1;
     });
 

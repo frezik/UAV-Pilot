@@ -44,7 +44,7 @@ while( $continue ) {
         my $last_nav_packet = $sender->last_nav_packet;
 
         if( $SDL ) {
-            $last_nav_packet->render_SDL( $sdl );
+            $sdl->render( $last_nav_packet );
         }
         else {
             say "Got nav packet: " . $last_nav_packet->to_string;
