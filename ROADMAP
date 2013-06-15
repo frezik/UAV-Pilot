@@ -1,6 +1,5 @@
 Version 0.3
 -----------
-* Document EasyEvent
 * Document UAV::Pilot::Joystick
 * Process SDL events so QUIT is handled properly
 * Command for Joystick
