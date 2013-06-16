@@ -137,7 +137,7 @@ sub process_events
 sub close
 {
     my ($self) = @_;
-    $self->joystick->close;
+    #$self->joystick->close;
     return 1;
 }
 
