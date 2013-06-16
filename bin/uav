@@ -40,15 +40,17 @@ sub run_cmd
 
 sub load_libraries
 {
-    my ($repl, $lib_paths, $libs) = @_;
+    my ($repl, $lib_paths, $libs, $cv) = @_;
 
-    $repl->add_lib_dir( UAV::Pilot->default_module_dir );
     $repl->add_lib_dir( $_ ) for @$lib_paths;
+    $repl->add_lib_dir( UAV::Pilot->default_module_dir );
 
     print "Library paths:\n" . join( "\n", map { "\t$_" } @{ $repl->lib_dirs } ) . "\n";
     foreach my $lib (@$libs) {
         print "Loading library '$lib' . . . ";
-        $repl->load_lib( $lib );
+        $repl->load_lib( $lib, {
+            condvar => $cv,
+        });
         print "OK\n";
     }
 
@@ -99,7 +101,7 @@ sub load_libraries
     my $repl = UAV::Pilot::Commands->new({
         device => $dev,
     });
-    load_libraries( $repl, \@LIB_PATHS, \@LIBS );
+    load_libraries( $repl, \@LIB_PATHS, \@LIBS, $cv );
 
     my $readline; $readline = AnyEvent::ReadLine::Gnu->new(
         prompt => $PROMPT,

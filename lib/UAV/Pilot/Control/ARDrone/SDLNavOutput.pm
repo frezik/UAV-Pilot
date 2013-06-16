@@ -11,6 +11,7 @@ use SDL::Event;
 use SDL::Events;
 use SDL::Video qw{ :surface :video };
 use UAV::Pilot;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 use constant {
     SDL_TITLE  => 'Nav Output',
@@ -402,9 +403,9 @@ __END__
       condvar => $condvar,
   });
   
-  my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new( ... );
-  my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
-
+  my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
+      driver => UAV::Pilot::Driver::ARDrone->new( ... ),
+  });
   $sdl_events->register( $sdl_nav );
 
 =head1 DESCRIPTION
@@ -420,7 +421,11 @@ other than C<kill -9>.
 
 =head2 new
 
-Constructor
+  new({
+      driver => UAV::Pilot::Driver::ARDrone->new( ... ),
+  })
+
+Constructor.  The param C<driver> takes a C<UAV::Pilot::Driver::ARDrone> object.
 
 =head2 render
 

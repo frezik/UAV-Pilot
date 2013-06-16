@@ -81,5 +81,67 @@
     }
 }
 
+{
+    my $cv         = undef;
+    my $sdl_events = undef;
+    my $init_sdl_events = sub {
+        return 1 if defined $sdl_events;
+        die "Can't init UAV::Pilot::SDL::Events without a condvar\n" unless defined $cv;
+        eval "use UAV::Pilot::SDL::Events";
+        die "Problem loading UAV::Pilot::SDL::Events: $@\n" if $@;
+
+        $sdl_events = UAV::Pilot::SDL::Events->new({
+            condvar => $cv,
+        });
+        $sdl_events->start_event_loop;
+
+        return 1;
+    };
+
+
+    sub uav_module_init
+    {
+        my ($class, $args) = @_;
+        $cv = $$args{condvar};
+        return 1;
+    }
+
+
+    sub start_joystick ()
+    {
+        $init_sdl_events->();
+        eval "use UAV::Pilot::SDL::Joystick";
+        die "Problem loading UAV::Pilot::SDL::Joystick: $@\n" if $@;
+
+        my $joystick = UAV::Pilot::SDL::Joystick->new({
+            condvar    => $cv,
+            controller => $dev,
+        });
+        $sdl_events->register( $joystick );
+
+        say 'Ready for joystick input on ['
+            . SDL::Joystick::name( $joystick->joystick->index )
+            . ']';
+
+        return 1;
+    }
+
+    sub start_nav ()
+    {
+        $init_sdl_events->();
+        eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
+        die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
+
+        my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
+            driver => $dev->sender,
+        });
+        $sdl_events->register( $nav );
+
+        say "Outputting navigation data";
+
+        return 1;
+    }
+}
+
 
 1;

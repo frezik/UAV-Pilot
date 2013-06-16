@@ -193,7 +193,8 @@ __END__
     });
     
     my $sdl_events = UAV::Pilot::SDL::Events->new({
-        condvar => $condvar,
+        condvar    => $condvar,
+        controller => UAV::Pilot::Controller::ARDrone->new( ... ),
     });
     $sdl_events->register( $joy );
 
