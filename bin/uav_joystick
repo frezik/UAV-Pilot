@@ -65,3 +65,20 @@ sub show_nav
     $cv->recv;
     $joystick->close;
 }
+
+
+=head1 SYNOPSIS
+
+    uav_joystick --show-nav
+
+=head1 DESCRIPTION
+
+Controls a Parrot AR.Drone with an SDL-compatible joystick.
+
+C<--show-nav> displays the navigation output in an SDL window.  Closing the window will end 
+the program.
+
+The joystick parameters can be configured in a config file.  See C<UAV::Pilot::SDL::Joystick>
+for details.
+
+=cut
