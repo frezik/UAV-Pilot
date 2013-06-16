@@ -4,6 +4,8 @@ use Moose;
 use namespace::autoclean;
 use AnyEvent;
 use UAV::Pilot::SDL::EventHandler;
+use SDL::Event;
+use SDL::Events;
 
 
 use constant TIMER_INTERVAL => 1 / 60;
@@ -31,12 +33,26 @@ sub start_event_loop
         after => 1,
         interval => $self->TIMER_INTERVAL,
         cb       => sub {
+            $self->_process_SDL_events;
             $_->process_events for @{ $self->_handlers };
             $timer;
         },
     );
 
     return 1;
+}
+
+
+sub _process_SDL_events
+{
+    my ($self) = @_;
+    my $event = SDL::Event->new;
+    SDL::Events::pump_events();
+
+    while( SDL::Events::poll_event( $event ) ) {
+        my $type = $event->type;
+        $self->condvar->send if $type == SDL_QUIT;
+    }
 }
 
 

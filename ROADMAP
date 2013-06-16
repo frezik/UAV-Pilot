@@ -9,6 +9,8 @@ Version 0.4
 -----------
 * Video
 * USERBOX:userbox_cmd API
+* Add throttle (vertspeed) indicator to SDL nav output
+* Add current input setting to nav indicators in SDL output
 
 Version 5
 -----------
