@@ -24,22 +24,15 @@ Getopt::Long::GetOptions(
 
 sub show_nav
 {
-    my ($driver, $cv) = @_;
+    my ($driver, $cv, $sdl_events) = @_;
     eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
     die $@ if $@;
 
-    my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
-    my $timer; $timer = AnyEvent->timer(
-        duration => 0.1,
-        interval => NAV_UPDATE_INTERVAL,
-        cb => sub {
-            if( $driver->read_nav_packet ) {
-                my $nav_packet = $driver->last_nav_packet;
-                $sdl->render( $nav_packet );
-            }
-            $timer;
-        },
-    );
+    my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
+        condvar => $cv,
+        driver  => $driver,
+    });
+    $sdl_events->register( $sdl_nav );
 
     return 1;
 }
@@ -66,7 +59,7 @@ sub show_nav
     });
     $sdl_events->register( $joystick );
 
-    show_nav( $ardrone, $cv ) if $SHOW_NAV;
+    show_nav( $ardrone, $cv, $sdl_events ) if $SHOW_NAV;
     $sdl_events->start_event_loop;
     say "Ready to fly";
     $cv->recv;

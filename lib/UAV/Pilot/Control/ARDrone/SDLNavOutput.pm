@@ -156,9 +156,15 @@ use constant {
 };
 
 
+with 'UAV::Pilot::SDL::EventHandler';
+
 has 'sdl' => (
     is  => 'ro',
     isa => 'SDLx::App',
+);
+has 'driver' => (
+    is  => 'ro',
+    isa => 'UAV::Pilot::Driver',
 );
 has '_bg_color' => (
     is  => 'ro',
@@ -254,6 +260,17 @@ sub render
         $self->BATTERY_DISPLAY_X, 100 );
 
     SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
+    return 1;
+}
+
+sub process_events
+{
+    my ($self) = @_;
+    my $driver = $self->driver;
+    if( $driver->read_nav_packet ) {
+        my $nav_packet = $driver->last_nav_packet;
+        $self->render( $nav_packet );
+    }
     return 1;
 }
 
