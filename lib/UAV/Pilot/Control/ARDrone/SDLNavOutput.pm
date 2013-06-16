@@ -397,13 +397,24 @@ __END__
 
 =head1 SYNOPSIS
 
+  my $condvar = AnyEvent->condvar;
+  my $sdl_events = UAV::Pilot::SDL::Events->new({
+      condvar => $condvar,
+  });
+  
   my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new( ... );
-  my $sdl = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
-  $sdl->render( $nav_packet );
+  my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new;
+
+  $sdl_events->register( $sdl_nav );
 
 =head1 DESCRIPTION
 
 Graphically renders a C<UAV::Pilot::Driver::ARDrone::NavPacket> using SDL.
+
+It does the C<UAV::Pilot::SDL::EventHandler> role, and thus can be processed by 
+C<UAV::Pilot::SDL::Events>.  This is recommended, as C<UAV::Pilot::SDL::Events> will 
+take care of the C<SDL_QUIT> events.  Without that, there's no way to stop the process 
+other than C<kill -9>.
 
 =head1 METHODS
 

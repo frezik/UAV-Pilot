@@ -61,3 +61,48 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::SDL::Events
+
+=head1 SYNOPSIS
+
+    my $condvar = AnyEvent->condvar;
+    my $sdl_events = UAV::Pilot::SDL::Events->new({
+        condvar => $condvar,
+    });
+    $sdl_events->register( ... );
+    $sdl_events->start_event_loop;
+    $condvar->recv;
+
+=head1 DESCRIPTION
+
+Handles the SDL event loop in terms of C<AnyEvent>.  In particular, it automatically handles 
+C<SDL_QUIT> events, which you'll need if you open any SDL windows (which 
+C<UAV::Pilot::Control::ARDrone::SDLNavOutput> does, for instance).  Without that processing, 
+you would need to manually stop the process with C<kill -9> or some such.
+
+=head1 METHODS
+
+=head2 new
+
+    new({
+        condvar => $cv,
+    })
+
+Constructor.  The C<condvar> argument is an C<AnyEvent::Condvar>.
+
+=head2 register
+
+    register( $event_handler )
+
+Adds a object that does the C<UAV::Pilot::SDL::EventHandler> role to the list.  The 
+C<process_events> method on that object will be called each time the event loop runs.
+
+=head2 start_event_loop
+
+Sets up the event loop.  Note that you must still call C<recv> on the C<AnyEvent::Condvar> 
+to start the loop running.
+
+=cut

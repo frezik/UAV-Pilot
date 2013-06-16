@@ -180,3 +180,59 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+    UAV::Pilot::SDL::Joystick
+
+=head1 SYNOPSIS
+
+    my $condvar = AnyEvent->condvar;
+    my $joy = UAV::Pilot::SDL::Joystick->new({
+        condvar => $condvar,
+    });
+    
+    my $sdl_events = UAV::Pilot::SDL::Events->new({
+        condvar => $condvar,
+    });
+    $sdl_events->register( $joy );
+
+=head1 DESCRIPTION
+
+Handles joystick control for SDL joysticks.  This does the role 
+C<UAV::Pilot::SDL::EventHandler>, so it can be passed to 
+C<<UAV::Pilot::SDL::Events->register()>>.
+
+Joystick configuration will be loaded from a C<YAML> config file.  You can find the 
+path with C<<UAV::Pilot->default_config_dir()>>.  If the file does not exist, it will 
+be created automatically.
+
+=head1 CONFIGURATION FILE
+
+The config file is in C<YAML> format.  It contains the following keys:
+
+=head2 joystick_num
+
+The SDL joystick number to use
+
+=head2 pitch_axis
+
+Axis number of joystick to use for pitch.
+
+=head2 roll_axis
+
+Axis number of joystick to use for roll.
+
+=head2 yaw_axis
+
+Axis number of joystick to use for yaw.
+
+=head2 throttle_axis
+
+Axis number of joystick to use for throttle.
+
+=head2 takeoff_btn
+
+Button number to use for takeoff/landing.
+
+=cut
