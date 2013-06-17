@@ -6,9 +6,8 @@ my $build = Module::Build->new(
     module_name    => 'UAV::Pilot',
     dist_abstract  => 'Control UAVs',
     dist_author    => q{Timm Murray <tmurray@wumpus-cave.net>},
-    dist_version   => '0.2',
+    dist_version   => '0.3',
     license        => 'bsd',
-    release_status => 'testing',
     requires       => {
         perl                      => '>= 5.12.0',
         'namespace::autoclean'    => 0,

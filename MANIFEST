@@ -3,6 +3,7 @@ bin/nav_data_demo.pl
 bin/uav
 bin/uav_dump_config
 bin/uav_emergency
+bin/uav_joystick
 bin/uav_network_settings
 Build.PL
 CHANGELOG
@@ -16,9 +17,15 @@ lib/UAV/Pilot/Driver.pm
 lib/UAV/Pilot/Driver/ARDrone.pm
 lib/UAV/Pilot/Driver/ARDrone/Mock.pm
 lib/UAV/Pilot/Driver/ARDrone/NavPacket.pm
+lib/UAV/Pilot/EasyEvent.pm
 lib/UAV/Pilot/Exceptions.pm
+lib/UAV/Pilot/SDL/EventHandler.pm
+lib/UAV/Pilot/SDL/Events.pm
+lib/UAV/Pilot/SDL/Joystick.pm
 LICENSE
 MANIFEST			This list of files
+META.json
+META.yml
 README
 RELEASE.HOWTO
 ROADMAP
@@ -32,7 +39,7 @@ t/020_nav_packet.t
 t/100_control_ardrone.t
 t/110_event_loop.t
 t/120_event_loop_controls.t
+t/130_easy_event.t
+t/140_sdl_events.t
 t/200_commands.t
 t/210_commands_ardrone.t
-META.yml
-META.json
