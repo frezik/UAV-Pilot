@@ -57,18 +57,17 @@ sub read_frame
         $input,
         $packet{payload_size}
     );
-    $packet{payload} = $$payload;
+    $packet{payload} = $payload;
     return (\%packet, $continue_reading);
 }
 
 sub read_frame_payload
 {
     my ($leftover_bytes, $input, $total_size) = @_;
-    my @bytes = @{ $leftover_bytes };
-    my $out = join '', @bytes;
+    my @bytes = @$leftover_bytes;
 
     my $continue = 1;
-    while( (length($out) < $total_size) && $continue ) {
+    while( (scalar(@bytes) < $total_size) && $continue ) {
         my $buf;
         my $size_left = $total_size - scalar(@bytes);
         my $buf_size = ($size_left > BUF_READ_SIZE)
@@ -77,10 +76,10 @@ sub read_frame_payload
         my $bytes_recv = $input->read( $buf, $buf_size );
         $continue = 0 if ! $bytes_recv;
 
-        $out .= $buf;
+        push @bytes, unpack( 'C*', $buf );
     }
 
-    return (\$out, $continue);
+    return (\@bytes, $continue);
 }
 
 
@@ -119,7 +118,7 @@ sub convert_16bit_LE
     while( $continue ) {
         my $frame = {};
         ($frame, $continue) = read_frame( $input );
-        print $$frame{payload} if %$frame;
+        print pack( 'C*', @{ $$frame{payload} } ) if %$frame;
     }
 
 
