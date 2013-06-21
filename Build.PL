@@ -16,6 +16,7 @@ my $build = Module::Build->new(
         'File::HomeDir'           => 0,
         'File::ShareDir'          => 0,
         'File::Spec'              => 0,
+        'File::Temp'              => 0,
         'IO::Socket::Multicast'   => 0,
         'Math::Trig'              => 0,
         'Moose'                   => 0,

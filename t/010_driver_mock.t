@@ -139,7 +139,7 @@ cmp_ok( $ardrone_mock->ARDRONE_PORT_COMMAND_TYPE, 'eq', 'udp', "Command port typ
 cmp_ok( $ardrone_mock->ARDRONE_PORT_NAV_DATA, '==', 5554, "Navigation data port" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_NAV_DATA_TYPE, 'eq', 'udp',
     "Navigation data port type" );
-cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264, '==', 5553, "Video port" );
+cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264, '==', 5555, "Video port" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_VIDEO_H264_TYPE, 'eq', 'tcp', "Video port type" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_CTRL, '==', 5559, "Control port" );
 cmp_ok( $ardrone_mock->ARDRONE_PORT_CTRL_TYPE, 'eq', 'tcp', "Control port type" );

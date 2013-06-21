@@ -24,6 +24,23 @@ sub default_config_dir
     return $dir,
 }
 
+sub convert_32bit_LE
+{
+    my ($class, @bytes) = @_;
+    my $val = $bytes[0]
+        | ($bytes[1] << 8)
+        | ($bytes[2] << 16)
+        | ($bytes[3] << 24);
+    return $val;
+}
+
+sub convert_16bit_LE
+{
+    my ($class, @bytes) = @_;
+    my $val = $bytes[0] | ($bytes[1] << 8);
+    return $val;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

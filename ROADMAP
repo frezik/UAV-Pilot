@@ -12,6 +12,10 @@ Version 0.4
 * Allow cutting joystick input by a percentage for easier control
 * Configure reversing of the axis on the joystick
 * Allow other actions to be mapped to joystick buttons (flips and such)
+* Document
+    * UAV::Pilot::Driver::ARDrone::Video
+    * UAV::Pilot::Driver::ARDrone::VideoHandler
+    * UAV::Pilot::Control::ARDrone::Video::FileDump
 
 Version 0.5
 -----------

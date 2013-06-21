@@ -26,7 +26,7 @@ use constant {
     ARDRONE_PORT_VIDEO_P264_V2      => 5555,
     ARDRONE_PORT_VIDEO_P264_V1_TYPE => 'udp',
     ARDRONE_PORT_VIDEO_P264_V2_TYPE => 'tcp',
-    ARDRONE_PORT_VIDEO_H264         => 5553,
+    ARDRONE_PORT_VIDEO_H264         => 5555,
     ARDRONE_PORT_VIDEO_H264_TYPE    => 'tcp',
     ARDRONE_PORT_CTRL               => 5559,
     ARDRONE_PORT_CTRL_TYPE          => 'tcp',

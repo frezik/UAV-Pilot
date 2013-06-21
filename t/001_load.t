@@ -1,4 +1,4 @@
-use Test::More tests => 15;
+use Test::More tests => 19;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -12,9 +12,13 @@ use_ok( 'UAV::Pilot::Driver' );
 use_ok( 'UAV::Pilot::Driver::ARDrone' );
 use_ok( 'UAV::Pilot::Driver::ARDrone::NavPacket' );
 use_ok( 'UAV::Pilot::Driver::ARDrone::Mock' );
+use_ok( 'UAV::Pilot::Driver::ARDrone::Video' );
+use_ok( 'UAV::Pilot::Driver::ARDrone::Video::Mock' );
+use_ok( 'UAV::Pilot::Driver::ARDrone::VideoHandler' );
 use_ok( 'UAV::Pilot::Control' );
 use_ok( 'UAV::Pilot::Control::ARDrone' );
 use_ok( 'UAV::Pilot::Control::ARDrone::Event' );
+use_ok( 'UAV::Pilot::Control::ARDrone::Video::FileDump' );
 use_ok( 'UAV::Pilot::Commands' );
 use_ok( 'UAV::Pilot::EasyEvent' );
 
