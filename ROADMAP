@@ -1,6 +1,5 @@
 Version 0.4
 -----------
-* Save video to file
 * USERBOX:userbox_cmd API
 * Add throttle (vertspeed) indicator to SDL nav output
 * Add current input setting to nav indicators in SDL output
@@ -12,6 +11,7 @@ Version 0.4
 * Allow cutting joystick input by a percentage for easier control
 * Configure reversing of the axis on the joystick
 * Allow other actions to be mapped to joystick buttons (flips and such)
+* Restart video stream when emergency is toggled off
 * Document
     * UAV::Pilot::Driver::ARDrone::Video
     * UAV::Pilot::Driver::ARDrone::VideoHandler

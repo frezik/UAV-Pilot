@@ -1,0 +1,37 @@
+#!/usr/bin/perl
+use v5.14;
+use warnings;
+use IO::Socket::INET;
+use UAV::Pilot;
+use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Driver::ARDrone::Video;
+use UAV::Pilot::Control::ARDrone::Video::FileDump;
+use AnyEvent;
+
+my $HOST     = '192.168.1.1';
+my $FILE_OUT = shift || die "Need file to write to\n";
+
+
+my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+    host => $HOST,
+});
+
+open( my $fh, '>', $FILE_OUT )
+    or die "Can't open $FILE_OUT for writing: $!\n";
+my $control_video = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+    fh => $fh,
+});
+
+my $cv = AnyEvent->condvar;
+my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
+    handler => $control_video,
+    condvar => $cv,
+    driver  => $ardrone,
+});
+$driver_video->init_events;
+$cv->recv;
+
+
+END { 
+    close $fh if defined $fh;
+}
