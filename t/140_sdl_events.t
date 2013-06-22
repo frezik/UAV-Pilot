@@ -51,7 +51,7 @@ my $handler = __Mock::EventHandler->new({
 UAV::Pilot::SDL::EventHandler->meta->apply( $handler );
 $events->register( $handler );
 
-$events->start_event_loop;
+$events->init_event_loop;
 my $got_str = $condvar->recv;
 cmp_ok( $got_str, 'eq', 'Event hit', "Event loop ran" );
 

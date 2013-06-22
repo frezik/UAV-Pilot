@@ -25,7 +25,7 @@ has '_handlers' => (
 );
 
 
-sub start_event_loop
+sub init_event_loop
 {
     my ($self) = @_;
 
@@ -73,7 +73,7 @@ __END__
         condvar => $condvar,
     });
     $sdl_events->register( ... );
-    $sdl_events->start_event_loop;
+    $sdl_events->init_event_loop;
     $condvar->recv;
 
 =head1 DESCRIPTION
@@ -100,7 +100,7 @@ Constructor.  The C<condvar> argument is an C<AnyEvent::Condvar>.
 Adds a object that does the C<UAV::Pilot::SDL::EventHandler> role to the list.  The 
 C<process_events> method on that object will be called each time the event loop runs.
 
-=head2 start_event_loop
+=head2 init_event_loop
 
 Sets up the event loop.  Note that you must still call C<recv> on the C<AnyEvent::Condvar> 
 to start the loop running.

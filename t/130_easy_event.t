@@ -56,5 +56,5 @@ my $timer; $timer = AnyEvent->timer(
     },
 );
 
-$event->activate_events;
+$event->init_event_loop;
 $cv->recv;

@@ -60,7 +60,7 @@ sub show_nav
     $sdl_events->register( $joystick );
 
     show_nav( $ardrone, $cv, $sdl_events ) if $SHOW_NAV;
-    $sdl_events->start_event_loop;
+    $sdl_events->init_event_loop;
     say "Ready to fly";
     $cv->recv;
     $joystick->close;

@@ -34,7 +34,7 @@ my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
     condvar => $cv,
     driver  => $ardrone,
 });
-$driver_video->init_events;
+$driver_video->init_event_loop;
 $cv->recv;
 
 

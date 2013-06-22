@@ -46,7 +46,7 @@ sub add_timer
     return $new_self;
 }
 
-sub activate_events
+sub init_event_loop
 {
     my ($self) = @_;
 
@@ -55,7 +55,7 @@ sub activate_events
             after => $timer_def->{time},
             cb    => sub {
                 $timer_def->{cb}->();
-                $timer_def->{child_events}->activate_events;
+                $timer_def->{child_events}->init_event_loop;
                 $timer;
             },
         );
@@ -126,7 +126,7 @@ __END__
     });
     
     
-    $event->activate_events;
+    $event->init_event_loop;
     $cv->recv;
     
     # After time passes, prints:
@@ -176,7 +176,7 @@ Returns a child C<EasyEvent> object.  When the timer above has finished, any tim
 child objects will be setup for execution.  This makes it easy to chain timers to run 
 after each other.
 
-=head2 activate_events
+=head2 init_event_loop
 
 This method must be called after running a series of C<add_timer()> calls.  You only need 
 to call this on the root object, not the children.

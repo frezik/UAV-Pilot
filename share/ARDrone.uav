@@ -93,7 +93,7 @@
         $sdl_events = UAV::Pilot::SDL::Events->new({
             condvar => $cv,
         });
-        $sdl_events->start_event_loop;
+        $sdl_events->init_event_loop;
 
         return 1;
     };

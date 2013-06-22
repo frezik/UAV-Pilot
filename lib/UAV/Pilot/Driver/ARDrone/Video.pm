@@ -40,7 +40,7 @@ sub BUILDARGS
 }
 
 
-sub init_events
+sub init_event_loop
 {
     my ($self) = @_;
 

@@ -74,6 +74,6 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
 );
 
 
-$driver_video->init_events;
+$driver_video->init_event_loop;
 $cv->recv;
 close $OUTPUT_FH;
