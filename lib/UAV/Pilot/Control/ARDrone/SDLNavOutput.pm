@@ -21,6 +21,7 @@ use constant {
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
     DRAW_VALUE_COLOR        => [ 0x33, 0xff, 0x33 ],
+    DRAW_FEEDER_VALUE_COLOR => [ 0x33, 0x33, 0xff ],
     DRAW_CIRCLE_VALUE_COLOR => [ 0xa8, 0xa8, 0xa8 ],
     TEXT_LABEL_COLOR => [ 0,   0,   255 ],
     TEXT_VALUE_COLOR => [ 255, 0,   0   ],
@@ -167,6 +168,10 @@ has 'driver' => (
     is  => 'ro',
     isa => 'UAV::Pilot::Driver',
 );
+has 'feeder' => (
+    is  => 'ro',
+    isa => 'Maybe[UAV::Pilot::SDL::NavFeeder]',
+);
 has '_bg_color' => (
     is  => 'ro',
 );
@@ -253,9 +258,22 @@ sub render
     $self->_write_value( $nav->battery_voltage_percentage . '%',
         $self->BATTERY_VALUE_X, 30 );
 
-    $self->_draw_line_value(        $nav->roll,    $self->ROLL_DISPLAY_X,    100 );
-    $self->_draw_line_value(        $nav->pitch,   $self->PITCH_DISPLAY_X,   100 );
-    $self->_draw_circle_value(      $nav->yaw,     $self->YAW_DISPLAY_X,     100 );
+    my $feeder = $self->feeder;
+    if( defined $feeder) {
+        my $feeder_line_color = $self->DRAW_FEEDER_VALUE_COLOR;
+        $self->_draw_line_value(   $feeder->cur_roll,  $self->ROLL_DISPLAY_X,  100,
+            $feeder_line_color );
+        $self->_draw_line_value(   $feeder->cur_pitch, $self->PITCH_DISPLAY_X, 100,
+            $feeder_line_color );
+        $self->_draw_circle_value( $feeder->cur_yaw,   $self->YAW_DISPLAY_X,   100,
+            $feeder_line_color );
+    }
+
+    my $line_color = $self->DRAW_VALUE_COLOR;
+    $self->_draw_line_value(   $nav->roll,    $self->ROLL_DISPLAY_X,  100, $line_color );
+    $self->_draw_line_value(   $nav->pitch,   $self->PITCH_DISPLAY_X, 100, $line_color );
+    $self->_draw_circle_value( $nav->yaw,     $self->YAW_DISPLAY_X,   100, $line_color );
+
     # Should we draw anything for altitude?
     $self->_draw_bar_percent_value( $nav->battery_voltage_percentage,
         $self->BATTERY_DISPLAY_X, 100 );
@@ -324,7 +342,7 @@ sub _write_value_float_round
 
 sub _draw_line_value
 {
-    my ($self, $value, $center_x, $center_y) = @_;
+    my ($self, $value, $center_x, $center_y, $color) = @_;
     my $app = $self->sdl;
 
     my $y_addition = int( $self->LINE_VALUE_HALF_MAX_HEIGHT * $value );
@@ -334,7 +352,7 @@ sub _draw_line_value
     my $right_x = $center_x + $self->LINE_VALUE_HALF_LENGTH;
     my $left_x  = $center_x - $self->LINE_VALUE_HALF_LENGTH;
 
-    $app->draw_line( [$left_x, $left_y], [$right_x, $right_y], $self->DRAW_VALUE_COLOR );
+    $app->draw_line( [$left_x, $left_y], [$right_x, $right_y], $color );
     return 1;
 }
 

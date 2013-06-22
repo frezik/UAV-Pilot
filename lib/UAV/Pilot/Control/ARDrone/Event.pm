@@ -9,30 +9,33 @@ extends 'UAV::Pilot::Control::ARDrone';
 # The AR.Drone SDK manual says sending commands every 30ms is needed for smooth control
 use constant CONTROL_TIMING_INTERVAL => 30 / 1000;
 
-has '_cur_pitch' => (
+has 'cur_pitch' => (
     is      => 'ro',
     isa     => 'Num',
     default => 0,
     writer  => 'pitch',
 );
-has '_cur_roll' => (
+has 'cur_roll' => (
     is      => 'ro',
     isa     => 'Num',
     default => 0,
     writer  => 'roll',
 );
-has '_cur_yaw' => (
+has 'cur_yaw' => (
     is      => 'ro',
     isa     => 'Num',
     default => 0,
     writer  => 'yaw',
 );
-has '_cur_vert_speed' => (
+has 'cur_vert_speed' => (
     is      => 'ro',
     isa     => 'Num',
     default => 0,
     writer  => 'vert_speed',
 );
+
+with 'UAV::Pilot::SDL::NavFeeder';
+
 
 
 sub init_event_loop
@@ -46,16 +49,16 @@ sub init_event_loop
         after    => 0.1,
         interval => $self->CONTROL_TIMING_INTERVAL,
         cb => sub {
-            if( $self->_cur_roll
-                || $self->_cur_pitch
-                || $self->_cur_vert_speed
-                || $self->_cur_yaw
+            if( $self->cur_roll
+                || $self->cur_pitch
+                || $self->cur_vert_speed
+                || $self->cur_yaw
             ) {
                 $self->sender->at_pcmd( 1, 0,
-                    $self->_cur_roll,
-                    $self->_cur_pitch,
-                    $self->_cur_vert_speed,
-                    $self->_cur_yaw,
+                    $self->cur_roll,
+                    $self->cur_pitch,
+                    $self->cur_vert_speed,
+                    $self->cur_yaw,
                 );
             }
 
