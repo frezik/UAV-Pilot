@@ -16,8 +16,14 @@ my $ardrone = UAV::Pilot::Driver::ARDrone->new({
     host => $HOST,
 });
 
-open( my $fh, '>', $FILE_OUT )
-    or die "Can't open $FILE_OUT for writing: $!\n";
+my $fh = undef;
+if( $FILE_OUT eq '-' ) {
+    $fh = \*STDOUT;
+}
+else {
+    open( $fh, '>', $FILE_OUT )
+        or die "Can't open $FILE_OUT for writing: $!\n";
+}
 my $control_video = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
     fh => $fh,
 });
