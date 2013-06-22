@@ -5,13 +5,13 @@ Version 0.4
 * Add current input setting to nav indicators in SDL output
 * Cleanup API
     * Does Joystick or SDL nav need a condvar anymore?
-    * Override conf file for Joystick
     * Anything that inits an AnyEvent timer should be named C<init_event_loop>
     * Joystick interface too tightly integrated to AR.Drone?
-* Allow cutting joystick input by a percentage for easier control
-* Configure reversing of the axis on the joystick
-* Allow other actions to be mapped to joystick buttons (flips and such)
 * Restart video stream when emergency is toggled off
+* Stream video to mplayer via pipe (?)
+* Command for video output
+    * File
+    * Mplayer (or something else over a pipe) (?)
 * Document
     * UAV::Pilot::Driver::ARDrone::Video
     * UAV::Pilot::Driver::ARDrone::VideoHandler
@@ -19,7 +19,11 @@ Version 0.4
 
 Version 0.5
 -----------
-* Show video in real-time
+* Show video in real-time (without using pipes)
+* Allow cutting joystick input by a percentage for easier control
+* Configure reversing of the axis on the joystick
+* Allow other actions to be mapped to joystick buttons (flips and such)
+* Override conf file for Joystick
 * Wiimote control (?)
 
 Version 6
