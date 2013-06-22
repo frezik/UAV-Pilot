@@ -187,14 +187,16 @@ __END__
 
 =head1 SYNOPSIS
 
+    my $control = UAV::Pilot::Controller::ARDrone->new( ... );
     my $condvar = AnyEvent->condvar;
     my $joy = UAV::Pilot::SDL::Joystick->new({
         condvar => $condvar,
+        controller => $control,
     });
     
     my $sdl_events = UAV::Pilot::SDL::Events->new({
         condvar    => $condvar,
-        controller => UAV::Pilot::Controller::ARDrone->new( ... ),
+        controller => $control,
     });
     $sdl_events->register( $joy );
 

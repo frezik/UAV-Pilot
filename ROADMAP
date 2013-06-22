@@ -4,11 +4,10 @@ Version 0.4
 * Add throttle (vertspeed) indicator to SDL nav output
 * Add current input setting to nav indicators in SDL output
 * Cleanup API
-    * Does Joystick or SDL nav need a condvar anymore?
     * Joystick interface too tightly integrated to AR.Drone?
 * Restart video stream when emergency is toggled off
 * Stream video to mplayer via pipe (?)
-* Command for video output
+* REPL Command for video output
     * File
     * Mplayer (or something else over a pipe) (?)
 * Document
