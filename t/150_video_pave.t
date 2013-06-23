@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 4;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -8,8 +8,9 @@ use File::Temp ();
 use AnyEvent;
 use Test::Moose;
 
-use constant VIDEO_DUMP_FILE => 't_data/ardrone_video_stream_dump.bin';
-use constant MAX_WAIT_TIME   => 5;
+use constant VIDEO_DUMP_FILE         => 't_data/ardrone_video_stream_dump.bin';
+use constant MAX_WAIT_TIME           => 5;
+use constant EXPECT_FRAMES_PROCESSED => 25;
 
 # The smaller size is output by the module code, while the large size is output by the 
 # standalone scripts/video_dump.pl code.  Why the difference?
@@ -76,4 +77,8 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
 
 $driver_video->init_event_loop;
 $cv->recv;
+
+cmp_ok( $driver_video->frames_processed, '==', EXPECT_FRAMES_PROCESSED,
+    'Expected number of frames processed' );
+
 close $OUTPUT_FH;

@@ -6,9 +6,10 @@ use IO::Socket::INET;
 use UAV::Pilot::Driver::ARDrone::VideoHandler;
 
 
-use constant READ_INTERVAL  => 1 / 15;
-use constant BUF_READ_SIZE  => 4096;
-use constant PAVE_SIGNATURE => 'PaVE';
+use constant READ_INTERVAL        => 1 / 15;
+use constant BUF_READ_SIZE        => 4096;
+use constant BUF_READ_SIZE_HEADER => 128;
+use constant PAVE_SIGNATURE       => 'PaVE';
 
 has '_io' => (
     is  => 'ro',
@@ -25,6 +26,15 @@ has 'condvar' => (
 has 'driver' => (
     is  => 'ro',
     isa => 'UAV::Pilot::Driver::ARDrone',
+);
+has 'frames_processed' => (
+    traits  => ['Number'],
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+    handles => {
+        '_add_frames_processed' => 'add',
+    },
 );
 
 
@@ -81,7 +91,7 @@ sub _read_frame
     my $input = $self->_io;
     my $buf;
     $input->blocking( 0 );
-    my $got_input = $input->read( $buf, $self->BUF_READ_SIZE );
+    my $got_input = $input->read( $buf, $self->BUF_READ_SIZE_HEADER );
     $input->blocking( 1 );
     return {} if ! $got_input;
 
@@ -118,11 +128,12 @@ sub _read_frame
 
     # Might need to reimplement in a non-blocking IO way
     my $payload = $self->_read_frame_payload(
-        [@bytes[63..$#bytes]] ,
+        [@bytes[$packet{packet_size}..$#bytes]] ,
         $input,
         $packet{payload_size}
     );
     $packet{payload} = $payload;
+    $self->_add_frames_processed( 1 );
     return \%packet;
 }
 
@@ -130,9 +141,10 @@ sub _read_frame_payload
 {
     my ($self, $leftover_bytes, $input, $total_size) = @_;
     my @bytes = @$leftover_bytes;
+    my $current_size = scalar @bytes;
 
     my $continue = 1;
-    while( (scalar(@bytes) < $total_size) && $continue ) {
+    while( ($current_size < $total_size) && $continue ) {
         my $buf;
         my $size_left = $total_size - scalar(@bytes);
         my $buf_size = ($size_left > $self->BUF_READ_SIZE)
@@ -142,6 +154,7 @@ sub _read_frame_payload
         $continue = 0 if ! $bytes_recv;
 
         push @bytes, unpack( 'C*', $buf );
+        $current_size = scalar @bytes;
     }
 
     return \@bytes;

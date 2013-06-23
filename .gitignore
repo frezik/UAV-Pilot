@@ -3,3 +3,4 @@ _build
 blib
 MYMETA.*
 META.*
+ardrone_video_stream.h264.*
