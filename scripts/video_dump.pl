@@ -14,6 +14,7 @@ my $PORT = 5555;
 my $FILE = shift;
 
 
+my $num_frames = 0;
 sub read_frame
 {
     my ($input) = @_;
@@ -53,11 +54,12 @@ sub read_frame
         if PAVE_SIGNATURE ne $packet{signature};
 
     my ($payload, $continue_reading) = read_frame_payload(
-        [@bytes[63..$#bytes]] ,
+        [@bytes[$packet{packet_size}..$#bytes]] ,
         $input,
         $packet{payload_size}
     );
     $packet{payload} = $payload;
+    $num_frames++;
     return (\%packet, $continue_reading);
 }
 
@@ -123,4 +125,5 @@ sub convert_16bit_LE
 
 
     $input->close;
+    warn "Frames processed: $num_frames\n";
 }
