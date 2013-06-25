@@ -99,7 +99,8 @@ sub load_libraries
         ? $dev->init_event_loop
         : AnyEvent->condvar;
     my $repl = UAV::Pilot::Commands->new({
-        device => $dev,
+        device  => $dev,
+        condvar => $cv,
     });
     load_libraries( $repl, \@LIB_PATHS, \@LIBS, $cv );
 

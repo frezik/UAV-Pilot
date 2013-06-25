@@ -40,11 +40,13 @@ use constant {
     ALTITUDE_VALUE_X  => 350,
     BATTERY_VALUE_X   => 450,
 
-    ROLL_DISPLAY_X      => 50,
-    PITCH_DISPLAY_X     => 150,
-    YAW_DISPLAY_X       => 250,
-    ALTITUDE_DISPLAY_X  => 350,
-    BATTERY_DISPLAY_X   => 450,
+    ROLL_DISPLAY_X                 => 50,
+    PITCH_DISPLAY_X                => 150,
+    YAW_DISPLAY_X                  => 250,
+    ALTITUDE_DISPLAY_X             => 350,
+    VERT_SPEED_DISPLAY_HALF_HEIGHT => 10,
+    VERT_SPEED_DISPLAY_WIDTH       => 10,
+    BATTERY_DISPLAY_X              => 450,
 
     LINE_VALUE_HALF_MAX_HEIGHT => 10,
     LINE_VALUE_HALF_LENGTH     => 40,
@@ -258,6 +260,8 @@ sub render
     $self->_write_value( $nav->battery_voltage_percentage . '%',
         $self->BATTERY_VALUE_X, 30 );
 
+    my $line_color = $self->DRAW_VALUE_COLOR;
+
     my $feeder = $self->feeder;
     if( defined $feeder) {
         my $feeder_line_color = $self->DRAW_FEEDER_VALUE_COLOR;
@@ -267,9 +271,11 @@ sub render
             $feeder_line_color );
         $self->_draw_circle_value( $feeder->cur_yaw,   $self->YAW_DISPLAY_X,   100,
             $feeder_line_color );
+        $self->_draw_line_vert_indicator( $feeder->cur_vert_speed,
+            $self->ALTITUDE_VALUE_X, 100, $self->VERT_SPEED_DISPLAY_HALF_HEIGHT,
+            $self->VERT_SPEED_DISPLAY_WIDTH, $feeder_line_color, $line_color );
     }
 
-    my $line_color = $self->DRAW_VALUE_COLOR;
     $self->_draw_line_value(   $nav->roll,    $self->ROLL_DISPLAY_X,  100, $line_color );
     $self->_draw_line_value(   $nav->pitch,   $self->PITCH_DISPLAY_X, 100, $line_color );
     $self->_draw_circle_value( $nav->yaw,     $self->YAW_DISPLAY_X,   100, $line_color );
@@ -398,6 +404,29 @@ sub _draw_bar_percent_value
         [ [$left_x, $bottom_y], [$left_x, $top_y] ],
     );
     $app->draw_rect( [ $left_x, $top_percentage_y, $self->BAR_WIDTH, $percentage_height ],
+        $color );
+
+    return 1;
+}
+
+sub _draw_line_vert_indicator
+{
+    my ($self, $value, $center_x, $center_y, $half_height, $width, $color, $top_bottom_color) = @_;
+    my $app = $self->sdl;
+    my $half_width = $width / 2;
+
+    my $border_left_x   = $center_x - $half_width;
+    my $border_right_x  = $center_x + $half_width;
+    my $border_top_y    = $center_y - $half_height;
+    my $border_bottom_y = $center_y + $half_height;
+
+    my $indicator_y = $center_y + ($half_height * $value);
+
+    $app->draw_line( [$border_left_x, $border_top_y], [$border_right_x, $border_top_y], 
+        $top_bottom_color );
+    $app->draw_line( [$border_left_x, $border_bottom_y], [$border_right_x, $border_top_y],
+        $top_bottom_color );
+    $app->draw_line( [$border_left_x, $indicator_y], [$border_right_x, $indicator_y],
         $color );
 
     return 1;

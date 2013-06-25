@@ -19,6 +19,10 @@ has 'lib_dirs' => (
         add_lib_dir => 'push',
     },
 );
+has 'condvar' => (
+    is  => 'ro',
+    isa => 'AnyEvent::CondVar',
+);
 
 our ($dev, $s);
 
@@ -28,6 +32,7 @@ our ($dev, $s);
 sub load ($;$)
 {
     my ($mod_name, $args) = @_;
+    $$args{condvar} = $s->condvar unless exists $$args{condvar};
     $s->load_lib( $mod_name, $args );
 }
 
