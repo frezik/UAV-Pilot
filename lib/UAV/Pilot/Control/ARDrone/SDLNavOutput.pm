@@ -366,10 +366,10 @@ sub _draw_line_value
 
 sub _draw_circle_value
 {
-    my ($self, $value, $center_x, $center_y) = @_;
+    my ($self, $value, $center_x, $center_y, $value_color) = @_;
     my $app = $self->sdl;
     my $radius = $self->CIRCLE_VALUE_RADIUS;
-    my $color  = $self->DRAW_CIRCLE_VALUE_COLOR;
+    my $color = $self->DRAW_VALUE_COLOR;
 
     my $angle  = Math::Trig::pip2 * $value; # Note use of radians, not degrees
     my $line_x = $center_x - (sin($angle) * $radius);
@@ -378,7 +378,7 @@ sub _draw_circle_value
     $app->draw_circle( [$center_x, $center_y], $radius, $color );
     $app->draw_line( [$center_x, $center_y], [$center_x, $center_y - $radius], $color );
 
-    $app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $self->DRAW_VALUE_COLOR );
+    $app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $value_color );
 
     return 1;
 }
