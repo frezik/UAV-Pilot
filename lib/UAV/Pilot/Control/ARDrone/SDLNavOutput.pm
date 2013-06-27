@@ -46,6 +46,7 @@ use constant {
     ALTITUDE_DISPLAY_X             => 350,
     VERT_SPEED_DISPLAY_HALF_HEIGHT => 10,
     VERT_SPEED_DISPLAY_WIDTH       => 10,
+    VERT_SPEED_BORDER_WIDTH_MARGIN => 2,
     BATTERY_DISPLAY_X              => 450,
 
     LINE_VALUE_HALF_MAX_HEIGHT => 10,
@@ -273,7 +274,8 @@ sub render
             $feeder_line_color );
         $self->_draw_line_vert_indicator( $feeder->cur_vert_speed,
             $self->ALTITUDE_VALUE_X, 100, $self->VERT_SPEED_DISPLAY_HALF_HEIGHT,
-            $self->VERT_SPEED_DISPLAY_WIDTH, $feeder_line_color, $line_color );
+            $self->VERT_SPEED_DISPLAY_WIDTH, $feeder_line_color, $line_color,
+            $self->VERT_SPEED_BORDER_WIDTH_MARGIN );
     }
 
     $self->_draw_line_value(   $nav->roll,    $self->ROLL_DISPLAY_X,  100, $line_color );
@@ -411,12 +413,14 @@ sub _draw_bar_percent_value
 
 sub _draw_line_vert_indicator
 {
-    my ($self, $value, $center_x, $center_y, $half_height, $width, $color, $top_bottom_color) = @_;
+    my ($self, $value, $center_x, $center_y, $half_height, $width, $color, $top_bottom_color, $border_width_margin) = @_;
     my $app = $self->sdl;
     my $half_width = $width / 2;
 
-    my $border_left_x   = $center_x - $half_width;
-    my $border_right_x  = $center_x + $half_width;
+    my $left_x          = $center_x - $half_width;
+    my $right_x         = $center_x + $half_width;
+    my $border_left_x   = $left_x   - $border_width_margin;
+    my $border_right_x  = $right_x + $border_width_margin;
     my $border_top_y    = $center_y - $half_height;
     my $border_bottom_y = $center_y + $half_height;
 
@@ -426,8 +430,7 @@ sub _draw_line_vert_indicator
         $top_bottom_color );
     $app->draw_line( [$border_left_x, $border_bottom_y],
         [$border_right_x, $border_bottom_y], $top_bottom_color );
-    $app->draw_line( [$border_left_x, $indicator_y], [$border_right_x, $indicator_y],
-        $color );
+    $app->draw_line( [$left_x, $indicator_y], [$right_x, $indicator_y], $color );
 
     return 1;
 }
