@@ -134,6 +134,7 @@
 
         my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
             driver => $dev->sender,
+            feeder => $dev,
         });
         $sdl_events->register( $nav );
 

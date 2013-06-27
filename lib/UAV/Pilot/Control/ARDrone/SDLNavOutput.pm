@@ -420,12 +420,12 @@ sub _draw_line_vert_indicator
     my $border_top_y    = $center_y - $half_height;
     my $border_bottom_y = $center_y + $half_height;
 
-    my $indicator_y = $center_y + ($half_height * $value);
+    my $indicator_y = $center_y - ($half_height * $value);
 
     $app->draw_line( [$border_left_x, $border_top_y], [$border_right_x, $border_top_y], 
         $top_bottom_color );
-    $app->draw_line( [$border_left_x, $border_bottom_y], [$border_right_x, $border_top_y],
-        $top_bottom_color );
+    $app->draw_line( [$border_left_x, $border_bottom_y],
+        [$border_right_x, $border_bottom_y], $top_bottom_color );
     $app->draw_line( [$border_left_x, $indicator_y], [$border_right_x, $indicator_y],
         $color );
 
