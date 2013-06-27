@@ -1,7 +1,6 @@
 Version 0.4
 -----------
 * USERBOX:userbox_cmd API
-* Add throttle (vertspeed) indicator to SDL nav output
 * Cleanup API
     * Joystick interface too tightly integrated to AR.Drone?
 * Restart video stream when emergency is toggled off
