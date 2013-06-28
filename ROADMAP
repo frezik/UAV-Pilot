@@ -8,6 +8,7 @@ Version 0.4
     * UAV::Pilot::Driver::ARDrone::VideoHandler
     * UAV::Pilot::Control::ARDrone::Video::FileDump
     * UAV::Pilot::SDL::NavFeeder
+    * UAV::Pilot::SDL::JoystickConverter
 
 Version 0.5
 -----------
