@@ -1,4 +1,4 @@
-use Test::More tests => 20;
+use Test::More tests => 21;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -22,6 +22,7 @@ use_ok( 'UAV::Pilot::Control::ARDrone::Video::FileDump' );
 use_ok( 'UAV::Pilot::Commands' );
 use_ok( 'UAV::Pilot::EasyEvent' );
 use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installed
+use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
 
 SKIP: {
     skip "SDL not installed", 4 unless $is_sdl_installed;

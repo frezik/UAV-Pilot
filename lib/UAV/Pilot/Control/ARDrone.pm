@@ -297,6 +297,15 @@ sub hover
     }
 }
 
+sub convert_sdl_input
+{
+    my ($self, $num) = @_;
+    my $float = $num / $self->MAX_AXIS_INT;
+    $float = 1.0 if $float > 1.0;
+    $float = -1.0 if $float < -1.0;
+    return $float;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

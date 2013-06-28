@@ -2,8 +2,6 @@ Version 0.4
 -----------
 * USERBOX:userbox_cmd API
 * Reliable video packet handling
-* Cleanup API
-    * Joystick interface too tightly integrated to AR.Drone?
 * Restart video stream when emergency is toggled off
 * Document
     * UAV::Pilot::Driver::ARDrone::Video

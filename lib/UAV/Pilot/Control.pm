@@ -2,6 +2,8 @@ package UAV::Pilot::Control;
 use v5.14;
 use Moose::Role;
 
+with 'UAV::Pilot::SDL::JoystickConverter';
+
 has 'sender' => (
     is   => 'ro',
     does => 'UAV::Pilot::Driver',

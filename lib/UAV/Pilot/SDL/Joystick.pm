@@ -103,13 +103,13 @@ sub process_events
     my $joystick = $self->joystick;
     my $dev = $self->controller;
 
-    my $roll = $self->_sdl_axis_to_float( $joystick->get_axis(
+    my $roll = $dev->convert_sdl_input( $joystick->get_axis(
         $self->roll_axis ) );
-    my $pitch = $self->_sdl_axis_to_float( $joystick->get_axis(
+    my $pitch = $dev->convert_sdl_input( $joystick->get_axis(
         $self->pitch_axis ) );
-    my $yaw = $self->_sdl_axis_to_float( $joystick->get_axis(
+    my $yaw = $dev->convert_sdl_input( $joystick->get_axis(
         $self->yaw_axis ) );
-    my $throttle = - $self->_sdl_axis_to_float( $joystick->get_axis(
+    my $throttle = - $dev->convert_sdl_input( $joystick->get_axis(
         $self->throttle_axis ) );
     my $takeoff_btn = $joystick->get_button( $self->takeoff_btn );
 
@@ -141,15 +141,6 @@ sub close
     return 1;
 }
 
-
-sub _sdl_axis_to_float
-{
-    my ($self, $num) = @_;
-    my $float = $num / $self->MAX_AXIS_INT;
-    $float = 1.0 if $float > 1.0;
-    $float = -1.0 if $float < -1.0;
-    return $float;
-}
 
 sub _process_args
 {

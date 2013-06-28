@@ -1,6 +1,8 @@
 Version 0.4
 -----------
 * Dump video to file
+* Rename anything that starts an event loop to init_event_loop()
+* Joystick to UAV control number conversion decoupled from ARDrone specifics
 
 Version 0.3
 -----------
