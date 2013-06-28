@@ -1,3 +1,8 @@
+use UAV::Pilot::Exceptions;
+use UAV::Pilot::Control::ARDrone::Video::FileDump;
+use UAV::Pilot::Driver::ARDrone::Video;
+
+
 {
     my @NO_ARG_STRAIGHT_COMMANDS = qw(
         takeoff
@@ -139,6 +144,27 @@
         $sdl_events->register( $nav );
 
         say "Outputting navigation data";
+
+        return 1;
+    }
+
+    sub dump_video_to_file ($)
+    {
+        my ($file) = @_;
+
+        open( my $fh, '>', $file ) or UAV::Pilot::IOException->throw({
+            error => "Can't open [$file] for reading: $!\n",
+        });
+        my $vid_dump = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+            fh => $fh,
+        });
+
+        my $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
+            handler => $vid_dump,
+            condvar => $cv,
+            driver  => $dev->sender,
+        });
+        $vid_driver->init_event_loop;
 
         return 1;
     }

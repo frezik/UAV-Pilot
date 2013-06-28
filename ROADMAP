@@ -1,13 +1,10 @@
 Version 0.4
 -----------
 * USERBOX:userbox_cmd API
+* Reliable video packet handling
 * Cleanup API
     * Joystick interface too tightly integrated to AR.Drone?
 * Restart video stream when emergency is toggled off
-* Stream video to mplayer via pipe (?)
-* REPL Command for video output
-    * File
-    * Mplayer (or something else over a pipe) (?)
 * Document
     * UAV::Pilot::Driver::ARDrone::Video
     * UAV::Pilot::Driver::ARDrone::VideoHandler
