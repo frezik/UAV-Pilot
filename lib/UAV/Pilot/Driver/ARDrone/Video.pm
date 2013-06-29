@@ -12,8 +12,9 @@ use constant BUF_READ_SIZE_HEADER => 128;
 use constant PAVE_SIGNATURE       => 'PaVE';
 
 has '_io' => (
-    is  => 'ro',
-    isa => 'Item',
+    is     => 'ro',
+    isa    => 'Item',
+    writer => '_set_io',
 );
 has 'handler' => (
     is  => 'ro',
@@ -63,6 +64,18 @@ sub init_event_loop
             $timer;
         },
     );
+    return 1;
+}
+
+sub emergency_restart
+{
+    my ($self) = @_;
+    # TODO clear buffer of available packets
+    $self->_io->close;
+    my $io = $self->_build_io({
+        driver => $self->driver,
+    });
+    $self->_set_io( $io );
     return 1;
 }
 

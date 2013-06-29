@@ -5,6 +5,11 @@ use namespace::autoclean;
 
 with 'UAV::Pilot::Control';
 
+has 'video' => (
+    is  => 'ro',
+    isa => 'Maybe[UAV::Pilot::Driver::ARDrone::Video]',
+);
+
 
 sub takeoff
 {
@@ -53,6 +58,7 @@ sub emergency
 {
     my ($self) = @_;
     $self->sender->at_ref( 0, 1 );
+    $self->video->emergency_restart if defined $self->video;
     return 1;
 }
 
@@ -336,6 +342,20 @@ __END__
 L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
+
+=head1 new
+
+    new({
+        driver => $driver,
+        video  => $video_driver,
+    });
+
+Constructor.  As with C<UAV::Pilot::Control>, the C<driver> option is a mandatory 
+parameter with the value being a C<UAV::Pilot::Driver::ARDrone> object.
+
+The optional C<video> parameter is a C<UAV::Pilot::Driver::ARDrone::Video> object.  When 
+the emergency mode is toggled on the ARDrone, the video stream needs to be restarted.  
+Placing the object here will call C<emergency_restart()> on the video object for you.
 
 =head2 takeoff
 

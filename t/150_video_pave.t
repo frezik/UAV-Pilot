@@ -1,8 +1,9 @@
-use Test::More tests => 4;
+use Test::More tests => 6;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
+use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::Control::ARDrone::Video::FileDump;
 use File::Temp ();
 use AnyEvent;
@@ -30,7 +31,7 @@ does_ok( $control_video => 'UAV::Pilot::Driver::ARDrone::VideoHandler' );
 
 my $cv = AnyEvent->condvar;
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
-    host => '192.168.1.1',
+    host => 'localhost',
 });
 my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
     file    => VIDEO_DUMP_FILE,
@@ -39,6 +40,12 @@ my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
     driver  => $ardrone,
 });
 isa_ok( $driver_video => 'UAV::Pilot::Driver::ARDrone::Video' );
+
+my $dev = UAV::Pilot::Control::ARDrone->new({
+    sender => $ardrone,
+    video  => $driver_video,
+});
+
 
 
 my $pass_timer; $pass_timer = AnyEvent->timer(
@@ -80,5 +87,10 @@ $cv->recv;
 
 cmp_ok( $driver_video->frames_processed, '==', EXPECT_FRAMES_PROCESSED,
     'Expected number of frames processed' );
+
+cmp_ok( $driver_video->emergency_count, '==', 0, "No emergency restarts yet" );
+$dev->emergency;
+cmp_ok( $driver_video->emergency_count, '==', 1, "Emergency restart called" );
+
 
 close $OUTPUT_FH;

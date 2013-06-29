@@ -2,7 +2,6 @@ Version 0.4
 -----------
 * USERBOX:userbox_cmd API
 * Reliable video packet handling
-* Restart video stream when emergency is toggled off
 * Document
     * UAV::Pilot::Driver::ARDrone::Video
     * UAV::Pilot::Driver::ARDrone::VideoHandler

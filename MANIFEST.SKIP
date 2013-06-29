@@ -77,3 +77,6 @@
 
 # Leftover video stream files from testing
 ardrone_video_stream.h264.*
+
+# Developer script
+test.sh

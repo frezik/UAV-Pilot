@@ -5,6 +5,21 @@ use namespace::autoclean;
 
 extends 'UAV::Pilot::Driver::ARDrone::Video';
 
+has 'emergency_count' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
+);
+
+
+
+sub emergency_restart
+{
+    my ($self) = @_;
+    $self->emergency_count( $self->emergency_count + 1 );
+    return 1;
+}
+
 
 sub _build_io
 {
