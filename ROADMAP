@@ -3,7 +3,6 @@ Version 0.4
 * USERBOX:userbox_cmd API
 * Reliable video packet handling
 * Document
-    * UAV::Pilot::Control::ARDrone::Video::FileDump
     * UAV::Pilot::SDL::NavFeeder
     * UAV::Pilot::SDL::JoystickConverter
 
