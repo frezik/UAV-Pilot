@@ -179,3 +179,56 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::Driver::ARDrone::Video
+
+=head1 SYNOPSIS
+
+    my $cv      = AnyEvent->condvar;
+    my $handler = ...; # An object that does UAV::Pilot::Driver::ARDrone::VideoHandler
+    my $ardrone = ...; # An instance of UAV::Pilot::Driver::ARDrone
+    my $video = UAV::Pilot::Driver::ARDrone::Video->new({
+        handler => $handler,
+        condvar => $cv,
+        driver  => $ardrone,
+    });
+    
+    $video->init_event_loop;
+    $cv->recv;
+
+=head1 DESCRIPTION
+
+Processes the Parrot AR.Drone v2 video stream, which is an h264 stream with some 
+additional header data.
+
+Note that this I<will not> work with the AR.Drone v1.
+
+=head1 METHODS
+
+=head2 new
+
+    new({
+        handler => $handler,
+        condvar => $cv,
+        driver  => $ardrone,
+    })
+
+Constructor.  The C<handler> param is an object that does the role 
+C<UAV::Pilot::Driver::ARDrone::VideoHandler>.  Param C<condvar> is an AnyEvent::CondVar.
+Param C<driver> is an instance of C<UAV::Pilot::Driver::ARDrone>.
+
+=head2 init_event_loop
+
+Starts the AnyEvent loop for processing video packets.
+
+=head2 emergency_restart
+
+The AR.Drone will close the connection when emergency mode is toggled.  Calling this will 
+close the stream on our end and reintitlize.
+
+You shouldn't have to call this directly.  Pass this object to your 
+C<UAV::Pilot::Control::ARDrone> instance and it will do it for you.
+
+=cut
