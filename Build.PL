@@ -13,6 +13,7 @@ my $build = Module::Build->new(
         'namespace::autoclean'    => 0,
         'AnyEvent'                => 0,
         'AnyEvent::ReadLine::Gnu' => 0,
+        'DateTime'                => 0,
         'File::HomeDir'           => 0,
         'File::ShareDir'          => 0,
         'File::Spec'              => 0,

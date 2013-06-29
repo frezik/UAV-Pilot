@@ -167,11 +167,11 @@ $last_nav_packet = $ardrone_mock->last_nav_packet;
 isa_ok( $last_nav_packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
 cmp_ok( $last_nav_packet->header, '==', 0x55667788, "Header (magic number) parsed" );
 
-cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_STOP, 'eq', 'USERBOX_CMD_STOP',
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_STOP, '==', 0,
     "Userbox stop config command" );
-cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_CANCEL, 'eq', 'USERBOX_CMD_CANCEL',
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_CANCEL, '==', 3,
     "Userbox cancel config command" );
-cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_START, 'eq', 'USERBOX_CMD_START',
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_START, '==', 1,
     "Userbox start config command" );
-cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_SCREENSHOT, 'eq', 'USERBOX_CMD_SCREENSHOT',
+cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_SCREENSHOT, '==', 2,
     "userbox screenshot config command" );

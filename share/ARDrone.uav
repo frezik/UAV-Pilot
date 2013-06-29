@@ -30,6 +30,9 @@ use UAV::Pilot::Driver::ARDrone::Video;
         flip_right
         emergency
         hover
+        start_userbox_nav_data
+        stop_userbox_nav_data
+        cancel_userbox_nav_data
     );
     foreach my $name (@NO_ARG_STRAIGHT_COMMANDS) {
         no strict 'refs';
@@ -84,6 +87,11 @@ use UAV::Pilot::Driver::ARDrone::Video;
             $dev->$name( @_ );
         };
     }
+}
+
+sub take_picture ($$;$)
+{
+    $dev->take_picture( @_ );
 }
 
 {

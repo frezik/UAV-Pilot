@@ -1,11 +1,11 @@
-use Test::More tests => 53;
+use Test::More tests => 57;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::Commands;
 
-my $LIB_DIR = 'uav_mods';
+my $LIB_DIR = 'share';
 
 
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
@@ -285,9 +285,29 @@ my @TESTS = (
         expect => [ ],
         name   => "hover command",
     },
+    {
+        cmd    => 'start_userbox_nav_data;',
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","1"\r} ],
+        name   => "start_userbox_nav_data",
+    },
+    {
+        cmd    => 'stop_userbox_nav_data;',
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","0"\r} ],
+        name   => "stop_userbox_nav_data",
+    },
+    {
+        cmd    => 'cancel_userbox_nav_data;',
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","3"\r} ],
+        name   => "cancel_userbox_nav_data",
+    },
+    {
+        cmd    => 'take_picture 5, 3, "20130629_173900";',
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","2,5,3,20130629_173900"\r} ],
+        name   => "take_picture",
+    },
 );
 foreach my $test (@TESTS) {
-    $seq++;
+    $seq++ if @{ $$test{expect} };
 
     my $cmd       = $$test{cmd};
     my $test_name = $$test{name};

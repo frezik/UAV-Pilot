@@ -2,6 +2,8 @@ package UAV::Pilot::Control::ARDrone;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use DateTime;
+
 
 with 'UAV::Pilot::Control';
 
@@ -312,6 +314,53 @@ sub convert_sdl_input
     return $float;
 }
 
+sub start_userbox_nav_data
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->sender->ARDRONE_USERBOX_CMD_START,
+    );
+    return 1;
+}
+
+sub stop_userbox_nav_data
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->sender->ARDRONE_USERBOX_CMD_STOP,
+    );
+    return 1;
+}
+
+sub cancel_userbox_nav_data
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->sender->ARDRONE_USERBOX_CMD_CANCEL,
+    );
+    return 1;
+}
+
+sub take_picture
+{
+    my ($self, $delay, $num_pics, $date) = @_;
+    $date = DateTime->now->strftime( '%Y%m%d_%H%M%S' )
+        if ! defined $date;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        sprintf( '%d,%d,%d,%s', 
+            $self->sender->ARDRONE_USERBOX_CMD_SCREENSHOT,
+            $delay,
+            $num_pics,
+            $date,
+        ),
+    );
+    return 1;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -415,6 +464,32 @@ If you run C<start_event_loop()>, the reset will happen for you.
 =head2 hover
 
 Stops the UAV and hovers in place.
+
+=head2 start_userbox_nav_data
+
+Starts saving navigation data on the UAV itself.  The file will be in the directory:
+
+    /boxes/flight_YYYYMMDD_hhmmss
+
+You can FTP into the AR.Drone to retrieve this.
+
+=head2 stop_userbox_nav_data
+
+Stops logging navigation data on the UAV.
+
+=head2 cancel_userbox_nav_data
+
+Stops logging navigation data on the UAV B<AND> deletes the log directory.
+
+=head2 take_picture
+
+    take_picture( $delay, $num_pics )
+
+Saves a picture in JPG format to:
+
+    /boxes/flight_YYYYMMDD_hhmmss/picture_YYYYMMDD_hhmmss.jpg
+
+You can FTP into the AR.Drone to retrieve this.
 
 =head1 FLIGHT ANIMATION METHODS
 

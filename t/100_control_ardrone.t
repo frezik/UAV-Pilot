@@ -1,4 +1,4 @@
-use Test::More tests => 59;
+use Test::More tests => 63;
 use v5.14;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Control::ARDrone;
@@ -325,9 +325,34 @@ my @TESTS = (
         expect => [ ],
         name   => "hover method executed",
     },
+    {
+        method => 'start_userbox_nav_data',
+        args   => [ ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","1"\r} ],
+        name   => "Started saving userbox nav data",
+    },
+    {
+        method => 'stop_userbox_nav_data',
+        args   => [ ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","0"\r} ],
+        name   => "Stopped saving userbox nav data",
+    },
+    {
+        method => 'cancel_userbox_nav_data',
+        args   => [ ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","3"\r} ],
+        name   => "Canceled saving userbox nav data",
+    },
+    {
+        method => 'take_picture',
+        args   => [ 5, 3, '20130629_173900' ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","2,5,3,20130629_173900"\r} ],
+            # Fix arg value
+        name   => "Take picture command",
+    },
 );
 foreach my $test (@TESTS) {
-    $seq++;
+    $seq++ if @{ $$test{expect} };
 
     my $method    = $$test{method};
     my $args      = $$test{args},
