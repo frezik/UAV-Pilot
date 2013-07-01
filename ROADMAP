@@ -1,6 +1,8 @@
 Version 0.4
 -----------
 * Reliable video packet handling
+* Document
+    * uav_video_dump
 
 Version 0.5
 -----------

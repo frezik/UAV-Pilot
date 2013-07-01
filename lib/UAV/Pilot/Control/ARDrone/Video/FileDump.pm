@@ -14,8 +14,8 @@ has 'fh' => (
 sub process_video_frame
 {
     my ($self, $packet) = @_;
-    my @payload = @{ $$packet{payload} };
-    $self->fh->print( pack( 'C*', @payload ) );
+    my $fh = $self->fh;
+    print $fh pack( 'C*', @$packet );
     return 1;
 }
 

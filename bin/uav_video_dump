@@ -51,16 +51,29 @@ my $driver_video = $FILE_IN
     })
     : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
 $driver_video->init_event_loop;
+my $start_time = time;
 $cv->recv;
 
 
 END { cleanup() }
 
 
+my $cleanup_done = 0;
 sub cleanup
 {
-     warn "Frames processed: " . $driver_video->frames_processed . "\n"
-        if defined $driver_video;
-     close $fh if defined $fh;
-     exit;
+    return if $cleanup_done;
+    my $end_time = time;
+
+    if( defined $driver_video ) {
+        my $num_frames = $driver_video->frames_processed;
+        warn "Frames processed: $num_frames \n";
+
+        my $duration = $end_time - $start_time;
+        my $fps = $num_frames / $duration;
+        warn "FPS: $fps\n";
+    }
+
+    close $fh if defined $fh;
+    $cleanup_done = 1;
+    exit;
 }
