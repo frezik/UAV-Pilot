@@ -77,3 +77,34 @@ sub cleanup
     $cleanup_done = 1;
     exit;
 }
+
+
+__END__
+
+=head1 SYNOPSIS
+
+    uav_video_dump --out /path/to/out_video.h264
+
+=head1 DESCRIPTION
+
+Reads the video stream from the Parrot AR.Drone and puts it in a file.
+
+If the C<--out> parameter is not specified, it will dump to C<STDOUT>.  In theory, something 
+like the below should show the video stream in real time:
+
+    uav_video_dump | vlc -
+
+But it hasn't worked for me yet.  I'd be interested in comments/patches from anybody who 
+figures it out.
+
+VLC seems to guess the FPS of the h264 stream correctly.  Mplayer doesn't seem to, and will 
+show a streaky mess when it guesses wrong.  The FPS setting will depend on your AR.Drone's 
+configuration.  You can try 30.  Set it in mplayer with:
+
+    mplayer -fps 30 /path/to/video.h264
+
+If you want to know the exact value, you can telnet into your AR.Drone (after connecting 
+to it on wifi, of course) and cat the file C</data/config.ini>.  The setting will be 
+under the C<[video]> section with the key C<codec_fps>.
+
+=cut

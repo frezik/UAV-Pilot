@@ -1,8 +1,8 @@
 Version 0.4
 -----------
 * Dump video to file
-    * Seems to work in vlc, but mplayer shows a streaky mess.  Comments/patches from people 
-      who know something about video encoding welcome
+    * If using mplayer to show the file, set the FPS manually with 
+      "mplayer -fps 30 /path/to/file.h264"
 * Rename anything that starts an event loop to init_event_loop()
 * Joystick to UAV control number conversion decoupled from ARDrone specifics
 * Add methods to UAV::Pilot::Control::ARDrone for userbox nav data and picture taking
