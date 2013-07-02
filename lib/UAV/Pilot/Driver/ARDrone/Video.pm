@@ -5,8 +5,8 @@ use namespace::autoclean;
 use IO::Socket::INET;
 use UAV::Pilot::Driver::ARDrone::VideoHandler;
 
-#use Data::Dumper 'Dumper';
-#$Data::Dumper::Sortkeys = 1;
+use Data::Dumper 'Dumper';
+$Data::Dumper::Sortkeys = 1;
 
 
 use constant READ_INTERVAL            => 1 / 15;
@@ -229,7 +229,7 @@ sub _read_remaining_pave_header
     $packet{header2_size}            = $bytes[38];
     $packet{reserved2}               = pack 'C2', @bytes[39,40];
     $packet{advertised_size}         = UAV::Pilot->convert_32bit_LE( @bytes[41..44] );
-    $packet{reserved3}               = pack 'C12', @bytes[44..56];
+    $packet{reserved3}               = pack 'C12', @bytes[45..56];
 
     $packet{dummy_data} = pack 'C*', @bytes[57..($remaining_size - 1)]
         if $remaining_size >= 57;

@@ -35,23 +35,24 @@ sub read_frame
     $packet{display_width}           = convert_16bit_LE( @bytes[16,17] );
     $packet{display_height}          = convert_16bit_LE( @bytes[18,19] );
     $packet{frame_number}            = convert_32bit_LE( @bytes[20..23] );
-    $packet{timestamp}               = convert_32bit_LE( @bytes[23..26] );
-    $packet{total_chunks}            = $bytes[27];
-    $packet{chunk_index}             = $bytes[28];
-    $packet{frame_type}              = pack 'C', $bytes[29];
-    $packet{control}                 = $bytes[30];
-    $packet{stream_byte_position_lw} = convert_32bit_LE( @bytes[31..34] );
-    $packet{stream_byte_position_uw} = convert_32bit_LE( @bytes[35..38] );
-    $packet{stream_id}               = convert_16bit_LE( @bytes[39,40] );
-    $packet{total_slices}            = $bytes[41];
-    $packet{slice_index}             = $bytes[42];
-    $packet{packet1_size}            = $bytes[43];
-    $packet{packet2_size}            = $bytes[44];
-    $packet{reserved2}               = pack 'C2', @bytes[45,46];
-    $packet{advertised_size}         = convert_32bit_LE( @bytes[47..50] );
-    $packet{reserved3}               = pack 'C12', @bytes[51..62];
+    $packet{timestamp}               = convert_32bit_LE( @bytes[24..27] );
+    $packet{total_chunks}            = $bytes[28];
+    $packet{chunk_index}             = $bytes[29];
+    $packet{frame_type}              = pack 'C', $bytes[30];
+    $packet{control}                 = $bytes[31];
+    $packet{stream_byte_position_lw} = convert_32bit_LE( @bytes[32..35] );
+    $packet{stream_byte_position_uw} = convert_32bit_LE( @bytes[36..39] );
+    $packet{stream_id}               = convert_16bit_LE( @bytes[40,41] );
+    $packet{total_slices}            = $bytes[42];
+    $packet{slice_index}             = $bytes[43];
+    $packet{packet1_size}            = $bytes[44];
+    $packet{packet2_size}            = $bytes[45];
+    $packet{reserved2}               = pack 'C2', @bytes[46,47];
+    $packet{advertised_size}         = convert_32bit_LE( @bytes[48..51] );
+    $packet{reserved3}               = pack 'C12', @bytes[52..63];
     warn "Bad PaVE signature, got: '$packet{signature}'\n"
         if PAVE_SIGNATURE ne $packet{signature};
+warn "Packet: " . Dumper \%packet;
 
     my ($payload, $continue_reading) = read_frame_payload(
         [@bytes[$packet{packet_size}..$#bytes]] ,
