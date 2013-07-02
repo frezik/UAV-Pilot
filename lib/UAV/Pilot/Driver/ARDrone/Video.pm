@@ -232,7 +232,7 @@ sub _read_remaining_pave_header
     $packet{reserved3}               = pack 'C12', @bytes[45..56];
 
     $packet{dummy_data} = pack 'C*', @bytes[57..($remaining_size - 1)]
-        if $remaining_size >= 57;
+        if $remaining_size > 57;
 
     $packet{video_codec_name}      = $self->CODEC_TYPES->{$packet{video_codec}};
     $packet{frame_type_name}       = $self->FRAME_TYPES->{$packet{frame_type}};
