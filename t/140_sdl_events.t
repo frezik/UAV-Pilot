@@ -1,5 +1,15 @@
-use Test::More tests => 3;
+use Test::More;
 use v5.14;
+BEGIN {
+    my $is_sdl_installed = do {
+        eval "use SDL ()";
+        $@ ? 0 : 1;
+    };
+    if(! $is_sdl_installed) {
+        plan skip_all => "SDL is not installed";
+    }
+};
+plan tests => 3;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::EventHandler;
 use AnyEvent;
