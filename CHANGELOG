@@ -1,3 +1,9 @@
+Version 0.5
+-----------
+* VideoHandler and FileDump moved into UAV::Pilot::Video namespace.  Handler role now named 
+  "H264Handler".
+
+
 Version 0.4
 -----------
 * Dump video to file

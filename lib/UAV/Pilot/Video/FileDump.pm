@@ -1,9 +1,9 @@
-package UAV::Pilot::Control::ARDrone::Video::FileDump;
+package UAV::Pilot::Video::FileDump;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 
-with 'UAV::Pilot::Driver::ARDrone::VideoHandler';
+with 'UAV::Pilot::Video::H264Handler';
 
 has 'fh' => (
     is  => 'ro',
@@ -11,7 +11,7 @@ has 'fh' => (
 );
 
 
-sub process_video_frame
+sub process_h264_frame
 {
     my ($self, $packet) = @_;
     my $fh = $self->fh;
@@ -28,12 +28,12 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Control::ARDrone::Video::FileDump
+  UAV::Pilot::Video::FileDump
 
 =head1 SYNOPSIS
 
     open( my $vid_out, '>', 'video.h264' ) or die $!;
-    my $file_dump = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+    my $file_dump = UAV::Pilot::Video::FileDump->new({
         fh => $vid_out,
     });
     my $video = UAV::Pilot::Driver::ARDrone::Video->new({

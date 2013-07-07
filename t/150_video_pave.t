@@ -4,7 +4,7 @@ use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
-use UAV::Pilot::Control::ARDrone::Video::FileDump;
+use UAV::Pilot::Video::FileDump;
 use File::Temp ();
 use AnyEvent;
 use Test::Moose;
@@ -24,10 +24,10 @@ my ($OUTPUT_FH, $OUTPUT_FILE) = File::Temp::tempfile( 'ardrone_video_stream.h264
 );
 
 
-my $control_video = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+my $control_video = UAV::Pilot::Video::FileDump->new({
     fh => $OUTPUT_FH,
 });
-does_ok( $control_video => 'UAV::Pilot::Driver::ARDrone::VideoHandler' );
+does_ok( $control_video => 'UAV::Pilot::Video::H264Handler' );
 
 my $cv = AnyEvent->condvar;
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({

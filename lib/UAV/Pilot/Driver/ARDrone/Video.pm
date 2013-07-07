@@ -3,7 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use IO::Socket::INET;
-use UAV::Pilot::Driver::ARDrone::VideoHandler;
+use UAV::Pilot::Video::H264Handler;
 
 use Data::Dumper 'Dumper';
 $Data::Dumper::Sortkeys = 1;
@@ -70,7 +70,7 @@ has '_io' => (
 );
 has 'handler' => (
     is  => 'ro',
-    isa => 'UAV::Pilot::Driver::ARDrone::VideoHandler',
+    isa => 'UAV::Pilot::Video::H264Handler',
 );
 has 'condvar' => (
     is  => 'ro',
@@ -257,7 +257,15 @@ sub _read_frame
     return 1 if $self->_byte_buffer_size < $frame_size;
 
     my @frame = $self->_byte_buffer_splice( 0, $frame_size );
-    $self->handler->process_video_frame( \@frame );
+    $self->handler->process_h264_frame(
+        \@frame,
+        @header{qw{
+            display_width
+            display_height
+            encoded_stream_width
+            encoded_stream_height
+        }}
+    );
 
     $self->_mode( $self->_MODE_PARTIAL_PAVE_HEADER );
     return $self->_read_partial_pave_header;

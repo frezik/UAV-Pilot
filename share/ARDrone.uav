@@ -1,5 +1,5 @@
 use UAV::Pilot::Exceptions;
-use UAV::Pilot::Control::ARDrone::Video::FileDump;
+use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Driver::ARDrone::Video;
 
 
@@ -163,7 +163,7 @@ sub take_picture ($$;$)
         open( my $fh, '>', $file ) or UAV::Pilot::IOException->throw({
             error => "Can't open [$file] for reading: $!\n",
         });
-        my $vid_dump = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+        my $vid_dump = UAV::Pilot::Video::FileDump->new({
             fh => $fh,
         });
 
