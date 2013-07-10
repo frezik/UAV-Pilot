@@ -1,4 +1,4 @@
-use Test::More tests => 21;
+use Test::More tests => 23;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -23,6 +23,8 @@ use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installe
 use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
 use_ok( 'UAV::Pilot::Video::H264Handler' );
 use_ok( 'UAV::Pilot::Video::FileDump' );
+use_ok( 'UAV::Pilot::Video::DisplayHandler' );
+use_ok( 'UAV::Pilot::Video::H264Decoder' );
 
 SKIP: {
     skip "SDL not installed", 4 unless $is_sdl_installed;

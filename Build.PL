@@ -6,8 +6,12 @@ my $build = Module::Build->new(
     module_name    => 'UAV::Pilot',
     dist_abstract  => 'Control UAVs',
     dist_author    => q{Timm Murray <tmurray@wumpus-cave.net>},
-    dist_version   => '0.4',
+    dist_version   => '0.5',
     license        => 'bsd',
+    needs_compiler => 1,
+    build_requires => {
+        'ExtUtils::CBuilder' => 0,
+    },
     requires       => {
         perl                      => '>= 5.12.0',
         'namespace::autoclean'    => 0,

@@ -6,8 +6,6 @@ Version 0.5
 * Allow other actions to be mapped to joystick buttons (flips and such)
 * Override conf file for Joystick
 * Wiimote control (?)
-* API Change: VideoHandler should be under UAV::Pilot::Video, change name to H264Handler,
-  change required method to 'process_h264_frame'
 
 Version 6
 -----------
