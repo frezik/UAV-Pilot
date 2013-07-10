@@ -40,7 +40,7 @@ with 'UAV::Pilot::Video::RawHandler';
 sub process_raw_frame
 {
     my ($self, $frame) = @_;
-    pass( "Frame decoded" );
+    Test::More::pass( "Frame decoded" );
     return 1;
 }
 

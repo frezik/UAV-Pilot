@@ -3,10 +3,8 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
-require Exporter;
 require DynaLoader;
-our @ISA = qw(Exporter DynaLoader);
-our @EXPORT = qw();
+our @ISA = qw(DynaLoader);
 bootstrap UAV::Pilot::Video::H264Decoder;
 
 
