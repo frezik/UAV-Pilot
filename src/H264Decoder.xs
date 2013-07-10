@@ -2,10 +2,21 @@
 #include "perl.h"
 #include "XSUB.h"
 
+#include <libavcodec/avcodec.h>
+
 
 MODULE = UAV::Pilot::Video::H264Decoder    PACKAGE = UAV::Pilot::Video::H264Decoder 
 
-void
-process_h264_frame()
+int
+process_h264_frame( self, frame, width, height, encoded_width, encoded_height )
+        SV * self
+        SV * frame
+        int width
+        int height
+        int encoded_width
+        int encoded_height
     CODE:
-        printf("# XS process_h264_frame() called\n");
+        printf("not ok - H264Decoder xs not fully implemented");
+        RETVAL = 1;
+    OUTPUT:
+        RETVAL

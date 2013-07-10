@@ -17,21 +17,18 @@ package MockH264Handler;
 use Moose;
 with 'UAV::Pilot::Video::H264Handler';
 
-has 'last_args' => (
-    is      => 'rw',
-    isa     => 'ArrayRef[Item]',
-    default => sub {[]},
-);
-has 'cv' => (
+has 'real_vid' => (
     is  => 'ro',
-    isa => 'AnyEvent::CondVar',
+    isa => 'UAV::Pilot::Video::H264Decoder',
 );
 
 sub process_h264_frame
 {
     my ($self, @args) = @_;
-    $self->last_args( \@args );
-    $self->cv->send( 1 );
+    $self->real_vid->process_h264_frame( @args );
+    exit 0;
+
+    # Never get here
     return 1;
 }
 
@@ -59,7 +56,7 @@ does_ok( $video => 'UAV::Pilot::Video::H264Handler' );
 
 my $cv = AnyEvent->condvar;
 my $mock_video = MockH264Handler->new({
-    cv => $cv,
+    real_vid => $video,
 });
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
@@ -81,14 +78,12 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
     after => MAX_WAIT_TIME,
     cb    => sub {
         fail( 'Did not get a frame after ' . MAX_WAIT_TIME . ' seconds' );
-        $cv->send( 0 );
+        exit 1;
+
+        # Never get here
         $timeout_timer;
     },
 );
 
 $driver_video->init_event_loop;
-my $recv = $cv->recv;
-exit 0 unless $recv;
-
-my $vid_args = $mock_video->last_args;
-my $h264_decoder = $mock_video->process_h264_frame( @$vid_args );
+$cv->recv;
