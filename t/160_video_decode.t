@@ -1,4 +1,4 @@
-use Test::More tests => 2;
+use Test::More tests => 4;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -9,7 +9,8 @@ use File::Temp ();
 use AnyEvent;
 use Test::Moose;
 
-use constant MAX_WAIT_TIME => 5;
+use constant VIDEO_DUMP_FILE => 't_data/ardrone_video_stream_dump.bin';
+use constant MAX_WAIT_TIME   => 5;
 
 
 package MockH264Handler;
@@ -17,29 +18,29 @@ use Moose;
 with 'UAV::Pilot::Video::H264Handler';
 
 has 'last_args' => (
-    is      => 'ro',
+    is      => 'rw',
     isa     => 'ArrayRef[Item]',
     default => sub {[]},
 );
 has 'cv' => (
     is  => 'ro',
-    isa => 'AnyEvent::Condvar',
+    isa => 'AnyEvent::CondVar',
 );
 
 sub process_h264_frame
 {
     my ($self, @args) = @_;
     $self->last_args( \@args );
-    $cv->send( 1 );
+    $self->cv->send( 1 );
     return 1;
 }
 
 
 package MockDisplay;
 use Moose;
-with 'UAV::Pilot::Video::DisplayHandler';
+with 'UAV::Pilot::Video::RawHandler';
 
-sub display_frame
+sub process_raw_frame
 {
     my ($self, $frame) = @_;
     pass( "Frame decoded" );
@@ -49,7 +50,7 @@ sub display_frame
 
 package main;
 
-my $display = Mock::Display->new;
+my $display = MockDisplay->new;
 my $video = UAV::Pilot::Video::H264Decoder->new({
     display => $display,
 });

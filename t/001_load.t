@@ -23,7 +23,7 @@ use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installe
 use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
 use_ok( 'UAV::Pilot::Video::H264Handler' );
 use_ok( 'UAV::Pilot::Video::FileDump' );
-use_ok( 'UAV::Pilot::Video::DisplayHandler' );
+use_ok( 'UAV::Pilot::Video::RawHandler' );
 use_ok( 'UAV::Pilot::Video::H264Decoder' );
 
 SKIP: {

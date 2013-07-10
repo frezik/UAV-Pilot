@@ -2,6 +2,10 @@ use v5.12;
 use warnings;
 use Module::Build;
 
+# TODO
+# Use 'auto_features' option to make FFmpeg optional.  Tests will also need to be optional.
+
+
 my $build = Module::Build->new(
     module_name    => 'UAV::Pilot',
     dist_abstract  => 'Control UAVs',
@@ -10,7 +14,7 @@ my $build = Module::Build->new(
     license        => 'bsd',
     needs_compiler => 1,
     build_requires => {
-        'ExtUtils::CBuilder' => 0,
+        'ExtUtils::CBuilder' => 0, # For FFmpeg; make optional with that
     },
     requires       => {
         perl                      => '>= 5.12.0',
@@ -29,12 +33,24 @@ my $build = Module::Build->new(
         'Test::More'              => 0,
         'Throwable'               => 0,
         'YAML'                    => 0,
+        'XSLoader'                => 0, # For FFmpeg; make optional with that
     },
     recommends => {
         'SDL'          => '>= 2.5',
         'Getopt::Long' => 0,
     },
     share_dir => 'share',
+
+    # All the below is for FFmpeg; make optional with that
+    xs_files             => {
+        'src/H264Decoder.xs' => 'lib/UAV/Pilot/Video/H264Decoder.xs',
+    },
+    dynamic_config       => 1,
+    c_source             => 'src',
+    allow_pureperl       => 0, # Set to 1 when FFmpeg made optional
+    # Not sure how portable this is
+    extra_compiler_flags => scalar `pkg-config --cflags libavcodec`,
+    extra_linker_flags   => scalar `pkg-config --libs libavcodec`,
 );
 
 $build->create_build_script;
