@@ -9,6 +9,7 @@
 
 #define MY_CXT_KEY "UAV::Pilot::Video::H264Decoder::_guts" XS_VERSION
 
+/*
 #define THROW_XS_ERROR(error_str) \
         ENTER;\
         SAVETMPS;\
@@ -20,6 +21,10 @@
         call_method( "throw", G_DISCARD );\
         FREETMPS;\
         LEAVE;
+*/
+#define THROW_XS_ERROR(error_str)\
+    warn( "Error: %s", error_str );\
+    exit(1);
 
 /* Global Data
  * This won't work if we have many decoder objects open, which means this class will be 
@@ -49,13 +54,11 @@ BOOT:
     /* find the h264 video decoder */
     MY_CXT.codec = avcodec_find_decoder(CODEC_ID_H264);
     if (!MY_CXT.codec) {
-        dSP;
         THROW_XS_ERROR( "Codec H264 not found" );
     }
 
     MY_CXT.c = avcodec_alloc_context3(MY_CXT.codec);
     if (!MY_CXT.c) {
-        dSP;
         THROW_XS_ERROR( "Could not allocate video codec context" );
     }
     if(MY_CXT.codec->capabilities&CODEC_CAP_TRUNCATED) {
@@ -67,13 +70,11 @@ BOOT:
     * available in the bitstream. */
     /* open it */
     if (avcodec_open2(MY_CXT.c, MY_CXT.codec, NULL) < 0) {
-        dSP;
         THROW_XS_ERROR( "Could not open codec" );
     }
 
     MY_CXT.frame = avcodec_alloc_frame();
     if (!MY_CXT.frame) {
-        dSP;
         THROW_XS_ERROR( "Could not allocate frame" );
     }
     MY_CXT.frame_count = 0;
@@ -102,7 +103,6 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
 
         uint8_t *pkt_data = malloc( incoming_frame_length * sizeof(uint8_t) );
         if( NULL == pkt_data ) {
-            dSP;
             THROW_XS_ERROR( "Could not allocate memory for packet data" );
         }
 
@@ -122,7 +122,6 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         free( pkt_data );
         pkt_data = NULL;
         if( len < 0 ) {
-            dSP;
             THROW_XS_ERROR( "Error decoding frame" );
         }
 

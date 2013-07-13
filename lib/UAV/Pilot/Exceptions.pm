@@ -3,19 +3,18 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
-use overload (
-    '""' => sub {
-        shift->error;
-    },
-    fallback => 1
-);
-
 with 'Throwable';
 
 has 'error' => (
     is  => 'rw',
     isa => 'Str',
 );
+
+sub to_string
+{
+    my ($self) = @_;
+    return $self->error;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
