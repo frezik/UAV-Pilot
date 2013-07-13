@@ -96,7 +96,7 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         SV* tmp_sv;
         AV* incoming_frame_av = (AV*) SvRV(incoming_frame);
         AV* decoded_frame_av = newAV();
-        I32 incoming_frame_length = av_top_index( incoming_frame_av ) + 1;
+        I32 incoming_frame_length = av_len( incoming_frame_av ) + 1;
         uint8_t* decoded_frame;
         AVPacket avpkt = MY_CXT.avpkt;
 

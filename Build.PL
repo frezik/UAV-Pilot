@@ -46,7 +46,7 @@ my $build = Module::Build->new(
     dynamic_config       => 1,
     allow_pureperl       => 0, # Set to 1 when FFmpeg made optional
     # Not sure how portable this is
-    extra_compiler_flags => scalar `pkg-config --cflags libavcodec`,
+    extra_compiler_flags => '-Wall ' . scalar `pkg-config --cflags libavcodec`,
     extra_linker_flags   => scalar `pkg-config --libs libavcodec`,
 );
 
