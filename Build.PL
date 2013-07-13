@@ -42,11 +42,8 @@ my $build = Module::Build->new(
     share_dir => 'share',
 
     # All the below is for FFmpeg; make optional with that
-    xs_files             => {
-        'src/H264Decoder.xs' => 'lib/UAV/Pilot/Video/H264Decoder.xs',
-    },
+    include_dirs         => ['.'],
     dynamic_config       => 1,
-    c_source             => 'src',
     allow_pureperl       => 0, # Set to 1 when FFmpeg made optional
     # Not sure how portable this is
     extra_compiler_flags => scalar `pkg-config --cflags libavcodec`,
