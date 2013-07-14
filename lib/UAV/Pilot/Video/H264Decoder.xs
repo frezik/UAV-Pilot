@@ -9,6 +9,8 @@
 
 #define MY_CXT_KEY "UAV::Pilot::Video::H264Decoder::_guts" XS_VERSION
 
+#define CODEC_ID CODEC_ID_H264
+
 /*
 #define THROW_XS_ERROR(error_str) \
         ENTER;\
@@ -52,7 +54,8 @@ BOOT:
     memset(MY_CXT.inbuf + INBUF_SIZE, 0, FF_INPUT_BUFFER_PADDING_SIZE);
 
     /* find the h264 video decoder */
-    MY_CXT.codec = avcodec_find_decoder(CODEC_ID_H264);
+    avcodec_register_all();
+    MY_CXT.codec = avcodec_find_decoder( CODEC_ID );
     if (!MY_CXT.codec) {
         THROW_XS_ERROR( "Codec H264 not found" );
     }
