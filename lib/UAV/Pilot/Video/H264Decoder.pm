@@ -10,6 +10,12 @@ bootstrap UAV::Pilot::Video::H264Decoder;
 
 with 'UAV::Pilot::Video::H264Handler';
 
+has 'display' => (
+    is  => 'ro',
+    #isa => 'UAV::Pilot::Video::RawHandler',
+    isa => 'Item',
+);
+
 
 # Helper sub to simplifiy throwing exceptions in the xs code
 sub _throw_error

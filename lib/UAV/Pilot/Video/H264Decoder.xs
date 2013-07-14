@@ -95,7 +95,7 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         dMY_CXT;
     CODE:
         int len, got_frame, decoded_frame_size, i;
-        SV* real_vid;
+        SV* display;
         SV** tmp_sv_star;
         SV* tmp_sv;
         AV* incoming_frame_av = (AV*) SvRV(incoming_frame);
@@ -138,7 +138,7 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
             av_push( decoded_frame_av, tmp_sv );
         }
 
-        /* Call $self->real_vid() */
+        /* Call $self->display() */
         dSP;
         ENTER;
         SAVETMPS;
@@ -146,19 +146,19 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         PUSHMARK(SP);
         XPUSHs( self );
         PUTBACK;
-        call_method( "real_vid", G_SCALAR );
+        call_method( "display", G_SCALAR );
 
         SPAGAIN;
-        real_vid = POPs;
-        FREETMPS;
-        LEAVE;
+        display = POPs;
+        //FREETMPS;
+        //LEAVE;
 
-        /* Call $real_vid->process_raw_frame() */
-        ENTER;
-        SAVETMPS;
+        /* Call $display->process_raw_frame() */
+        //ENTER;
+        //SAVETMPS;
 
         PUSHMARK(SP);
-        XPUSHs( real_vid );
+        XPUSHs( display );
         XPUSHs( sv_2mortal(newRV_inc((SV *) decoded_frame_av)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->width)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->height)) );

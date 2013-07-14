@@ -5,6 +5,7 @@ use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::Video::H264Decoder;
+use UAV::Pilot::Video::Mock::RawHandler;
 use File::Temp ();
 use AnyEvent;
 use Test::Moose;
@@ -25,7 +26,8 @@ has 'real_vid' => (
 sub process_h264_frame
 {
     my ($self, @args) = @_;
-    $self->real_vid->process_h264_frame( @args );
+    my $real_vid = $self->real_vid;
+    $real_vid->process_h264_frame( @args );
     exit 0;
 
     # Never get here
@@ -33,21 +35,11 @@ sub process_h264_frame
 }
 
 
-package MockDisplay;
-use Moose;
-with 'UAV::Pilot::Video::RawHandler';
-
-sub process_raw_frame
-{
-    my ($self, $frame) = @_;
-    Test::More::pass( "Frame decoded" );
-    return 1;
-}
-
-
 package main;
 
-my $display = MockDisplay->new;
+my $display = UAV::Pilot::Video::Mock::RawHandler->new({
+    cb => sub { pass( "Frame decoded" ) },
+});
 my $video = UAV::Pilot::Video::H264Decoder->new({
     display => $display,
 });
