@@ -1,4 +1,4 @@
-use Test::More tests => 24;
+use Test::More tests => 25;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -21,6 +21,7 @@ use_ok( 'UAV::Pilot::Commands' );
 use_ok( 'UAV::Pilot::EasyEvent' );
 use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installed
 use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
+use_ok( 'UAV::Pilot::SDL::Video' );
 use_ok( 'UAV::Pilot::Video::H264Handler' );
 use_ok( 'UAV::Pilot::Video::FileDump' );
 use_ok( 'UAV::Pilot::Video::RawHandler' );
