@@ -133,6 +133,12 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         decoded_frame = MY_CXT.frame->data[0];
         decoded_frame_size = MY_CXT.frame->linesize[0];
 
+        warn( "# Num data pointers is [%d]\n", AV_NUM_DATA_POINTERS );
+        for( i = 0; i < AV_NUM_DATA_POINTERS; i++ ) {
+            warn( "# frame->data[%d], entry 0, is [%d]\n", i, MY_CXT.frame->data[i][0] );
+            warn( "# frame->linesize[%d] is [%d]\n", i, MY_CXT.frame->linesize[i] );
+        }
+
         for( i = 0; i < decoded_frame_size; i++ ) {
             tmp_sv = newSViv( (IV) decoded_frame[i] );
             av_push( decoded_frame_av, tmp_sv );

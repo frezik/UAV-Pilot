@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 5;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -38,7 +38,14 @@ sub process_h264_frame
 package main;
 
 my $display = UAV::Pilot::Video::Mock::RawHandler->new({
-    cb => sub { pass( "Frame decoded" ) },
+    cb => sub {
+        my ($self, $pixels, $width, $height) = @_;
+        pass( "Frame decoded" );
+
+        my $expect_pixels = $width * $height;
+        cmp_ok( scalar(@$pixels), '==', $expect_pixels, 
+            "Expect ($width * $height) pixels in RGBA format" );
+    },
 });
 my $video = UAV::Pilot::Video::H264Decoder->new({
     display => $display,
@@ -70,6 +77,7 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
     after => MAX_WAIT_TIME,
     cb    => sub {
         fail( 'Did not get a frame after ' . MAX_WAIT_TIME . ' seconds' );
+        fail( 'Stub failure for test count matching' );
         exit 1;
 
         # Never get here
