@@ -8,15 +8,17 @@ use SDLx::Text;
 use SDL::Event;
 use SDL::Events;
 use SDL::Video qw{ :surface :video };
+use SDL::Overlay;
 
 
 use constant {
-    SDL_TITLE  => 'Video Output',
-    SDL_WIDTH  => 640,
-    SDL_HEIGHT => 480,
-    SDL_DEPTH  => 32,
-    SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
-    BG_COLOR   => [ 0, 255, 0 ],
+    SDL_TITLE        => 'Video Output',
+    SDL_WIDTH        => 640,
+    SDL_HEIGHT       => 480,
+    SDL_DEPTH        => 32,
+    SDL_FLAGS        => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
+    SDL_OVERLAY_FLAG => SDL_YV12_OVERLAY,
+    BG_COLOR         => [ 0, 255, 0 ],
 };
 
 with 'UAV::Pilot::Video::RawHandler';
@@ -31,6 +33,11 @@ has '_last_vid_frame' => (
 has '_sdl' => (
     is  => 'ro',
     isa => 'SDLx::App',
+);
+has '_sdl_overlay' => (
+    is     => 'ro',
+    isa    => 'SDL::Overlay',
+    writer => '_set_sdl_overlay',
 );
 has '_bg_rect' => (
     is     => 'ro',
@@ -71,14 +78,18 @@ sub BUILDARGS
         }
         return 1;
     });
+
+    my $sdl_overlay = SDL::Overlay->new( $class->SDL_WIDTH, $class->SDL_HEIGHT,
+        $class->SDL_OVERLAY_FLAG, $sdl );
     my $bg_rect = SDL::Rect->new( 0, 0, $class->SDL_WIDTH, $class->SDL_HEIGHT );
     my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
 
-    $$args{_sdl}        = $sdl;
-    $$args{_bg_rect}    = $bg_rect;
-    $$args{_bg_color}   = $bg_color;
-    $$args{_width}      = $class->SDL_WIDTH;
-    $$args{_height}     = $class->SDL_HEIGHT;
+    $$args{_sdl}         = $sdl;
+    $$args{_sdl_overlay} = $sdl_overlay;
+    $$args{_bg_rect}     = $bg_rect;
+    $$args{_bg_color}    = $bg_color;
+    $$args{_width}       = $class->SDL_WIDTH;
+    $$args{_height}      = $class->SDL_HEIGHT;
     return $args;
 }
 
@@ -125,9 +136,12 @@ sub process_events
 sub _set_width_height
 {
     my ($self, $width, $height) = @_;
-    my $bg_rect = SDL::Rect->new( 0, 0, $width, $height );
+    my $sdl         = $self->_sdl;
+    my $bg_rect     = SDL::Rect->new( 0, 0, $width, $height );
+    my $sdl_overlay = SDL::Overlay->new( $width, $height, $self->SDL_OVERLAY_FLAG, $sdl );
 
     $self->_set_bg_rect( $bg_rect );
+    $self->_set_sdl_overlay( $sdl_overlay );
     $self->_set_width( $width );
     $self->_set_height( $height );
 
