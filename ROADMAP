@@ -6,6 +6,7 @@ Version 0.5
 * Allow other actions to be mapped to joystick buttons (flips and such)
 * Override conf file for Joystick
 * Wiimote control (?)
+* Allow passing iface to uav script
 * Documentation
     * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder
