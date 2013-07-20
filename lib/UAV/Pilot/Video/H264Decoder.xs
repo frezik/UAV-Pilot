@@ -67,7 +67,7 @@ BOOT:
     if(MY_CXT.codec->capabilities&CODEC_CAP_TRUNCATED) {
         MY_CXT.c->flags|= CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
     }
-    MY_CXT.c->pix_fmt = PIX_FMT_RGBA;
+    MY_CXT.c->pix_fmt = PIX_FMT_YUV420P;
     /* For some codecs, such as msmpeg4 and mpeg4, width and height
     * MUST be initialized there because this information is not
     * available in the bitstream. */
@@ -83,6 +83,42 @@ BOOT:
     MY_CXT.frame_count = 0;
 }
 
+CLEANUP:
+{
+    av_free( frame );
+    av_free( codec );
+    av_free( c );
+    av_free( avpkt );
+}
+
+SV*
+_get_last_frame_sv( self )
+        SV* self
+    PREINIT:
+        dMY_CXT;
+    CODE:
+        uint8_t* decoded_frame = MY_CXT.frame->data[0];
+        int decoded_frame_size = MY_CXT.frame->linesize[0];
+        int i;
+        SV* tmp_sv;
+        AV* decoded_frame_av = newAV();
+
+        warn( "# Num data pointers is [%d]\n", AV_NUM_DATA_POINTERS );
+        for( i = 0; i < AV_NUM_DATA_POINTERS; i++ ) {
+            warn( "# frame->data[%d], entry 0, is [%d]\n", i, MY_CXT.frame->data[i][0] );
+            warn( "# frame->linesize[%d] is [%d]\n", i, MY_CXT.frame->linesize[i] );
+        }
+
+        for( i = 0; i < decoded_frame_size; i++ ) {
+            tmp_sv = newSViv( (IV) decoded_frame[i] );
+            av_push( decoded_frame_av, tmp_sv );
+        }
+
+        RETVAL = newRV_inc((SV *) decoded_frame_av);
+    OUTPUT:
+        RETVAL
+
+
 int
 process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_height )
         SV * self
@@ -94,15 +130,14 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
     PREINIT:
         dMY_CXT;
     CODE:
-        int len, got_frame, decoded_frame_size, i;
+        int len, got_frame, i;
         SV* display;
+        SV* get_last_frame_sv_call;
         SV** tmp_sv_star;
-        SV* tmp_sv;
         AV* incoming_frame_av = (AV*) SvRV(incoming_frame);
-        AV* decoded_frame_av = newAV();
         I32 incoming_frame_length = av_len( incoming_frame_av ) + 1;
-        uint8_t* decoded_frame;
         AVPacket avpkt = MY_CXT.avpkt;
+        PADOFFSET self_pad_index;
 
         uint8_t *pkt_data = malloc( incoming_frame_length * sizeof(uint8_t) );
         if( NULL == pkt_data ) {
@@ -130,19 +165,10 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
 
         MY_CXT.frame_count++;
 
-        decoded_frame = MY_CXT.frame->data[0];
-        decoded_frame_size = MY_CXT.frame->linesize[0];
+        self_pad_index = pad_add_name_pvs( "$self", 0, NULL, NULL );
+        PAD_SETSV( self_pad_index, self );
 
-        warn( "# Num data pointers is [%d]\n", AV_NUM_DATA_POINTERS );
-        for( i = 0; i < AV_NUM_DATA_POINTERS; i++ ) {
-            warn( "# frame->data[%d], entry 0, is [%d]\n", i, MY_CXT.frame->data[i][0] );
-            warn( "# frame->linesize[%d] is [%d]\n", i, MY_CXT.frame->linesize[i] );
-        }
-
-        for( i = 0; i < decoded_frame_size; i++ ) {
-            tmp_sv = newSViv( (IV) decoded_frame[i] );
-            av_push( decoded_frame_av, tmp_sv );
-        }
+        get_last_frame_sv_call = eval_pv( "sub { $self->_get_last_frame_sv }", 1 );
 
         /* Call $self->display() */
         dSP;
@@ -165,9 +191,9 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
 
         PUSHMARK(SP);
         XPUSHs( display );
-        XPUSHs( sv_2mortal(newRV_inc((SV *) decoded_frame_av)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->width)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->height)) );
+        XPUSHs( sv_2mortal(get_last_frame_sv_call) );
         PUTBACK;
         call_method( "process_raw_frame", G_DISCARD );
 
