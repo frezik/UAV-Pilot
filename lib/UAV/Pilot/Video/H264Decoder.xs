@@ -92,7 +92,7 @@ CLEANUP:
 }
 
 SV*
-_get_last_frame_sv( self )
+get_last_frame_pixels_arrayref( self )
         SV* self
     PREINIT:
         dMY_CXT;
@@ -132,12 +132,10 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
     CODE:
         int len, got_frame, i;
         SV* display;
-        SV* get_last_frame_sv_call;
         SV** tmp_sv_star;
         AV* incoming_frame_av = (AV*) SvRV(incoming_frame);
         I32 incoming_frame_length = av_len( incoming_frame_av ) + 1;
         AVPacket avpkt = MY_CXT.avpkt;
-        PADOFFSET self_pad_index;
 
         uint8_t *pkt_data = malloc( incoming_frame_length * sizeof(uint8_t) );
         if( NULL == pkt_data ) {
@@ -165,11 +163,6 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
 
         MY_CXT.frame_count++;
 
-        self_pad_index = pad_add_name_pvs( "$self", 0, NULL, NULL );
-        PAD_SETSV( self_pad_index, self );
-
-        get_last_frame_sv_call = eval_pv( "sub { $self->_get_last_frame_sv }", 1 );
-
         /* Call $self->display() */
         dSP;
         ENTER;
@@ -193,7 +186,7 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         XPUSHs( display );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->width)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->height)) );
-        XPUSHs( sv_2mortal(get_last_frame_sv_call) );
+        XPUSHs( self );
         PUTBACK;
         call_method( "process_raw_frame", G_DISCARD );
 

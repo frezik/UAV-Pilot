@@ -18,3 +18,5 @@ Version 6
 * Error message formatting in REPL
 * Facial Recognition with Image::ObjectDetect
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
+* Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
+  Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.

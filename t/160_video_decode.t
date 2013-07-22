@@ -1,4 +1,4 @@
-use Test::More tests => 7;
+use Test::More tests => 8;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -39,11 +39,13 @@ package main;
 
 my $display = UAV::Pilot::Video::Mock::RawHandler->new({
     cb => sub {
-        my ($self, $width, $height, $fetch_pixels_arrayref) = @_;
+        my ($self, $width, $height, $decoder) = @_;
         cmp_ok( $width,  '==', 640, "Width passed" );
         cmp_ok( $height, '==', 360, "Height passed" );
 
-        my $pixels = $fetch_pixels_arrayref->();
+        isa_ok( $decoder => 'UAV::Pilot::Video::H264Decoder' );
+
+        my $pixels = $decoder->get_last_frame_pixels_arrayref;
         cmp_ok( ref($pixels), 'eq', 'ARRAY', "Got array ref of pixels" );
         my $expect_pixels = $width * $height;
         cmp_ok( scalar(@$pixels), '==', $expect_pixels, 
@@ -80,7 +82,7 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
     after => MAX_WAIT_TIME,
     cb    => sub {
         fail( 'Did not get a frame after ' . MAX_WAIT_TIME . ' seconds' );
-        fail( 'Stub failure for test count matching' ) for 1 .. 3;
+        fail( 'Stub failure for test count matching' ) for 1 .. 4;
         exit 1;
 
         # Never get here
