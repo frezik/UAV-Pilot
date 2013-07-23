@@ -96,13 +96,13 @@ sub BUILDARGS
 
 sub process_raw_frame
 {
-    my ($self, $pixels, $width, $height) = @_;
+    my ($self, $width, $height, $decoder) = @_;
 
     if( ($width != $self->_width) || ($height != $self->_height) ) {
         $self->_set_width_height( $width, $height );
     }
 
-    $self->_last_vid_frame( $pixels );
+    $self->_last_vid_frame( $decoder->get_last_frame_pixels_arrayref );
     return 1;
 }
 
@@ -115,7 +115,8 @@ sub process_events
         $self->_bg_color,
     );
     my $last_vid_frame = $self->_last_vid_frame;
-    #return 1 unless $self->_last_vid_frame;
+    return 1 unless defined $last_vid_frame;
+    my @last_vid_frame = @$last_vid_frame;
 
     my $sdl = $self->_sdl;
     my $bg_rect = $self->_bg_rect;
@@ -125,10 +126,22 @@ sub process_events
         $self->_bg_color,
     );
 
-    #my $pixels = $sdl->get_pixels_ptr;
-    #$pixels = pack 'L*', @$last_vid_frame;
+    my $overlay = $self->_sdl_overlay;
+    SDL::Video::lock_YUV_overlay( $overlay );
+    # The order of array indexen is correct, according to:
+    # http://dranger.com/ffmpeg/tutorial02.html
+    my $pitches = $overlay->pitches;
+    $$pitches[0] = scalar @{ $last_vid_frame[0] };
+    $$pitches[2] = scalar @{ $last_vid_frame[1] };
+    $$pitches[1] = scalar @{ $last_vid_frame[2] };
+    my $pixels  = $overlay->pixels;
+    $$pixels[0] = $last_vid_frame[0];
+    $$pixels[2] = $last_vid_frame[1];
+    $$pixels[1] = $last_vid_frame[2];
+    SDL::Video::unlock_YUV_overlay( $overlay );
 
     SDL::Video::update_rects( $sdl, $bg_rect );
+    SDL::Video::display_YUV_overlay( $sdl, $bg_rect );
     return 1;
 }
 

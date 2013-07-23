@@ -47,9 +47,7 @@ my $display = UAV::Pilot::Video::Mock::RawHandler->new({
 
         my $pixels = $decoder->get_last_frame_pixels_arrayref;
         cmp_ok( ref($pixels), 'eq', 'ARRAY', "Got array ref of pixels" );
-        my $expect_pixels = $width * $height;
-        cmp_ok( scalar(@$pixels), '==', $expect_pixels, 
-            "Expect ($width * $height) pixels in RGBA format" );
+        cmp_ok( scalar(@$pixels), '==', 3, "Got 3 channels in YUV420P format" );
     },
 });
 my $video = UAV::Pilot::Video::H264Decoder->new({

@@ -6,10 +6,14 @@
 #include <libavcodec/avcodec.h>
 
 #define INBUF_SIZE 4096
+#define AV_FRAME_DATA_SIZE 3
+#define AV_FRAME_DATA_Y_CHANNEL 0
+#define AV_FRAME_DATA_U_CHANNEL 1
+#define AV_FRAME_DATA_V_CHANNEL 2
+#define CODEC_ID CODEC_ID_H264
 
 #define MY_CXT_KEY "UAV::Pilot::Video::H264Decoder::_guts" XS_VERSION
 
-#define CODEC_ID CODEC_ID_H264
 
 /*
 #define THROW_XS_ERROR(error_str) \
@@ -97,23 +101,30 @@ get_last_frame_pixels_arrayref( self )
     PREINIT:
         dMY_CXT;
     CODE:
-        uint8_t* decoded_frame = MY_CXT.frame->data[0];
-        int decoded_frame_size = MY_CXT.frame->linesize[0];
         int i;
         SV* tmp_sv;
+        AV* decoded_frame_y_av = newAV();
+        AV* decoded_frame_u_av = newAV();
+        AV* decoded_frame_v_av = newAV();
         AV* decoded_frame_av = newAV();
 
-        warn( "# Num data pointers is [%d]\n", AV_NUM_DATA_POINTERS );
-        for( i = 0; i < AV_NUM_DATA_POINTERS; i++ ) {
-            warn( "# frame->data[%d], entry 0, is [%d]\n", i, MY_CXT.frame->data[i][0] );
-            warn( "# frame->linesize[%d] is [%d]\n", i, MY_CXT.frame->linesize[i] );
+        // TODO Sloppy repetition.  How best to fix this?  Macro, maybe?
+        for( i = 0; i < MY_CXT.frame->linesize[AV_FRAME_DATA_Y_CHANNEL]; i++ ) {
+            tmp_sv = newSViv( (IV) MY_CXT.frame->data[AV_FRAME_DATA_Y_CHANNEL][i] );
+            av_push( decoded_frame_y_av, tmp_sv );
+        }
+        for( i = 0; i < MY_CXT.frame->linesize[AV_FRAME_DATA_U_CHANNEL]; i++ ) {
+            tmp_sv = newSViv( (IV) MY_CXT.frame->data[AV_FRAME_DATA_U_CHANNEL][i] );
+            av_push( decoded_frame_u_av, tmp_sv );
+        }
+        for( i = 0; i < MY_CXT.frame->linesize[AV_FRAME_DATA_V_CHANNEL]; i++ ) {
+            tmp_sv = newSViv( (IV) MY_CXT.frame->data[AV_FRAME_DATA_V_CHANNEL][i] );
+            av_push( decoded_frame_v_av, tmp_sv );
         }
 
-        for( i = 0; i < decoded_frame_size; i++ ) {
-            tmp_sv = newSViv( (IV) decoded_frame[i] );
-            av_push( decoded_frame_av, tmp_sv );
-        }
-
+        av_push( decoded_frame_av, newRV_inc((SV *) decoded_frame_y_av) );
+        av_push( decoded_frame_av, newRV_inc((SV *) decoded_frame_u_av) );
+        av_push( decoded_frame_av, newRV_inc((SV *) decoded_frame_v_av) );
         RETVAL = newRV_inc((SV *) decoded_frame_av);
     OUTPUT:
         RETVAL

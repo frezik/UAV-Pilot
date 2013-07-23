@@ -5,6 +5,7 @@ use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::Video;
+use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
@@ -14,9 +15,11 @@ use Getopt::Long ();
 use constant NAV_UPDATE_INTERVAL => 1 / 30;
 
 
-my $IP = '192.168.1.1';
+my $IP      = '192.168.1.1';
+my $FILE_IN = '';
 Getopt::Long::GetOptions(
-    'host=s'   => \$IP,
+    'host=s' => \$IP,
+    'in=s'   => \$FILE_IN,
 );
 
 
@@ -36,11 +39,18 @@ Getopt::Long::GetOptions(
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
     });
-    my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
+
+    my %video_args = (
         handler => $video,
         condvar => $cv,
         driver  => $ardrone,
-    });
+    );
+    my $driver_video = $FILE_IN
+        ? UAV::Pilot::Driver::ARDrone::Video::Mock->new({
+            %video_args,
+            file => $FILE_IN,
+        })
+        : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
 
     my $dev = UAV::Pilot::Control::ARDrone->new({
         sender => $ardrone,
