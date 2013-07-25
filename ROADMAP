@@ -1,8 +1,6 @@
 Version 0.5
 -----------
 * Show video in real-time (without using pipes)
-* Allow cutting joystick input by a percentage for easier control
-* Configure reversing of the axis on the joystick
 * Allow other actions to be mapped to joystick buttons (flips and such)
 * Override conf file for Joystick
 * Allow passing iface to uav script

@@ -53,6 +53,26 @@ has 'throttle_axis' => (
     isa     => 'Int',
     default => 3,
 );
+has 'roll_correction' => (
+    is      => 'ro',
+    isa     => 'Num',
+    default => 1,
+);
+has 'pitch_correction' => (
+    is      => 'ro',
+    isa     => 'Num',
+    default => 1,
+);
+has 'yaw_correction' => (
+    is      => 'ro',
+    isa     => 'Num',
+    default => 1,
+);
+has 'throttle_correction' => (
+    is      => 'ro',
+    isa     => 'Num',
+    default => -1,
+);
 has 'takeoff_btn' => (
     is      => 'ro',
     isa     => 'Int',
@@ -104,13 +124,13 @@ sub process_events
     my $dev = $self->controller;
 
     my $roll = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->roll_axis ) );
+        $self->roll_axis ) * $self->roll_correction );
     my $pitch = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->pitch_axis ) );
+        $self->pitch_axis ) * $self->pitch_correction );
     my $yaw = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->yaw_axis ) );
-    my $throttle = - $dev->convert_sdl_input( $joystick->get_axis(
-        $self->throttle_axis ) );
+        $self->yaw_axis ) * $self->yaw_correction );
+    my $throttle = $dev->convert_sdl_input( $joystick->get_axis(
+        $self->throttle_axis ) * $self->throttle_correction );
     my $takeoff_btn = $joystick->get_button( $self->takeoff_btn );
 
     # Only takeoff/land after we let off the button
@@ -228,5 +248,18 @@ Axis number of joystick to use for throttle.
 =head2 takeoff_btn
 
 Button number to use for takeoff/landing.
+
+=head2 Axis Corrections
+
+These can be used to cut the inputs by a percentage.  All should be numbers between 1.0 and 
+-1.0, with negative numbers reversing the axis.
+
+=head3 roll_correction
+
+=head3 pitch_correcton
+
+=head3 yaw_correction
+
+=head3 throttle_correction
 
 =cut
