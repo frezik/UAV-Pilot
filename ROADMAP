@@ -5,8 +5,8 @@ Version 0.5
 * Configure reversing of the axis on the joystick
 * Allow other actions to be mapped to joystick buttons (flips and such)
 * Override conf file for Joystick
-* Wiimote control (?)
 * Allow passing iface to uav script
+* bin/uav should not init ARDrone on its own
 * Documentation
     * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder
@@ -20,3 +20,5 @@ Version 6
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
 * Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
   Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
+* Wiimote control (?)
+
