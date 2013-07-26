@@ -13,8 +13,10 @@ my $MULTILINE_PROMPT = "\t";
 my @LIB_PATHS        = ();
 my @LIBS             = ();
 my $EVENT            = 1;
+my $IFACE            = undef;
 GetOptions(
-    'ip=s'        => \$IP,
+    'host=s'      => \$IP,
+    'i|iface=s'   => \$IFACE,
     'l|load=s'    => \@LIBS,
     'L|library=s' => \@LIB_PATHS,
     'e|event'     => \$EVENT,
@@ -81,9 +83,12 @@ sub load_libraries
     my $continue = 1;
     my $term = Term::ReadLine::Perl5->new( 'uav' );
 
-    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+    my $driver_args = {
         host => $IP,
-    });
+    };
+    $driver_args->{iface} = $IFACE if defined $IFACE;
+
+    my $ardrone = UAV::Pilot::Driver::ARDrone->new( $driver_args );
     $ardrone->connect;
 
     my $dev_class = $EVENT
