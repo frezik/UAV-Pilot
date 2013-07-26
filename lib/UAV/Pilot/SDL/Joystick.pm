@@ -310,9 +310,28 @@ Axis number of joystick to use for yaw.
 
 Axis number of joystick to use for throttle.
 
-=head2 takeoff_btn
+=head2 btn_action_map
 
-Button number to use for takeoff/landing.
+This is a mapping of button numbers to some kind of action, such as takeoff/land or flip.  
+The format is "btn_num: action".  Actions are:
+
+=over 4
+
+=item * takeoff_land
+
+=item * emergency
+
+=item * wave
+
+=item * flip_ahead
+
+=item * flip_behind
+
+=item * flip_left
+
+=item * flip_right
+
+=back
 
 =head2 Axis Corrections
 
