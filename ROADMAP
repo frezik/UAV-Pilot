@@ -2,8 +2,6 @@ Version 0.5
 -----------
 * Show video in real-time (without using pipes)
 * Allow other actions to be mapped to joystick buttons (flips and such)
-* Override conf file for Joystick
-* Allow passing iface to uav script
 * bin/uav should not init ARDrone driver.  Pass that on to REPL module.
 * Documentation
     * UAV::Pilot::Video::RawHandler

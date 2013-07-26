@@ -40,6 +40,21 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 
+package UAV::Pilot::FileNotFoundException;
+use v5.14;
+use Moose;
+use namespace::autoclean;
+extends 'UAV::Pilot::IOException';
+
+has 'file' => (
+    is  => 'ro',
+    isa => 'Str',
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+
 package UAV::Pilot::NavPacketException::BadHeader;
 use v5.14;
 use Moose;

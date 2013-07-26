@@ -16,9 +16,11 @@ use constant NAV_UPDATE_INTERVAL => 1 / 30;
 
 my $IP       = '192.168.1.1';
 my $SHOW_NAV = 0;
+my $CONF     = undef;
 Getopt::Long::GetOptions(
     'host=s'   => \$IP,
     'show-nav' => \$SHOW_NAV,
+    'conf=s'   => \$CONF,
 );
 
 
@@ -57,6 +59,7 @@ sub show_nav
     my $joystick = UAV::Pilot::SDL::Joystick->new({
         condvar    => $cv,
         controller => $dev,
+        conf_path  => $CONF,
     });
     $sdl_events->register( $joystick );
 

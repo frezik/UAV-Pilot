@@ -165,8 +165,17 @@ sub close
 sub _process_args
 {
     my ($self, $args) = @_;
-    my $conf_dir = UAV::Pilot->default_config_dir;
-    my $conf_path = File::Spec->catfile( $conf_dir, $self->DEFAULT_CONF_FILE );
+    my $conf_path = defined $args->{conf_path}
+        ? $args->{conf_path}
+        : do {
+            my $conf_dir = UAV::Pilot->default_config_dir;
+            my $conf_path = File::Spec->catfile( $conf_dir, $self->DEFAULT_CONF_FILE );
+            $conf_path;
+        };
+    UAV::Pilot::FileNotFoundException->throw({
+        file  => $conf_path,
+        error => "Could not find file $conf_path",
+    }) unless -e $conf_path;
     my $conf_args = $self->_get_conf( $conf_path );
 
     my %new_args = (
@@ -201,8 +210,9 @@ __END__
     my $control = UAV::Pilot::Controller::ARDrone->new( ... );
     my $condvar = AnyEvent->condvar;
     my $joy = UAV::Pilot::SDL::Joystick->new({
-        condvar => $condvar,
+        condvar    => $condvar,
         controller => $control,
+        conf_path  => '/path/to/config.yml', # optional
     });
     
     my $sdl_events = UAV::Pilot::SDL::Events->new({
