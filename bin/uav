@@ -5,6 +5,7 @@ use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Control::ARDrone::Event;
 use Getopt::Long qw( :config no_ignore_case );
 
 my $IP               = '192.168.1.1';
@@ -12,14 +13,12 @@ my $PROMPT           = 'uav> ';
 my $MULTILINE_PROMPT = "\t";
 my @LIB_PATHS        = ();
 my @LIBS             = ();
-my $EVENT            = 1;
 my $IFACE            = undef;
 GetOptions(
     'host=s'      => \$IP,
     'i|iface=s'   => \$IFACE,
     'l|load=s'    => \@LIBS,
     'L|library=s' => \@LIB_PATHS,
-    'e|event'     => \$EVENT,
 );
 
 
@@ -91,18 +90,10 @@ sub load_libraries
     my $ardrone = UAV::Pilot::Driver::ARDrone->new( $driver_args );
     $ardrone->connect;
 
-    my $dev_class = $EVENT
-        ? 'UAV::Pilot::Control::ARDrone::Event'
-        : 'UAV::Pilot::Control::ARDrone';
-    eval "use $dev_class";
-    die $@ if $@;
-
-    my $dev = $dev_class->new({
+    my $dev = UAV::Pilot::Control::ARDrone::Event->new({
         sender => $ardrone,
     });
-    my $cv = $EVENT
-        ? $dev->init_event_loop
-        : AnyEvent->condvar;
+    my $cv = $dev->init_event_loop;
     my $repl = UAV::Pilot::Commands->new({
         device  => $dev,
         condvar => $cv,
@@ -164,9 +155,5 @@ dist shared dir returned by L<File::ShareDir> for L<UAV::Pilot>.
 
 Library to load.  May be specified multiple times.  It will need to be under one of the 
 directories specified by the C<--library> option (or the default library path).
-
-=head2 -e or --event
-
-Use the event interface for controlling the UAV.  This is the default.
 
 =cut
