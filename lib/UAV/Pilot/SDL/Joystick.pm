@@ -13,12 +13,32 @@ use constant MAX_AXIS_INT      => 32767;
 use constant TIMER_INTERVAL    => 1 / 60;
 use constant DEFAULT_CONF_FILE => 'sdl_joystick.yml';
 use constant DEFAULT_CONF      => {
-    joystick_num  => 0,
-    roll_axis     => 0,
-    pitch_axis    => 1,
-    yaw_axis      => 2,
-    throttle_axis => 3,
-    takeoff_btn   => 0,
+    joystick_num        => 0,
+    roll_axis           => 0,
+    pitch_axis          => 1,
+    yaw_axis            => 2,
+    throttle_axis       => 3,
+    takeoff_btn         => 0,
+    roll_correction     => 1,
+    pitch_correction    => 1,
+    yaw_correction      => 1,
+    throttle_correction => -1,
+    btn_action_map      => {
+        0 => 'takeoff_land',
+        1 => 'flip_left',
+        2 => 'flip_right',
+    },
+};
+use constant BUTTON_ACTIONS => {
+    # "takeoff_land" is handled as a special case, since we need to toggle between them
+    #
+    # 'action_name' => '$control->method_name',
+    emergency   => 'emergency',
+    wave        => 'wave',
+    flip_ahead  => 'flip_ahead',
+    flip_behind => 'flip_behind',
+    flip_left   => 'flip_left',
+    flip_right  => 'flip_right',
 };
 
 
@@ -101,6 +121,16 @@ has '_prev_takeoff_btn_status' => (
     is  => 'rw',
     isa => 'Bool',
 );
+has 'btn_action_map' => (
+    is      => 'ro',
+    isa     => 'HashRef[Str]',
+    default => sub {{}},
+);
+has '_btn_prev_state' => (
+    is      => 'rw',
+    isa     => 'HashRef[Bool]',
+    default => sub {{}},
+);
 
 
 sub BUILDARGS
@@ -146,6 +176,8 @@ sub process_events
     }
     $self->_prev_takeoff_btn_status( $takeoff_btn );
 
+    $self->_process_action_buttons( $joystick, $dev );
+
     $dev->roll( $roll );
     $dev->pitch( $pitch );
     $dev->yaw( $yaw );
@@ -170,13 +202,24 @@ sub _process_args
         : do {
             my $conf_dir = UAV::Pilot->default_config_dir;
             my $conf_path = File::Spec->catfile( $conf_dir, $self->DEFAULT_CONF_FILE );
+            YAML::DumpFile( $conf_path, $self->DEFAULT_CONF ) unless -e $conf_path;
             $conf_path;
         };
     UAV::Pilot::FileNotFoundException->throw({
         file  => $conf_path,
         error => "Could not find file $conf_path",
     }) unless -e $conf_path;
-    my $conf_args = $self->_get_conf( $conf_path );
+    my $conf_args = YAML::LoadFile( $conf_path );
+
+    # Get the takeoff_land button special case
+    foreach my $key (keys %{ $conf_args->{btn_action_map} }) {
+        my $value = $conf_args->{btn_action_map}{$key};
+        if( $value eq 'takeoff_land' ) {
+            $conf_args->{takeoff_btn} = $key;
+            delete $conf_args->{btn_action_map}{$key};
+            last;
+        }
+    }
 
     my %new_args = (
         %$conf_args,
@@ -186,12 +229,24 @@ sub _process_args
     return \%new_args;
 }
 
-sub _get_conf
+sub _process_action_buttons
 {
-    my ($self, $conf_path) = @_;
-    YAML::DumpFile( $conf_path, $self->DEFAULT_CONF ) unless -e $conf_path;
-    my $conf = YAML::LoadFile( $conf_path );
-    return $conf;
+    my ($self, $joystick, $dev) = @_;
+
+    foreach my $btn (keys %{ $self->btn_action_map }) {
+        my $cur_state = $joystick->get_button( $btn );
+        # Only perform the action after we let off the button
+        if( $self->_btn_prev_state->{$btn} && ($cur_state == 0) ) {
+            my $action = $self->btn_action_map->{$btn};
+            next unless exists $self->BUTTON_ACTIONS->{$action};
+            my $method = $self->BUTTON_ACTIONS->{$action};
+            $dev->$method;
+        }
+
+        $self->_btn_prev_state->{$btn} = $cur_state;
+    }
+
+    return 1;
 }
 
 
