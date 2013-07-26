@@ -1,7 +1,6 @@
 Version 0.5
 -----------
 * Show video in real-time (without using pipes)
-* bin/uav should not init ARDrone driver.  Pass that on to REPL module.
 * Documentation
     * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder
@@ -16,4 +15,4 @@ Version 6
 * Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
   Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
 * Wiimote control (?)
-
+* bin/uav uses a Factory object to create the Driver and Control objects
