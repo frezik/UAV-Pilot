@@ -2,6 +2,9 @@ Version 0.5
 -----------
 * VideoHandler and FileDump moved into UAV::Pilot::Video namespace.  Handler role now named 
   "H264Handler".
+* Joystick buttons can be mapped to actions
+* Joystick module can take a path to a conf file
+* bin/uav gets an --iface option for a network interface for binding
 
 
 Version 0.4
