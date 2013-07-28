@@ -10,6 +10,10 @@ use SDL::Events;
 use SDL::Video qw{ :surface :video };
 use SDL::Overlay;
 
+require DynaLoader;
+our @ISA = qw(DynaLoader);
+bootstrap UAV::Pilot::SDL::Video;
+
 
 use constant {
     SDL_TITLE        => 'Video Output',
@@ -27,7 +31,7 @@ with 'UAV::Pilot::SDL::EventHandler';
 
 has '_last_vid_frame' => (
     is  => 'rw',
-    isa => 'Maybe[Item]',
+    isa => 'Maybe[UAV::Pilot::Video::H264Decoder]',
 );
 
 has '_sdl' => (
@@ -102,7 +106,7 @@ sub process_raw_frame
         $self->_set_width_height( $width, $height );
     }
 
-    $self->_last_vid_frame( $decoder->get_last_frame_pixels_arrayref );
+    $self->_last_vid_frame( $decoder );
     return 1;
 }
 
@@ -116,7 +120,6 @@ sub process_events
     );
     my $last_vid_frame = $self->_last_vid_frame;
     return 1 unless defined $last_vid_frame;
-    my @last_vid_frame = @$last_vid_frame;
 
     my $sdl = $self->_sdl;
     my $bg_rect = $self->_bg_rect;
@@ -126,22 +129,29 @@ sub process_events
         $self->_bg_color,
     );
 
-    my $overlay = $self->_sdl_overlay;
-    SDL::Video::lock_YUV_overlay( $overlay );
-    # The order of array indexen is correct, according to:
-    # http://dranger.com/ffmpeg/tutorial02.html
-    my $pitches = $overlay->pitches;
-    $$pitches[0] = scalar @{ $last_vid_frame[0] };
-    $$pitches[2] = scalar @{ $last_vid_frame[1] };
-    $$pitches[1] = scalar @{ $last_vid_frame[2] };
-    my $pixels  = $overlay->pixels;
-    $$pixels[0] = $last_vid_frame[0];
-    $$pixels[2] = $last_vid_frame[1];
-    $$pixels[1] = $last_vid_frame[2];
-    SDL::Video::unlock_YUV_overlay( $overlay );
+    # Not sure if we need to do this.  SDL_DisplayYUVOverlay() might do it for us.
+    #SDL::Video::update_rects( $sdl, $bg_rect );
 
-    SDL::Video::update_rects( $sdl, $bg_rect );
-    SDL::Video::display_YUV_overlay( $sdl, $bg_rect );
+    $self->_draw_video_frame(
+        $self->_sdl_overlay,
+        $bg_rect,
+        $last_vid_frame->get_last_frame_c_obj,
+    );
+#    my $overlay = $self->_sdl_overlay;
+#    SDL::Video::lock_YUV_overlay( $overlay );
+#    # The order of array indexen is correct, according to:
+#    # http://dranger.com/ffmpeg/tutorial02.html
+#    my $pitches = $overlay->pitches;
+#    $$pitches[0] = scalar @{ $last_vid_frame[0] };
+#    $$pitches[2] = scalar @{ $last_vid_frame[1] };
+#    $$pitches[1] = scalar @{ $last_vid_frame[2] };
+#    my $pixels  = $overlay->pixels;
+#    $$pixels[0] = $last_vid_frame[0];
+#    $$pixels[2] = $last_vid_frame[1];
+#    $$pixels[1] = $last_vid_frame[2];
+#    SDL::Video::unlock_YUV_overlay( $overlay );
+
+#    SDL::Video::display_YUV_overlay( $sdl, $bg_rect );
     return 1;
 }
 

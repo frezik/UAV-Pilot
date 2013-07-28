@@ -6,6 +6,17 @@ use Module::Build;
 # Use 'auto_features' option to make FFmpeg optional.  Tests will also need to be optional.
 
 
+my @build_flags = (
+    '-Wall',
+    scalar( `pkg-config --cflags libavcodec` ),
+    scalar( `sdl-config --cflags` ),
+);
+my @link_flags = (
+    scalar( `pkg-config --libs libavcodec` ),
+    scalar( `sdl-config --libs` ),
+);
+
+
 my $build = Module::Build->new(
     module_name    => 'UAV::Pilot',
     dist_abstract  => 'Control UAVs',
@@ -41,13 +52,13 @@ my $build = Module::Build->new(
     },
     share_dir => 'share',
 
-    # All the below is for FFmpeg; make optional with that
+    # Much of the below is for FFmpeg; make optional with that
     include_dirs         => ['.'],
     dynamic_config       => 1,
     allow_pureperl       => 0, # Set to 1 when FFmpeg made optional
     # Not sure how portable this is
-    extra_compiler_flags => '-Wall ' . scalar `pkg-config --cflags libavcodec`,
-    extra_linker_flags   => scalar `pkg-config --libs libavcodec`,
+    extra_compiler_flags => join( ' ', @build_flags ),
+    extra_linker_flags   => join( ' ', @link_flags ),
 );
 
 $build->create_build_script;
