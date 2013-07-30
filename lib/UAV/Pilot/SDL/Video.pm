@@ -121,6 +121,7 @@ sub process_events
     my $last_vid_frame = $self->_last_vid_frame;
     return 1 unless defined $last_vid_frame;
 
+warn "Updating frame\n";
     my $sdl = $self->_sdl;
     my $bg_rect = $self->_bg_rect;
     SDL::Video::fill_rect(
@@ -129,29 +130,15 @@ sub process_events
         $self->_bg_color,
     );
 
-    # Not sure if we need to do this.  SDL_DisplayYUVOverlay() might do it for us.
-    #SDL::Video::update_rects( $sdl, $bg_rect );
-
-    $self->_draw_video_frame(
+    $self->_draw_last_video_frame(
         $self->_sdl_overlay,
         $bg_rect,
         $last_vid_frame->get_last_frame_c_obj,
     );
-#    my $overlay = $self->_sdl_overlay;
-#    SDL::Video::lock_YUV_overlay( $overlay );
-#    # The order of array indexen is correct, according to:
-#    # http://dranger.com/ffmpeg/tutorial02.html
-#    my $pitches = $overlay->pitches;
-#    $$pitches[0] = scalar @{ $last_vid_frame[0] };
-#    $$pitches[2] = scalar @{ $last_vid_frame[1] };
-#    $$pitches[1] = scalar @{ $last_vid_frame[2] };
-#    my $pixels  = $overlay->pixels;
-#    $$pixels[0] = $last_vid_frame[0];
-#    $$pixels[2] = $last_vid_frame[1];
-#    $$pixels[1] = $last_vid_frame[2];
-#    SDL::Video::unlock_YUV_overlay( $overlay );
+warn "Done updating frame\n";
+    # Not sure if we need to do this.  SDL_DisplayYUVOverlay() might do it for us.
+    #SDL::Video::update_rects( $sdl, $bg_rect );
 
-#    SDL::Video::display_YUV_overlay( $sdl, $bg_rect );
     return 1;
 }
 

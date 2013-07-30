@@ -95,13 +95,14 @@ CLEANUP:
     av_free( avpkt );
 }
 
-AVFrame*
+SV*
 get_last_frame_c_obj( self )
         SV* self
     PREINIT:
         dMY_CXT;
     CODE:
-        RETVAL = MY_CXT.frame;
+        AVFrame* frame = MY_CXT.frame;
+        RETVAL = newSViv( (IV) frame );
     OUTPUT:
         RETVAL
 
