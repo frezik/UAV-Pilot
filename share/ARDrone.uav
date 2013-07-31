@@ -156,6 +156,34 @@ sub take_picture ($$;$)
         return 1;
     }
 
+    sub start_video ()
+    {
+        $init_sdl_events->();
+        eval "use UAV::Pilot::SDL::Video";
+        die "Problem loading UAV::Pilot::SDL::Video: $@\n" if $@;
+        eval "use UAV::Pilot::Video::H264Decoder";
+        die "Problem loading UAV::Pilot::Video::H264Decoder: $@\n" if $@;
+        eval "use UAV::Pilot::Driver::ARDrone::Video";
+        die "Problem loading UAV::Pilot::Driver::ARDrone::Video: $@\n" if $@;
+
+        my $display = UAV::Pilot::SDL::Video->new;
+        my $video   = UAV::Pilot::Video::H264Decoder->new({
+            display => $display,
+        });
+        my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
+            handler => $video,
+            condvar => $cv,
+            driver  => $dev->sender,
+        });
+        $dev->video( $driver_video );
+
+        $sdl_events->register( $display );
+        $driver_video->init_event_loop;
+
+        say "Ouputting video";
+        return 1;
+    }
+
     sub dump_video_to_file ($)
     {
         my ($file) = @_;

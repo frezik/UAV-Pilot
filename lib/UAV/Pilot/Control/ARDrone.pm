@@ -8,7 +8,7 @@ use DateTime;
 with 'UAV::Pilot::Control';
 
 has 'video' => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'Maybe[UAV::Pilot::Driver::ARDrone::Video]',
 );
 
