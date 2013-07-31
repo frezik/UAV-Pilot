@@ -2,9 +2,7 @@ Version 0.5
 -----------
 * REPL command for video
 * Documentation
-    * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder
-    * UAV::Pilot::Video::SDLRawHandler
     * bin/uav_video_display
     * bin/uav_config
 

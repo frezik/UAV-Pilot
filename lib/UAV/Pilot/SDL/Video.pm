@@ -170,3 +170,28 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::SDL::Video
+
+=head1 SYNOPSIS
+
+    my $cv = AnyEvent->condvar;
+    my $sdl_events = UAV::Pilot::SDL::Events->new({
+        condvar => $cv,
+    });
+    my $display = UAV::Pilot::SDL::Video->new;
+    
+    my $video   = UAV::Pilot::Video::H264Decoder->new({
+        display => $display,
+    });
+    
+    $sdl_events->register( $display );
+
+=head1 DESCRIPTION
+
+Process raw video frames and displays them to an SDL surface.  This does the roles
+C<UAV::Pilot::Video::RawHandler> and C<UAV::Pilot::SDL::EventHandler>.
+
+=cut
