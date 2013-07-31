@@ -8,11 +8,11 @@ use Module::Build;
 
 my @build_flags = (
     '-Wall',
-    scalar( `pkg-config --cflags libavcodec` ),
+    scalar( `pkg-config --cflags libavcodec libswscale` ),
     scalar( `sdl-config --cflags` ),
 );
 my @link_flags = (
-    scalar( `pkg-config --libs libavcodec` ),
+    scalar( `pkg-config --libs libavcodec libswscale` ),
     scalar( `sdl-config --libs` ),
 );
 

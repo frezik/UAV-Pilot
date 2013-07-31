@@ -18,10 +18,16 @@ bootstrap UAV::Pilot::SDL::Video;
 use constant {
     SDL_TITLE        => 'Video Output',
     SDL_WIDTH        => 640,
-    SDL_HEIGHT       => 480,
+    SDL_HEIGHT       => 360,
     SDL_DEPTH        => 32,
     SDL_FLAGS        => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     SDL_OVERLAY_FLAG => SDL_YV12_OVERLAY,
+    #SDL_OVERLAY_FLAG => SDL_IYUV_OVERLAY,
+    #SDL_OVERLAY_FLAG => SDL_YUY2_OVERLAY,
+    #SDL_OVERLAY_FLAG => SDL_UYVY_OVERLAY,
+    #SDL_OVERLAY_FLAG => SDL_YVYU_OVERLAY,
+    #SDL_OVERLAY_FLAG => SDL_YVYU_OVERLAY,
+    SDL_RESIZEABLE   => 1,
     BG_COLOR         => [ 0, 255, 0 ],
 };
 
@@ -69,11 +75,12 @@ sub BUILDARGS
     my @bg_color_parts = @{ $class->BG_COLOR };
 
     my $sdl = SDLx::App->new(
-        title  => $class->SDL_TITLE,
-        width  => $class->SDL_WIDTH,
-        height => $class->SDL_HEIGHT,
-        depth  => $class->SDL_DEPTH,
-        flags  => $class->SDL_FLAGS,
+        title      => $class->SDL_TITLE,
+        width      => $class->SDL_WIDTH,
+        height     => $class->SDL_HEIGHT,
+        depth      => $class->SDL_DEPTH,
+        flags      => $class->SDL_FLAGS,
+        resizeable => $class->SDL_RESIZEABLE,
     );
     $sdl->add_event_handler( sub {
         my ($event, $app) = @_;
@@ -103,6 +110,7 @@ sub process_raw_frame
     my ($self, $width, $height, $decoder) = @_;
 
     if( ($width != $self->_width) || ($height != $self->_height) ) {
+warn "Setting width [$width] and height [$height]\n";
         $self->_set_width_height( $width, $height );
     }
 
@@ -147,6 +155,7 @@ sub _set_width_height
 {
     my ($self, $width, $height) = @_;
     my $sdl         = $self->_sdl;
+    $sdl->resize( $width, $height );
     my $bg_rect     = SDL::Rect->new( 0, 0, $width, $height );
     my $sdl_overlay = SDL::Overlay->new( $width, $height, $self->SDL_OVERLAY_FLAG, $sdl );
 
