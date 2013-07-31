@@ -1,6 +1,8 @@
 #ifndef UAV_H
 #define UAV_H
 
+#include <libavcodec/avcodec.h>
+
 
 #define INBUF_SIZE 4096
 #define AV_FRAME_DATA_SIZE 3
@@ -8,6 +10,7 @@
 #define AV_FRAME_DATA_U_CHANNEL 1
 #define AV_FRAME_DATA_V_CHANNEL 2
 #define CODEC_ID CODEC_ID_H264
+#define UAV_PIX_FMT PIX_FMT_YUV420P
 
 /*
 #define THROW_XS_ERROR(error_str) \

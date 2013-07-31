@@ -49,7 +49,7 @@ BOOT:
     if(MY_CXT.codec->capabilities&CODEC_CAP_TRUNCATED) {
         MY_CXT.c->flags|= CODEC_FLAG_TRUNCATED; /* we do not send complete frames */
     }
-    MY_CXT.c->pix_fmt = PIX_FMT_YUV420P;
+    MY_CXT.c->pix_fmt = UAV_PIX_FMT;
     /* For some codecs, such as msmpeg4 and mpeg4, width and height
     * MUST be initialized there because this information is not
     * available in the bitstream. */
