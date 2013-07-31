@@ -1,6 +1,5 @@
 Version 0.5
 -----------
-* Cleanup sws scale context in SDL::Video (xs)
 * Documentation
     * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder
@@ -10,6 +9,7 @@ Version 0.5
 
 Version 6
 -----------
+* UAV::SDL::Video (xs) -- Use sws_getCachedContext() instead of sws_getContext()
 * Error message formatting in REPL
 * Facial Recognition with Image::ObjectDetect
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
