@@ -83,5 +83,5 @@ test.sh
 test_file.sh
 
 # Leftover C and compiler files
-*.c
-*.o
+.*\.c
+.*\.o
