@@ -5,3 +5,4 @@ MYMETA.*
 META.*
 ardrone_video_stream.h264.*
 a.out
+*.o
