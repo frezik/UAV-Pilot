@@ -110,7 +110,6 @@ sub process_raw_frame
     my ($self, $width, $height, $decoder) = @_;
 
     if( ($width != $self->_width) || ($height != $self->_height) ) {
-warn "Setting width [$width] and height [$height]\n";
         $self->_set_width_height( $width, $height );
     }
 
@@ -129,7 +128,6 @@ sub process_events
     my $last_vid_frame = $self->_last_vid_frame;
     return 1 unless defined $last_vid_frame;
 
-warn "Updating frame\n";
     my $sdl = $self->_sdl;
     my $bg_rect = $self->_bg_rect;
     SDL::Video::fill_rect(
@@ -143,7 +141,6 @@ warn "Updating frame\n";
         $bg_rect,
         $last_vid_frame->get_last_frame_c_obj,
     );
-warn "Done updating frame\n";
     # Not sure if we need to do this.  SDL_DisplayYUVOverlay() might do it for us.
     #SDL::Video::update_rects( $sdl, $bg_rect );
 

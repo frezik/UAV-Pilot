@@ -38,8 +38,6 @@ _draw_last_video_frame( self, overlay, dstrect, frame_sv)
             exit( 1 );
         }
 
-        warn( "\tUpdating YUV overlay\n" );
-
 
         SDL_LockYUVOverlay( overlay );
 

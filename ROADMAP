@@ -6,6 +6,7 @@ Version 0.5
     * UAV::Pilot::Video::H264Decoder
     * UAV::Pilot::Video::SDLRawHandler
     * bin/uav_video_display
+    * bin/uav_config
 
 Version 6
 -----------
