@@ -2,6 +2,7 @@
 #include "perl.h"
 #include "XSUB.h"
 #include "ppport.h"
+#include "uav.h"
 
 #include <libavcodec/avcodec.h>
 #include <libswscale/swscale.h>
@@ -20,13 +21,13 @@ _draw_last_video_frame( self, overlay, dstrect, frame_sv)
     PPCODE:
         AVFrame* frame = (AVFrame*) SvIV( frame_sv );
         AVPicture pict;
-        struct SwsContext * sws_context = sws_getContext( // TODO put into MY_CXT
+        struct SwsContext * sws_context = sws_getContext(
             dstrect->w,
             dstrect->h,
-            PIX_FMT_YUV420P, // TODO get from codec context
+            UAV_PIX_FMT,
             dstrect->w,
             dstrect->h,
-            PIX_FMT_YUV420P,
+            UAV_PIX_FMT,
             SWS_FAST_BILINEAR,
             NULL,
             NULL,
