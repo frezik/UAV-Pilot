@@ -81,3 +81,7 @@ ardrone_video_stream.h264.*
 # Developer script
 test.sh
 test_file.sh
+
+# Leftover C and compiler files
+*.c
+*.o

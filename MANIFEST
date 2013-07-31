@@ -1,8 +1,10 @@
 bin/uav
+bin/uav_config
 bin/uav_dump_config
 bin/uav_emergency
 bin/uav_joystick
 bin/uav_network_settings
+bin/uav_video_display
 bin/uav_video_dump
 Build.PL
 CHANGELOG
@@ -12,14 +14,12 @@ lib/UAV/Pilot/Control.pm
 lib/UAV/Pilot/Control/ARDrone.pm
 lib/UAV/Pilot/Control/ARDrone/Event.pm
 lib/UAV/Pilot/Control/ARDrone/SDLNavOutput.pm
-lib/UAV/Pilot/Control/ARDrone/Video/FileDump.pm
 lib/UAV/Pilot/Driver.pm
 lib/UAV/Pilot/Driver/ARDrone.pm
 lib/UAV/Pilot/Driver/ARDrone/Mock.pm
 lib/UAV/Pilot/Driver/ARDrone/NavPacket.pm
 lib/UAV/Pilot/Driver/ARDrone/Video.pm
 lib/UAV/Pilot/Driver/ARDrone/Video/Mock.pm
-lib/UAV/Pilot/Driver/ARDrone/VideoHandler.pm
 lib/UAV/Pilot/EasyEvent.pm
 lib/UAV/Pilot/Exceptions.pm
 lib/UAV/Pilot/SDL/EventHandler.pm
@@ -27,10 +27,19 @@ lib/UAV/Pilot/SDL/Events.pm
 lib/UAV/Pilot/SDL/Joystick.pm
 lib/UAV/Pilot/SDL/JoystickConverter.pm
 lib/UAV/Pilot/SDL/NavFeeder.pm
+lib/UAV/Pilot/SDL/Video.pm
+lib/UAV/Pilot/SDL/Video.xs
+lib/UAV/Pilot/Video/FileDump.pm
+lib/UAV/Pilot/Video/H264Decoder.pm
+lib/UAV/Pilot/Video/H264Decoder.xs
+lib/UAV/Pilot/Video/H264Handler.pm
+lib/UAV/Pilot/Video/Mock/RawHandler.pm
+lib/UAV/Pilot/Video/RawHandler.pm
 LICENSE
 MANIFEST			This list of files
 META.json
 META.yml
+ppport.h
 README
 RELEASE.HOWTO
 ROADMAP
@@ -47,6 +56,9 @@ t/120_event_loop_controls.t
 t/130_easy_event.t
 t/140_sdl_events.t
 t/150_video_pave.t
+t/160_video_decode.t
 t/200_commands.t
 t/210_commands_ardrone.t
 t_data/ardrone_video_stream_dump.bin
+typemap
+uav.h
