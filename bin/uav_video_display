@@ -60,3 +60,19 @@ Getopt::Long::GetOptions(
     $_->init_event_loop for $driver_video, $sdl_events;
     $cv->recv;
 }
+
+__END__
+
+
+=head1 SYNOPSIS
+
+    uav_video_display \
+        --host 192.168.1.1 \
+        --in /path/to/file
+
+=head1 DESCRIPTION
+
+Shows a video stream from the UAV in an SDL window.  If the C<--in> option is specified 
+with a file, plays the stream from that file instead of connecting to the UAV.
+
+=cut
