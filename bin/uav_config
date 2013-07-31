@@ -32,3 +32,25 @@ $ardrone->at_config(
     $ardrone->$true_key,
     $VALUE,
 );
+
+
+__END__
+
+
+=head1 SYNOPSIS
+
+    uav_config \
+        --host 192.168.1.1 \
+        --port 1234 \
+        --key video_codec_fps \
+        --value 30
+
+=head1 DESCRIPTION
+
+Set a config key on the UAV.  A list of keys can be found in the section "Constants" -> 
+"Configuration" in the docs for C<UAV::Pilot::Driver::ARDrone>.  To set a C<--key> option, 
+take off the C<ARDRONE_CONFIG_> at the start of the config key name.  For instance, to 
+set C<ARDRONE_CONFIG_VIDEO_CODEC_FPS>, you would instead set C<video_codec_fps> (lowercase 
+is OK).
+
+=cut
