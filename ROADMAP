@@ -1,6 +1,6 @@
 Version 0.5
 -----------
-* Show video in real-time (without using pipes)
+* Cleanup sws scale context in SDL::Video (xs)
 * Documentation
     * UAV::Pilot::Video::RawHandler
     * UAV::Pilot::Video::H264Decoder

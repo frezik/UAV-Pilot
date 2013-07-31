@@ -1,5 +1,6 @@
 Version 0.5
 -----------
+* Real-time video implemented (this is the big one)
 * VideoHandler and FileDump moved into UAV::Pilot::Video namespace.  Handler role now named 
   "H264Handler".
 * Joystick buttons can be mapped to actions
