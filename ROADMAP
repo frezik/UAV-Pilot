@@ -9,3 +9,7 @@ Version 6
 * Wiimote control (?)
 * bin/uav uses a Factory object to create the Driver and Control objects
 * bin/uav loads a config file for loading modules by default
+* Stack video handlers (for instance, display video and dump to file at the same time)
+* Navigation overlay on top of video
+* Build script checks for ffmpeg being installed
+* ICMP: the protocol that goes PING!
