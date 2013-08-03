@@ -13,3 +13,8 @@ Version 6
 * Build script checks for ffmpeg being installed
 * ICMP: the protocol that goes PING!
     * Integrate into nav data
+* Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
+* Document
+    * UAV::Pilot::SDL::VideoOverlay
+    * UAV::Pilot::SDL::VideoOverlay::Reticle
+    * UAV::Pilot::Video::H264Decoder (ways to get the last processed frame)

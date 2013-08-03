@@ -9,6 +9,7 @@ use SDL::Event;
 use SDL::Events;
 use SDL::Video qw{ :surface :video };
 use SDL::Overlay;
+use UAV::Pilot::SDL::VideoOverlay;
 
 require DynaLoader;
 our @ISA = qw(DynaLoader);
@@ -40,7 +41,7 @@ has '_last_vid_frame' => (
     isa => 'Maybe[UAV::Pilot::Video::H264Decoder]',
 );
 
-has '_sdl' => (
+has 'sdl_app' => (
     is  => 'ro',
     isa => 'SDLx::App',
 );
@@ -66,6 +67,15 @@ has '_height' => (
     is     => 'ro',
     isa    => 'Int',
     writer => '_set_height',
+);
+has 'video_overlays' => (
+    is      => 'ro',
+    isa     => 'ArrayRef[UAV::Pilot::SDL::VideoOverlay]',
+    default => sub {[]},
+    traits  => [ 'Array' ],
+    handles => {
+        _add_video_overlay => 'push',
+    },
 );
 
 
@@ -95,7 +105,7 @@ sub BUILDARGS
     my $bg_rect = SDL::Rect->new( 0, 0, $class->SDL_WIDTH, $class->SDL_HEIGHT );
     my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
 
-    $$args{_sdl}         = $sdl;
+    $$args{sdl_app}      = $sdl;
     $$args{_sdl_overlay} = $sdl_overlay;
     $$args{_bg_rect}     = $bg_rect;
     $$args{_bg_color}    = $bg_color;
@@ -120,15 +130,15 @@ sub process_raw_frame
 sub process_events
 {
     my ($self) = @_;
+    my $sdl = $self->sdl_app;
     SDL::Video::fill_rect(
-        $self->_sdl,
+        $sdl,
         $self->_bg_rect,
         $self->_bg_color,
     );
     my $last_vid_frame = $self->_last_vid_frame;
     return 1 unless defined $last_vid_frame;
 
-    my $sdl = $self->_sdl;
     my $bg_rect = $self->_bg_rect;
     SDL::Video::fill_rect(
         $sdl,
@@ -141,9 +151,24 @@ sub process_events
         $bg_rect,
         $last_vid_frame->get_last_frame_c_obj,
     );
-    # Not sure if we need to do this.  SDL_DisplayYUVOverlay() might do it for us.
-    #SDL::Video::update_rects( $sdl, $bg_rect );
 
+    my @overlays = @{ $self->video_overlays };
+    if( @overlays ) {
+        foreach my $overlay (@overlays) {
+            $overlay->process_video_overlay;
+        }
+        
+        SDL::Video::update_rects( $sdl, $bg_rect );
+    }
+
+    return 1;
+}
+
+sub register_video_overlay
+{
+    my ($self, $overlay) = @_;
+    $overlay->init_video_overlay( $self );
+    $self->_add_video_overlay( $overlay );
     return 1;
 }
 
@@ -151,7 +176,7 @@ sub process_events
 sub _set_width_height
 {
     my ($self, $width, $height) = @_;
-    my $sdl         = $self->_sdl;
+    my $sdl         = $self->sdl_app;
     $sdl->resize( $width, $height );
     my $bg_rect     = SDL::Rect->new( 0, 0, $width, $height );
     my $sdl_overlay = SDL::Overlay->new( $width, $height, $self->SDL_OVERLAY_FLAG, $sdl );
@@ -193,5 +218,16 @@ __END__
 
 Process raw video frames and displays them to an SDL surface.  This does the roles
 C<UAV::Pilot::Video::RawHandler> and C<UAV::Pilot::SDL::EventHandler>.
+
+=head1 METHODS
+
+=head1 register_video_overlay
+
+    register_video_overlay( $overlay )
+
+Adds an object that does the C<UAV::Pilot::SDL::VideoOverlay> role.  This allows an 
+object to draw things on top of the video, like telemetry information.
+
+Not to be confused with C<SDL::Overlay>.
 
 =cut

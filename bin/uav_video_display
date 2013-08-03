@@ -9,6 +9,7 @@ use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
+use UAV::Pilot::SDL::VideoOverlay::Reticle;
 use UAV::Pilot::Video::H264Decoder;
 use Getopt::Long ();
 
@@ -17,10 +18,21 @@ use constant NAV_UPDATE_INTERVAL => 1 / 30;
 
 my $IP      = '192.168.1.1';
 my $FILE_IN = '';
+my $RETICLE = 0;
 Getopt::Long::GetOptions(
-    'host=s' => \$IP,
-    'in=s'   => \$FILE_IN,
+    'host=s'  => \$IP,
+    'in=s'    => \$FILE_IN,
+    'reticle' => \$RETICLE,
 );
+
+
+sub set_reticle_overlay
+{
+    my ($video) = @_;
+    my $reticle = UAV::Pilot::SDL::VideoOverlay::Reticle->new;
+    $video->register_video_overlay( $reticle );
+    return 1;
+}
 
 
 {
@@ -35,6 +47,7 @@ Getopt::Long::GetOptions(
     });
 
     $sdl_events->register( $display );
+    set_reticle_overlay( $display ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
@@ -68,11 +81,14 @@ __END__
 
     uav_video_display \
         --host 192.168.1.1 \
-        --in /path/to/file
+        --in /path/to/file \
+        --reticle
 
 =head1 DESCRIPTION
 
 Shows a video stream from the UAV in an SDL window.  If the C<--in> option is specified 
 with a file, plays the stream from that file instead of connecting to the UAV.
+
+The C<--reticle> option will overlay a targeting reticle.
 
 =cut

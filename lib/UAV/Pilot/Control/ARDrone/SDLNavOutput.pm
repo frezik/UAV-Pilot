@@ -206,7 +206,7 @@ sub BUILDARGS
         depth  => $class->SDL_DEPTH,
         flags  => $class->SDL_FLAGS,
     );
-    $sdl->add_event_handler( sub {
+    $sdl->add_event_handler( sub { # TODO do we need this?
         my ($event, $app) = @_;
         if( $event->type == SDL_QUIT ) {
             $app->stop;
