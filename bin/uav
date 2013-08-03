@@ -1,6 +1,5 @@
 #!/usr/bin/perl
 use v5.14;
-use Term::ReadLine::Perl5;
 use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
