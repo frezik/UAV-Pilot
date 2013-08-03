@@ -2,14 +2,14 @@ Version 6
 -----------
 * UAV::SDL::Video (xs) -- Use sws_getCachedContext() instead of sws_getContext()
 * Error message formatting in REPL
-* Facial Recognition with Image::ObjectDetect
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
 * Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
   Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
-* Wiimote control (?)
 * bin/uav uses a Factory object to create the Driver and Control objects
 * bin/uav loads a config file for loading modules by default
 * Stack video handlers (for instance, display video and dump to file at the same time)
 * Navigation overlay on top of video
+* Object recognition with opencv
 * Build script checks for ffmpeg being installed
 * ICMP: the protocol that goes PING!
+    * Integrate into nav data
