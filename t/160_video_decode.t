@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 10;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -34,6 +34,15 @@ sub process_h264_frame
     return 1;
 }
 
+package MockH264Handler2;
+use Moose;
+with 'UAV::Pilot::Video::H264Handler';
+
+sub process_h264_frame
+{
+    Test::More::pass( 'Passed stacked handler' );
+}
+
 
 package main;
 
@@ -65,14 +74,15 @@ my $cv = AnyEvent->condvar;
 my $mock_video = MockH264Handler->new({
     real_vid => $video,
 });
+my $mock_video2 = MockH264Handler2->new;
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
 });
 my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
-    file    => VIDEO_DUMP_FILE,
-    handler => $mock_video,
-    condvar => $cv,
-    driver  => $ardrone,
+    file     => VIDEO_DUMP_FILE,
+    handlers => [ $mock_video2, $mock_video ],
+    condvar  => $cv,
+    driver   => $ardrone,
 });
 isa_ok( $driver_video => 'UAV::Pilot::Driver::ARDrone::Video' );
 
@@ -85,7 +95,7 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
     after => MAX_WAIT_TIME,
     cb    => sub {
         fail( 'Did not get a frame after ' . MAX_WAIT_TIME . ' seconds' );
-        fail( 'Stub failure for test count matching' ) for 1 .. 5;
+        fail( 'Stub failure for test count matching' ) for 1 .. 6;
         exit 1;
 
         # Never get here

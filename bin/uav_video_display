@@ -10,18 +10,21 @@ use UAV::Pilot::Control::ARDrone;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
 use UAV::Pilot::SDL::VideoOverlay::Reticle;
+use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Video::H264Decoder;
 use Getopt::Long ();
 
 use constant NAV_UPDATE_INTERVAL => 1 / 30;
 
 
-my $IP      = '192.168.1.1';
-my $FILE_IN = '';
-my $RETICLE = 0;
+my $IP       = '192.168.1.1';
+my $FILE_IN  = '';
+my $FILE_OUT = '';
+my $RETICLE  = 0;
 Getopt::Long::GetOptions(
     'host=s'  => \$IP,
     'in=s'    => \$FILE_IN,
+    'out=s'   => \$FILE_OUT,
     'reticle' => \$RETICLE,
 );
 
@@ -41,20 +44,29 @@ sub set_reticle_overlay
         condvar => $cv,
     });
 
-    my $display = UAV::Pilot::SDL::Video->new;
-    my $video   = UAV::Pilot::Video::H264Decoder->new({
-        displays => [ $display ],
+    my @displays = ( UAV::Pilot::SDL::Video->new );
+    my @h264_handlers = UAV::Pilot::Video::H264Decoder->new({
+        displays => \@displays,
     });
 
-    $sdl_events->register( $display );
-    set_reticle_overlay( $display ) if $RETICLE;
+    my $fh = undef;
+    if( $FILE_OUT ) {
+        open( $fh, '>', $FILE_OUT ) or die "Can't open file '$FILE_OUT': $!\n";
+        my $file_handler = UAV::Pilot::Video::FileDump->new({
+            fh => $fh,
+        });
+        push @h264_handlers, $file_handler;
+    }
+
+    $sdl_events->register( $displays[0] );
+    set_reticle_overlay( $displays[0] ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
     });
 
     my %video_args = (
-        handler => $video,
+        handlers => \@h264_handlers,
         condvar => $cv,
         driver  => $ardrone,
     );
@@ -72,6 +84,8 @@ sub set_reticle_overlay
 
     $_->init_event_loop for $driver_video, $sdl_events;
     $cv->recv;
+
+    close $fh if defined $fh;
 }
 
 __END__

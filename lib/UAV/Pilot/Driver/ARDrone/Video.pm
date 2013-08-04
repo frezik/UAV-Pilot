@@ -68,9 +68,9 @@ has '_io' => (
     isa    => 'Item',
     writer => '_set_io',
 );
-has 'handler' => (
+has 'handlers' => (
     is  => 'ro',
-    isa => 'UAV::Pilot::Video::H264Handler',
+    isa => 'ArrayRef[UAV::Pilot::Video::H264Handler]',
 );
 has 'condvar' => (
     is  => 'ro',
@@ -257,15 +257,17 @@ sub _read_frame
     return 1 if $self->_byte_buffer_size < $frame_size;
 
     my @frame = $self->_byte_buffer_splice( 0, $frame_size );
-    $self->handler->process_h264_frame(
-        \@frame,
-        @header{qw{
-            display_width
-            display_height
-            encoded_stream_width
-            encoded_stream_height
-        }}
-    );
+    foreach my $handler (@{ $self->handlers }) {
+        $handler->process_h264_frame(
+            \@frame,
+            @header{qw{
+                display_width
+                display_height
+                encoded_stream_width
+                encoded_stream_height
+            }}
+        );
+    }
 
     $self->_mode( $self->_MODE_PARTIAL_PAVE_HEADER );
     return $self->_read_partial_pave_header;
@@ -310,9 +312,9 @@ __END__
     my $handler = ...; # An object that does UAV::Pilot::Driver::ARDrone::VideoHandler
     my $ardrone = ...; # An instance of UAV::Pilot::Driver::ARDrone
     my $video = UAV::Pilot::Driver::ARDrone::Video->new({
-        handler => $handler,
-        condvar => $cv,
-        driver  => $ardrone,
+        handlers => [ $handler ],
+        condvar  => $cv,
+        driver   => $ardrone,
     });
     
     $video->init_event_loop;
@@ -330,12 +332,12 @@ Note that this I<will not> work with the AR.Drone v1.
 =head2 new
 
     new({
-        handler => $handler,
-        condvar => $cv,
-        driver  => $ardrone,
+        handlers => [ $handler ],
+        condvar  => $cv,
+        driver   => $ardrone,
     })
 
-Constructor.  The C<handler> param is an object that does the role 
+Constructor.  The C<handlers> param is an array of objects that do the role 
 C<UAV::Pilot::Driver::ARDrone::VideoHandler>.  Param C<condvar> is an AnyEvent::CondVar.
 Param C<driver> is an instance of C<UAV::Pilot::Driver::ARDrone>.
 

@@ -2,6 +2,8 @@ Version 0.6
 -----------
 * Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change of 
   'display' to 'displays'
+* Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API change of 
+  'handler' to 'handlers'
 
 Version 0.5
 -----------
