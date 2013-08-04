@@ -2,11 +2,27 @@ Perl library for controlling UAVs, specifically ARDrone (maybe others in the fut
 
 http://ardrone2.parrot.com
 
-WARNING! THIS IS ALPHA CODE!
+WARNING!
 If your ARDrone crashes into your neighbor's house, invades Iranian airspace, or tries to 
 find Sarah Conner, don't blame me.
 
 
+INSTALLATION
+============
+
+For full functionality, you will need the SDL Perl module and the ffmpeg C library.
+
+Install with the standard Module::Build method:
+
+    perl ./Build.PL
+    ./Build
+    ./Build test
+    ./Build install
+
+
+
+NOTES
+=====
 
 Font 'Typeone' is by Nirmal Biswas:
 
