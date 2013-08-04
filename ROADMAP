@@ -1,6 +1,5 @@
 Version 0.6
 -----------
-* Stack video handlers (for instance, display video and dump to file at the same time)
 * Navigation overlay on top of video
 * Object recognition with opencv
 * ICMP: the protocol that goes PING!  (Integrate into nav data)
