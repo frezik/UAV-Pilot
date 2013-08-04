@@ -1,3 +1,8 @@
+Version 0.6
+-----------
+* Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change of 
+  'display' to 'displays'
+
 Version 0.5
 -----------
 * Real-time video implemented (this is the big one)

@@ -131,7 +131,6 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
         dMY_CXT;
     CODE:
         int len, got_frame, i;
-        SV* display;
         SV** tmp_sv_star;
         AV* incoming_frame_av = (AV*) SvRV(incoming_frame);
         I32 incoming_frame_length = av_len( incoming_frame_av ) + 1;
@@ -163,32 +162,17 @@ process_h264_frame( self, incoming_frame, width, height, encoded_width, encoded_
 
         MY_CXT.frame_count++;
 
-        /* Call $self->display() */
+        /* Call $self->_iterate_displays() */
         dSP;
         ENTER;
         SAVETMPS;
 
         PUSHMARK(SP);
         XPUSHs( self );
-        PUTBACK;
-        call_method( "display", G_SCALAR );
-
-        SPAGAIN;
-        display = POPs;
-        //FREETMPS;
-        //LEAVE;
-
-        /* Call $display->process_raw_frame() */
-        //ENTER;
-        //SAVETMPS;
-
-        PUSHMARK(SP);
-        XPUSHs( display );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->width)) );
         XPUSHs( sv_2mortal(newSViv(MY_CXT.frame->height)) );
-        XPUSHs( self );
         PUTBACK;
-        call_method( "process_raw_frame", G_DISCARD );
+        call_method( "_iterate_displays", G_DISCARD );
 
         FREETMPS;
         LEAVE;

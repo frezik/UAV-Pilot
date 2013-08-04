@@ -1,4 +1,4 @@
-use Test::More tests => 8;
+use Test::More tests => 9;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::Mock;
@@ -50,8 +50,13 @@ my $display = UAV::Pilot::Video::Mock::RawHandler->new({
         cmp_ok( scalar(@$pixels), '==', 3, "Got 3 channels in YUV420P format" );
     },
 });
+my $display2 = UAV::Pilot::Video::Mock::RawHandler->new({
+    cb => sub {
+        pass( "Got stacked handler" );
+    },
+});
 my $video = UAV::Pilot::Video::H264Decoder->new({
-    display => $display,
+    displays => [ $display, $display2 ],
 });
 isa_ok( $video => 'UAV::Pilot::Video::H264Decoder' );
 does_ok( $video => 'UAV::Pilot::Video::H264Handler' );
@@ -80,7 +85,7 @@ my $timeout_timer; $timeout_timer = AnyEvent->timer(
     after => MAX_WAIT_TIME,
     cb    => sub {
         fail( 'Did not get a frame after ' . MAX_WAIT_TIME . ' seconds' );
-        fail( 'Stub failure for test count matching' ) for 1 .. 4;
+        fail( 'Stub failure for test count matching' ) for 1 .. 5;
         exit 1;
 
         # Never get here

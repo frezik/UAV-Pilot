@@ -10,10 +10,9 @@ bootstrap UAV::Pilot::Video::H264Decoder;
 
 with 'UAV::Pilot::Video::H264Handler';
 
-has 'display' => (
+has 'displays' => (
     is  => 'ro',
-    #isa => 'UAV::Pilot::Video::RawHandler',
-    isa => 'Item',
+    isa => 'ArrayRef[Item]',
 );
 
 
@@ -24,6 +23,16 @@ sub _throw_error
     UAV::Pilot::VideoException->throw(
         error => $error_str,
     );
+    return 1;
+}
+
+# Helper sub to iterate over all displays after processing a frame
+sub _iterate_displays
+{
+    my ($self, $width, $height) = @_;
+    foreach my $display (@{ $self->displays }) {
+        $display->process_raw_frame( $width, $height, $self );
+    }
     return 1;
 }
 
@@ -45,7 +54,7 @@ __END__
     my $display = ...;
 
     my $decoder = UAV::Pilot::Video::H264Decoder->new({
-        display => $display,
+        displays => [ $display ],
     });
 
 =head1 DESCRIPTION

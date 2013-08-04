@@ -43,7 +43,7 @@ sub set_reticle_overlay
 
     my $display = UAV::Pilot::SDL::Video->new;
     my $video   = UAV::Pilot::Video::H264Decoder->new({
-        display => $display,
+        displays => [ $display ],
     });
 
     $sdl_events->register( $display );

@@ -168,7 +168,7 @@ sub take_picture ($$;$)
 
         my $display = UAV::Pilot::SDL::Video->new;
         my $video   = UAV::Pilot::Video::H264Decoder->new({
-            display => $display,
+            displays => [ $display ],
         });
         my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
             handler => $video,
