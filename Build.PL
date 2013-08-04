@@ -41,6 +41,7 @@ my $build = Module::Build->new(
         'Math::Trig'              => 0,
         'Moose'                   => 0,
         'MooseX::Event'           => 0,
+        'Term::ReadLine::Perl5'   => 0,
         'Test::More'              => 0,
         'Throwable'               => 0,
         'YAML'                    => 0,
