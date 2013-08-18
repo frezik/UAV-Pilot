@@ -18,8 +18,8 @@ bootstrap UAV::Pilot::SDL::Video;
 
 use constant {
     SDL_TITLE        => 'Video Output',
-    SDL_WIDTH        => 640,
-    SDL_HEIGHT       => 360,
+    SDL_WIDTH        => 1280,
+    SDL_HEIGHT       => 720,
     SDL_DEPTH        => 32,
     SDL_FLAGS        => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     SDL_OVERLAY_FLAG => SDL_YV12_OVERLAY,

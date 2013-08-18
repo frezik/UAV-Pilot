@@ -15,18 +15,25 @@ use UAV::Pilot::Video::H264Decoder;
 use Getopt::Long ();
 
 use constant NAV_UPDATE_INTERVAL => 1 / 30;
+use constant {
+    FRONT_CAMERA  => 'front',
+    BOTTOM_CAMERA => 'bottom',
+};
 
 
 my $IP       = '192.168.1.1';
 my $FILE_IN  = '';
 my $FILE_OUT = '';
 my $RETICLE  = 0;
+my $USE_CAMERA = FRONT_CAMERA;
 Getopt::Long::GetOptions(
-    'host=s'  => \$IP,
-    'in=s'    => \$FILE_IN,
-    'out=s'   => \$FILE_OUT,
-    'reticle' => \$RETICLE,
+    'host=s'       => \$IP,
+    'in=s'         => \$FILE_IN,
+    'out=s'        => \$FILE_OUT,
+    'reticle'      => \$RETICLE,
+    'use-camera=s' => \$USE_CAMERA,
 );
+
 
 
 sub set_reticle_overlay
@@ -37,8 +44,40 @@ sub set_reticle_overlay
     return 1;
 }
 
+sub set_driver_config
+{
+    my ($driver) = @_;
+
+    my $camera_setting = ($USE_CAMERA eq BOTTOM_CAMERA)
+        ? $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_VERT
+        : $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_HORI;
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL,
+        $camera_setting,
+    );
+
+    return 1;
+}
+
+sub set_comm_watchdog
+{
+    my ($driver, $cv) = @_;
+
+    my $commwatch_timer; $commwatch_timer = AnyEvent->timer(
+        after => 1,
+        interval => 1.5,
+        cb => sub {
+            $driver->at_comwdg;
+            $commwatch_timer;
+        },
+    );
+
+    return 1;
+}
+
 
 {
+
     my $cv = AnyEvent->condvar;
     my $sdl_events = UAV::Pilot::SDL::Events->new({
         condvar => $cv,
@@ -64,6 +103,9 @@ sub set_reticle_overlay
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
     });
+    $ardrone->connect;
+    set_driver_config( $ardrone );
+    set_comm_watchdog( $ardrone, $cv );
 
     my %video_args = (
         handlers => \@h264_handlers,
