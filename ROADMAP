@@ -1,5 +1,6 @@
 Version 0.6
 -----------
+* Send multiconfig commands in order to set video display size and fps
 * Navigation overlay on top of video
 * Object recognition with opencv
 * Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
