@@ -18,6 +18,8 @@ use constant NAV_UPDATE_INTERVAL => 1 / 30;
 use constant {
     FRONT_CAMERA  => 'front',
     BOTTOM_CAMERA => 'bottom',
+    RESOLUTION_HD => 'hd',
+    RESOLUTION_SD => 'sd',
 };
 
 
@@ -25,13 +27,17 @@ my $IP       = '192.168.1.1';
 my $FILE_IN  = '';
 my $FILE_OUT = '';
 my $RETICLE  = 0;
-my $USE_CAMERA = FRONT_CAMERA;
+my $CAMERA   = FRONT_CAMERA;
+my $FORMAT   = RESOLUTION_HD;
+my $FPS      = 30;
 Getopt::Long::GetOptions(
-    'host=s'       => \$IP,
-    'in=s'         => \$FILE_IN,
-    'out=s'        => \$FILE_OUT,
-    'reticle'      => \$RETICLE,
-    'use-camera=s' => \$USE_CAMERA,
+    'host=s'   => \$IP,
+    'in=s'     => \$FILE_IN,
+    'out=s'    => \$FILE_OUT,
+    'reticle'  => \$RETICLE,
+    'camera=s' => \$CAMERA,
+    'format=s' => \$FORMAT,
+    'fps=i'    => \$FPS,
 );
 
 
@@ -48,12 +54,48 @@ sub set_driver_config
 {
     my ($driver) = @_;
 
-    my $camera_setting = ($USE_CAMERA eq BOTTOM_CAMERA)
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE,
+        $driver->ARDRONE_CONFIG_VIDEO_VBC_MODE_DYNAMIC,
+    );
+
+    my $camera_setting = ($CAMERA eq BOTTOM_CAMERA)
         ? $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_VERT
         : $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_HORI;
     $driver->at_config(
         $driver->ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL,
         $camera_setting,
+    );
+
+    my $format_setting = ($FORMAT eq RESOLUTION_SD)
+        ? $driver->ARDRONE_CONFIG_VIDEO_CODEC_H264_360P
+        : $driver->ARDRONE_CONFIG_VIDEO_CODEC_H264_720P;
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_VIDEO_VIDEO_CODEC,
+        $format_setting,
+    );
+
+    my $bitrate_setting = ($FORMAT eq RESOLUTION_SD)
+        ? 2000
+        : 4000;
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_VIDEO_BITRATE,
+        $bitrate_setting,
+    );
+
+
+    my $fps = $FPS;
+    if( $fps > $driver->ARDRONE_CONFIG_VIDEO_MAX_FPS ) {
+        warn "*** Max FPS is " . $driver->ARDRONE_CONFIG_VIDEO_MAX_FPS . "\n";
+        $fps = $driver->ARDRONE_CONFIG_VIDEO_MAX_FPS;
+    }
+    elsif( $fps < $driver->ARDRONE_CONFIG_VIDEO_MIN_FPS ) {
+        warn "*** Min FPS is " . $driver->ARDRONE_CONFIG_VIDEO_MIN_FPS . "\n";
+        $fps = $driver->ARDRONE_CONFIG_VIDEO_MIN_FPS;
+    }
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_VIDEO_CODEC_FPS,
+        $fps,
     );
 
     return 1;
@@ -138,13 +180,32 @@ __END__
     uav_video_display \
         --host 192.168.1.1 \
         --in /path/to/file \
-        --reticle
+        --reticle \
+        --camera=front \
+        --format=hd \
+        --fps=30
 
 =head1 DESCRIPTION
 
 Shows a video stream from the UAV in an SDL window.  If the C<--in> option is specified 
 with a file, plays the stream from that file instead of connecting to the UAV.
 
-The C<--reticle> option will overlay a targeting reticle.
+=head1 OPTIONS
+
+=head2 --reticle
+
+Overlay a targeting reticle.
+
+=head2 --camera
+
+Set to C<front> or C<bottom> for the associated camera.  (Default: front)
+
+=head2 --format
+
+Set to C<hd> (720p resolution) or C<sd> (360p resolution).  (Default: hd)
+
+=head2 --fps
+
+Set to the desired framerate.  Max fps on the Parrot AR.Drone is 30.  (Default: 30)
 
 =cut

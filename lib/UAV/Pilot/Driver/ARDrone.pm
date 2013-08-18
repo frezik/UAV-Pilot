@@ -100,7 +100,7 @@ use constant {
     ARDRONE_CONFIG_VIDEO_CODEC_FPS            => 'video:codec_fps',
     ARDRONE_CONFIG_VIDEO_CAMIF_BUFFERS        => 'video:camif_buffers',
     ARDRONE_CONFIG_VIDEO_NUM_TRACKERS         => 'video:num_trackers',
-    ARDRONE_CONFIG_VIDEO_CODEC                => 'video:codec',
+    ARDRONE_CONFIG_VIDEO_VIDEO_CODEC          => 'video:codec',
     ARDRONE_CONFIG_VIDEO_VIDEO_SLICES         => 'video:video_slices',
     ARDRONE_CONFIG_VIDEO_VIDEO_LIVE_SOCKET    => 'video:video_live_socket',
     ARDRONE_CONFIG_VIDEO_VIDEO_STORAGE_SPACE  => 'video:video_storage_space',
@@ -201,6 +201,17 @@ use constant {
 
     ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_HORI => 0,
     ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_VERT => 1,
+
+    ARDRONE_CONFIG_VIDEO_CODEC_MP4_360P           => 0x80,
+    ARDRONE_CONFIG_VIDEO_CODEC_H264_360P          => 0x81,
+    ARDRONE_CONFIG_VIDEO_CODEC_MP4_360P_H264_720P => 0x82,
+    ARDRONE_CONFIG_VIDEO_CODEC_H264_720P          => 0x83,
+    ARDRONE_CONFIG_VIDEO_CODEC_MP4_360P_H264_360P => 0x88,
+
+    ARDRONE_CONFIG_VIDEO_MAX_FPS => 30,
+    ARDRONE_CONFIG_VIDEO_MIN_FPS => 1,
+
+    ARDRONE_CONFIG_VIDEO_VBC_MODE_DYNAMIC => 1,
 };
 
 
