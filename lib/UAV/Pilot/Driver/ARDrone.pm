@@ -250,6 +250,20 @@ has 'last_nav_packet' => (
     isa    => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
     writer => '_set_last_nav_packet',
 );
+has '_is_multi_cmd_mode' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+has '_multi_cmds' => (
+    traits => ['Array'],
+    is     => 'ro',
+    isa    => 'ArrayRef[Str]',
+    handles => {
+        '_add_multi_cmd'    => 'push',
+        '_clear_multi_cmds' => 'clear',
+    },
+);
 
 
 sub connect
@@ -492,11 +506,33 @@ sub read_nav_packet
     return $ret;
 }
 
+sub multi_cmds
+{
+    my ($self, $sub) = @_;
+    $self->_is_multi_cmd_mode( 1 );
+
+    eval { $sub->($self) };
+    # Wait to check if something went wrong so we can cleanup first
+
+    $self->_is_multi_cmd_mode( 0 );
+    my @multi = @{ $self->_multi_cmds };
+    $self->_send_cmd( join( '', @multi ) );
+    $self->_clear_multi_cmds;
+
+    die $@ if $@;
+    return 1;
+}
+
 
 sub _send_cmd
 {
     my ($self, $cmd) = @_;
-    $self->_socket->send( $cmd );
+    if( $self->_is_multi_cmd_mode ) {
+        $self->_add_multi_cmd( $cmd );
+    }
+    else {
+        $self->_socket->send( $cmd );
+    }
     return 1;
 }
 
@@ -668,6 +704,16 @@ Reset the communication watchdog.
 =head2 at_ctrl
 
 A useful but rather under-documented command for initing things like navigation data.
+
+=head2 multi_cmds
+
+    $driver->multi_cmds( sub {
+        $driver->at_config_ids( 1234, 5678, 9012 );
+        $driver->at_config( 'foo' => 1 );
+        $driver->at_config( 'bar' => 2 );
+    });
+
+Sends multiple commands in a single packet.
 
 =head2 float_convert
 

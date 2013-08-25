@@ -32,11 +32,26 @@ sub connect
 }
 
 
+sub _send_multi_cmds
+{
+    my ($self) = @_;
+    my @multi_cmds = @{ $self->_multi_cmds };
+    $self->_set_last_cmd( join( '', @multi_cmds ) );
+    $self->_add_saved_command( $_ ) for @multi_cmds;
+    return 1;
+}
+
 sub _send_cmd
 {
     my ($self, $cmd) = @_;
-    $self->_set_last_cmd( $cmd );
-    $self->_add_saved_command( $cmd );
+
+    if( $self->_is_multi_cmd_mode ) {
+        $self->_add_multi_cmd( $cmd );
+    }
+    else {
+        $self->_set_last_cmd( $cmd );
+        $self->_add_saved_command( $cmd );
+    }
     return 1;
 }
 

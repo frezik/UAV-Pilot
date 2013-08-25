@@ -1,4 +1,4 @@
-use Test::More tests => 40;
+use Test::More tests => 41;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
@@ -175,3 +175,17 @@ cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_START, '==', 1,
     "Userbox start config command" );
 cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_SCREENSHOT, '==', 2,
     "userbox screenshot config command" );
+
+my $seq = $ardrone_mock->seq;
+$ardrone_mock->multi_cmds( sub {
+    $ardrone_mock->at_config_ids( 1234, 5678, 9012 );
+    $ardrone_mock->at_config( 'video:camif_fps', 30 );
+    $ardrone_mock->at_config( 'video:bitrate', 1000 );
+});
+my $multi_cfg_expect = join( "\r",
+    'AT*CONFIG_IDS=' . ($seq+1) . ',1234,5678,9012',
+    'AT*CONFIG=' . ($seq+2) . ',"video:camif_fps","30"',
+    'AT*CONFIG=' . ($seq+3) . ',"video:bitrate","1000"',
+) . "\r";
+my $multi_cfg_got = $ardrone_mock->last_cmd;
+cmp_ok( $multi_cfg_got, 'eq', $multi_cfg_expect, "Sent multiple commands at once" );
