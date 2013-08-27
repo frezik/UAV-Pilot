@@ -94,6 +94,11 @@ sub take_picture ($$;$)
     $dev->take_picture( @_ );
 }
 
+sub record_usb ()
+{
+    $dev->record_usb;
+}
+
 {
     my $cv         = undef;
     my $sdl_events = undef;
@@ -171,9 +176,9 @@ sub take_picture ($$;$)
             displays => [ $display ],
         });
         my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
-            handler => $video,
-            condvar => $cv,
-            driver  => $dev->sender,
+            handlers => [ $video ],
+            condvar  => $cv,
+            driver   => $dev->sender,
         });
         $dev->video( $driver_video );
 

@@ -69,8 +69,9 @@ has '_io' => (
     writer => '_set_io',
 );
 has 'handlers' => (
-    is  => 'ro',
-    isa => 'ArrayRef[UAV::Pilot::Video::H264Handler]',
+    is      => 'ro',
+    isa     => 'ArrayRef[UAV::Pilot::Video::H264Handler]',
+    default => sub {[]},
 );
 has 'condvar' => (
     is  => 'ro',

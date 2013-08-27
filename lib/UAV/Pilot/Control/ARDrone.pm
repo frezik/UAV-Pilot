@@ -361,6 +361,16 @@ sub take_picture
     return 1;
 }
 
+sub record_usb
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB,
+        'TRUE',
+    );
+    return 1;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;

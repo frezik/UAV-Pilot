@@ -109,7 +109,7 @@ use constant {
     ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE => 'video:bitrate_control_mode',
     ARDRONE_CONFIG_VIDEO_BITRATE_STORAGE      => 'video:bitrate_storage',
     ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL        => 'video:video_channel',
-    ARDRONE_CONFIG_VIDEO_ON_USB               => 'video:video_on_usb',
+    ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB         => 'video:video_on_usb',
     ARDRONE_CONFIG_VIDEO_VIDEO_FILE_INDEX     => 'video:video_file_index',
 
     ARDRONE_CONFIG_LEDS_LEDS_ANIM => 'leds:leds_anim',
@@ -845,7 +845,7 @@ This is a non-blocking IO operation.
     ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE
     ARDRONE_CONFIG_VIDEO_BITRATE_STORAGE
     ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL
-    ARDRONE_CONFIG_VIDEO_ON_USB
+    ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB
     ARDRONE_CONFIG_VIDEO_VIDEO_FILE_INDEX
 
 =head3 LEDS
