@@ -1,4 +1,4 @@
-use Test::More tests => 2;
+use Test::More tests => 4;
 use v5.14;
 use UAV::Pilot::EasyEvent;
 use AnyEvent;
@@ -52,9 +52,19 @@ my $timer; $timer = AnyEvent->timer(
                 "Fourth event",
             ],
         );
-        $cv->send( "End program" );
+        $event->send_event( 'foo_happens' );
+        $cv->send( "End" );
     },
 );
+
+my $i = 0;
+$event->add_event( 'foo_happens' => sub {
+    cmp_ok( $i, '==', 0, "Foo happened" );
+    $i++;
+});
+$event->add_event( 'foo_happens' => sub {
+    cmp_ok( $i, '==', 1, "More foo happened" );
+});
 
 $event->init_event_loop;
 $cv->recv;

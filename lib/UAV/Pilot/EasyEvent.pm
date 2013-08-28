@@ -23,6 +23,16 @@ has '_timers' => (
         _add_timer => 'push',
     },
 );
+has '_events' => (
+    traits  => [ 'Hash' ],
+    is      => 'ro',
+    isa     => 'HashRef[ArrayRef[Item]]',
+    default => sub { {} },
+    handles => {
+        '_add_event' => 'set',
+        '_event_type_exists' => 'exists',
+    },
+);
 
 
 sub add_timer
@@ -44,6 +54,38 @@ sub add_timer
     });
 
     return $new_self;
+}
+
+sub add_event
+{
+    my ($self, $name, $callback) = @_;
+
+    my ($cv, @callbacks);
+    if( $self->_event_type_exists( $name ) ) {
+        my $event  = $self->_events->{$name};
+        $cv        = $event->[0];
+        @callbacks = @{ $event->[1] };
+    }
+    else {
+        $cv        = AnyEvent->condvar;
+        @callbacks = ();
+    }
+
+    push @callbacks, $callback;
+    $self->_add_event( $name => [ $cv, \@callbacks ] );
+
+    $cv->cb( sub {
+        $_->( $cv ) for @callbacks;
+    });
+    return 1;
+}
+
+sub send_event
+{
+    my ($self, $name, @args) = @_;
+    my $cv = $self->_events->{$name}->[0];
+    $cv->send( @args );
+    return 1;
 }
 
 sub init_event_loop
