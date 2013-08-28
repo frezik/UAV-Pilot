@@ -501,6 +501,11 @@ Saves a picture in JPG format to:
 
 You can FTP into the AR.Drone to retrieve this.
 
+=head2 record_usb
+
+Start recording the video stream to a USB stick attached to the AR.Drone's internal USB 
+port.  The stick must have at least 100MB free.
+
 =head1 FLIGHT ANIMATION METHODS
 
 The Parrot AR.Drone comes preprogrammed with a bunch of "flight animations" (complicated 
