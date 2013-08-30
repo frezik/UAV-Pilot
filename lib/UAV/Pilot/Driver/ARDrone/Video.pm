@@ -69,8 +69,13 @@ has '_io' => (
     writer => '_set_io',
 );
 has 'handlers' => (
-    is  => 'ro',
-    isa => 'ArrayRef[UAV::Pilot::Video::H264Handler]',
+    traits  => ['Array'],
+    is      => 'rw',
+    isa     => 'ArrayRef[UAV::Pilot::Video::H264Handler]',
+    default => sub {[]},
+    handles => {
+        'add_handler' => 'push',
+    },
 );
 has 'condvar' => (
     is  => 'ro',
@@ -352,5 +357,11 @@ close the stream on our end and reintitlize.
 
 You shouldn't have to call this directly.  Pass this object to your 
 C<UAV::Pilot::Control::ARDrone> instance and it will do it for you.
+
+=head2 add_handler
+
+    add_handler( $handler );
+
+Adds a C<UAV::Pilot::Video::H264Handler> object to the list of handlers.
 
 =cut

@@ -111,6 +111,20 @@ sub take_picture ($$;$)
         return 1;
     };
 
+    my $vid_driver = undef;
+    my $init_vid_driver = sub {
+        return 1 if defined $vid_driver;
+
+        $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
+            condvar => $cv,
+            driver  => $dev->sender,
+        });
+        $vid_driver->init_event_loop;
+        $dev->video( $vid_driver );
+
+        return 1;
+    };
+
 
     sub uav_module_init
     {
@@ -159,27 +173,19 @@ sub take_picture ($$;$)
     sub start_video ()
     {
         $init_sdl_events->();
+        $init_vid_driver->();
         eval "use UAV::Pilot::SDL::Video";
         die "Problem loading UAV::Pilot::SDL::Video: $@\n" if $@;
         eval "use UAV::Pilot::Video::H264Decoder";
         die "Problem loading UAV::Pilot::Video::H264Decoder: $@\n" if $@;
-        eval "use UAV::Pilot::Driver::ARDrone::Video";
-        die "Problem loading UAV::Pilot::Driver::ARDrone::Video: $@\n" if $@;
 
         my $display = UAV::Pilot::SDL::Video->new;
         my $video   = UAV::Pilot::Video::H264Decoder->new({
             displays => [ $display ],
         });
-        my $driver_video = UAV::Pilot::Driver::ARDrone::Video->new({
-            handler => $video,
-            condvar => $cv,
-            driver  => $dev->sender,
-        });
-        $dev->video( $driver_video );
+        $vid_driver->add_handler( $video );
 
         $sdl_events->register( $display );
-        $driver_video->init_event_loop;
-
         say "Ouputting video";
         return 1;
     }
@@ -187,6 +193,7 @@ sub take_picture ($$;$)
     sub dump_video_to_file ($)
     {
         my ($file) = @_;
+        $init_vid_driver->();
 
         open( my $fh, '>', $file ) or UAV::Pilot::IOException->throw({
             error => "Can't open [$file] for reading: $!\n",
@@ -195,13 +202,8 @@ sub take_picture ($$;$)
             fh => $fh,
         });
 
-        my $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
-            handler => $vid_dump,
-            condvar => $cv,
-            driver  => $dev->sender,
-        });
-        $vid_driver->init_event_loop;
-
+        $vid_driver->add_handler( $vid_dump );
+        say "Dumping video to file '$file'";
         return 1;
     }
 }

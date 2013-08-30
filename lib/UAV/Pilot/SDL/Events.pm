@@ -19,6 +19,7 @@ has '_handlers' => (
     traits  => ['Array'],
     is      => 'ro',
     isa     => 'ArrayRef[UAV::Pilot::SDL::EventHandler]',
+    default => sub {[]},
     handles => {
         register => 'push',
     },
