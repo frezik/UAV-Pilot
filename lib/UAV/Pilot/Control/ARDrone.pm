@@ -361,6 +361,16 @@ sub take_picture
     return 1;
 }
 
+sub record_usb
+{
+    my ($self) = @_;
+    $self->sender->at_config(
+        $self->sender->ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB,
+        'TRUE',
+    );
+    return 1;
+}
+
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
@@ -490,6 +500,11 @@ Saves a picture in JPG format to:
     /boxes/flight_YYYYMMDD_hhmmss/picture_YYYYMMDD_hhmmss.jpg
 
 You can FTP into the AR.Drone to retrieve this.
+
+=head2 record_usb
+
+Start recording the video stream to a USB stick attached to the AR.Drone's internal USB 
+port.  The stick must have at least 100MB free.
 
 =head1 FLIGHT ANIMATION METHODS
 
