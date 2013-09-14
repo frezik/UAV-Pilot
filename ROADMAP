@@ -1,10 +1,9 @@
 Version 0.6
 -----------
+* In 'uav', starting the navigation, then starting the video display, will kill the 
+  navigation output.  Fix this.
 * Remove Term::ReadLine::Perl5 from bin/uav
 * Send multiconfig commands in order to set video display size and fps
-* Navigation overlay on top of video
-* Object recognition with opencv
-* Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
 * Video: Recover from bad PaVE header by reading forward until we find another one
     * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
 * Control should take 'driver' arg, not 'sender'
@@ -17,6 +16,9 @@ Version 0.6
 
 Version 7
 -----------
+* SDL2 w/Streaming pixels for video?  Or OpenGL?
+    * Navigation overlay on top of video
+    * Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
 * UAV::SDL::Video (xs) -- Use sws_getCachedContext() instead of sws_getContext()
 * Error message formatting in REPL
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
