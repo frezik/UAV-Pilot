@@ -1,6 +1,7 @@
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Driver::ARDrone::Video;
+use UAV::Pilot::Events;
 
 
 {
@@ -100,18 +101,23 @@ sub record_usb ()
 }
 
 {
-    my $cv         = undef;
-    my $sdl_events = undef;
-    my $init_sdl_events = sub {
-        return 1 if defined $sdl_events;
-        die "Can't init UAV::Pilot::SDL::Events without a condvar\n" unless defined $cv;
-        eval "use UAV::Pilot::SDL::Events";
-        die "Problem loading UAV::Pilot::SDL::Events: $@\n" if $@;
+    my $cv     = undef;
+    my $events = undef;
+    my $init_events = sub {
+        return 1 if defined $events;
+        die "Can't init UAV::Pilot::Events without a condvar\n" unless defined $cv;
 
-        $sdl_events = UAV::Pilot::SDL::Events->new({
+        $events = UAV::Pilot::Events->new({
             condvar => $cv,
         });
-        $sdl_events->init_event_loop;
+        $events->init_event_loop;
+
+        # If we can load SDL, then init it here
+        eval "use UAV::Pilot::SDL::Events";
+        if(! $@ ) {
+            my $sdl_events = UAV::Pilot::SDL::Events->new;
+            $events->register( $sdl_events );
+        }
 
         return 1;
     };
@@ -141,7 +147,7 @@ sub record_usb ()
 
     sub start_joystick ()
     {
-        $init_sdl_events->();
+        $init_events->();
         eval "use UAV::Pilot::SDL::Joystick";
         die "Problem loading UAV::Pilot::SDL::Joystick: $@\n" if $@;
 
@@ -149,7 +155,7 @@ sub record_usb ()
             condvar    => $cv,
             controller => $dev,
         });
-        $sdl_events->register( $joystick );
+        $events->register( $joystick );
 
         say 'Ready for joystick input on ['
             . SDL::Joystick::name( $joystick->joystick->index )
@@ -160,7 +166,7 @@ sub record_usb ()
 
     sub start_nav ()
     {
-        $init_sdl_events->();
+        $init_events->();
         eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
         die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
 
@@ -168,7 +174,7 @@ sub record_usb ()
             driver => $dev->sender,
             feeder => $dev,
         });
-        $sdl_events->register( $nav );
+        $events->register( $nav );
 
         say "Outputting navigation data";
 
@@ -177,7 +183,7 @@ sub record_usb ()
 
     sub start_video ()
     {
-        $init_sdl_events->();
+        $init_events->();
         $init_vid_driver->();
         eval "use UAV::Pilot::SDL::Video";
         die "Problem loading UAV::Pilot::SDL::Video: $@\n" if $@;
@@ -190,7 +196,7 @@ sub record_usb ()
         });
         $vid_driver->add_handler( $video );
 
-        $sdl_events->register( $display );
+        $events->register( $display );
         say "Ouputting video";
         return 1;
     }

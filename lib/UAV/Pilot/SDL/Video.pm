@@ -33,7 +33,7 @@ use constant {
 };
 
 with 'UAV::Pilot::Video::RawHandler';
-with 'UAV::Pilot::SDL::EventHandler';
+with 'UAV::Pilot::EventHandler';
 
 
 has '_last_vid_frame' => (
@@ -203,7 +203,7 @@ __END__
 =head1 SYNOPSIS
 
     my $cv = AnyEvent->condvar;
-    my $sdl_events = UAV::Pilot::SDL::Events->new({
+    my $events = UAV::Pilot::Events->new({
         condvar => $cv,
     });
     my $display = UAV::Pilot::SDL::Video->new;
@@ -212,12 +212,12 @@ __END__
         display => $display,
     });
     
-    $sdl_events->register( $display );
+    $events->register( $display );
 
 =head1 DESCRIPTION
 
 Process raw video frames and displays them to an SDL surface.  This does the roles
-C<UAV::Pilot::Video::RawHandler> and C<UAV::Pilot::SDL::EventHandler>.
+C<UAV::Pilot::Video::RawHandler> and C<UAV::Pilot::EventHandler>.
 
 =head1 METHODS
 

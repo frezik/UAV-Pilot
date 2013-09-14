@@ -161,7 +161,7 @@ use constant {
 };
 
 
-with 'UAV::Pilot::SDL::EventHandler';
+with 'UAV::Pilot::EventHandler';
 
 has 'sdl' => (
     is  => 'ro',
@@ -449,23 +449,24 @@ __END__
 =head1 SYNOPSIS
 
   my $condvar = AnyEvent->condvar;
-  my $sdl_events = UAV::Pilot::SDL::Events->new({
+  my $events = UAV::Pilot::Events->new({
       condvar => $condvar,
   });
   
   my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
       driver => UAV::Pilot::Driver::ARDrone->new( ... ),
   });
-  $sdl_events->register( $sdl_nav );
+  $events->register( $sdl_nav );
 
 =head1 DESCRIPTION
 
 Graphically renders a C<UAV::Pilot::Driver::ARDrone::NavPacket> using SDL.
 
-It does the C<UAV::Pilot::SDL::EventHandler> role, and thus can be processed by 
-C<UAV::Pilot::SDL::Events>.  This is recommended, as C<UAV::Pilot::SDL::Events> will 
-take care of the C<SDL_QUIT> events.  Without that, there's no way to stop the process 
-other than C<kill -9>.
+It does the C<UAV::Pilot::EventHandler> role, and thus can be processed by 
+C<UAV::Pilot::Events>.  It's recommended to also add the 
+C<UAV::Pilot::SDL::Events> handler to the events object, as that will 
+take care of the C<SDL_QUIT> events.  Without that, there's no way to stop 
+the process other than C<kill -9>.
 
 =head1 METHODS
 

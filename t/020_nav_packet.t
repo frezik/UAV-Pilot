@@ -2,6 +2,8 @@ use Test::More tests => 43;
 use v5.14;
 use warnings;
 
+use AnyEvent;
+use UAV::Pilot::EasyEvent;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 my $bad_header = make_packet( '55667788' );
@@ -157,7 +159,6 @@ cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt pars
 cmp_ok( $demo_packet->pitch, '==', -0.800000011920929, "Pitch parsed" );
 cmp_ok( $demo_packet->roll, '>', 2.99569025183973e-39, "Roll parsed (less than float)" );
 cmp_ok( $demo_packet->roll, '<', 2.99569025183975e-39, "Roll parsed (greater than float)" );
-
 
 
 sub make_packet

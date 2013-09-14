@@ -1,17 +1,7 @@
-use Test::More;
+use Test::More tests => 3;
 use v5.14;
-BEGIN {
-    my $is_sdl_installed = do {
-        eval "use SDL ()";
-        $@ ? 0 : 1;
-    };
-    if(! $is_sdl_installed) {
-        plan skip_all => "SDL is not installed";
-    }
-};
-plan tests => 3;
-use UAV::Pilot::SDL::Events;
-use UAV::Pilot::SDL::EventHandler;
+use UAV::Pilot::Events;
+use UAV::Pilot::EventHandler;
 use AnyEvent;
 
 package __Mock::EventHandler;
@@ -38,10 +28,10 @@ package __Mock::Bad;
 package main;
 
 my $condvar = AnyEvent->condvar;
-my $events = UAV::Pilot::SDL::Events->new({
+my $events = UAV::Pilot::Events->new({
     condvar => $condvar,
 });
-isa_ok( $events => 'UAV::Pilot::SDL::Events' );
+isa_ok( $events => 'UAV::Pilot::Events' );
 
 
 eval {
@@ -58,12 +48,9 @@ else {
 my $handler = __Mock::EventHandler->new({
     condvar => $condvar,
 });
-UAV::Pilot::SDL::EventHandler->meta->apply( $handler );
+UAV::Pilot::EventHandler->meta->apply( $handler );
 $events->register( $handler );
 
 $events->init_event_loop;
 my $got_str = $condvar->recv;
 cmp_ok( $got_str, 'eq', 'Event hit', "Event loop ran" );
-
-
-

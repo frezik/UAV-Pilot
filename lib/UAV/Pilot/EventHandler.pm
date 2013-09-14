@@ -1,4 +1,4 @@
-package UAV::Pilot::SDL::EventHandler;
+package UAV::Pilot::EventHandler;
 use v5.14;
 use Moose::Role;
 
@@ -10,11 +10,11 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::SDL::EventHandler
+  UAV::Pilot::EventHandler
 
 =head1 DESCRIPTION
 
-Role for objects that will be passed into C<UAV::Pilot::SDL::Events>.
+Role for objects that will be passed into C<UAV::Pilot::Events>.
 
 Requires the method C<process_events>, which will be called to handle the events for this 
 object.
