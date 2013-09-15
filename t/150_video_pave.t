@@ -42,7 +42,7 @@ my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
 isa_ok( $driver_video => 'UAV::Pilot::Driver::ARDrone::Video' );
 
 my $dev = UAV::Pilot::Control::ARDrone->new({
-    sender => $ardrone,
+    driver => $ardrone,
     video  => $driver_video,
 });
 

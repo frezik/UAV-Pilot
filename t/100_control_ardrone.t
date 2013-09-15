@@ -9,7 +9,7 @@ my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
 });
 $ardrone->connect;
 my $dev = UAV::Pilot::Control::ARDrone->new({
-    sender => $ardrone,
+    driver => $ardrone,
 });
 isa_ok( $dev => 'UAV::Pilot::Control::ARDrone' );
 does_ok( $dev => 'UAV::Pilot::Control' );

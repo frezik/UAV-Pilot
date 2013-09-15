@@ -54,7 +54,7 @@ sub init_event_loop
                 || $self->cur_vert_speed
                 || $self->cur_yaw
             ) {
-                $self->sender->at_pcmd( 1, 0,
+                $self->driver->at_pcmd( 1, 0,
                     $self->cur_roll,
                     $self->cur_pitch,
                     $self->cur_vert_speed,

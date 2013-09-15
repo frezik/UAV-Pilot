@@ -223,7 +223,7 @@ sub set_comm_watchdog
         : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
 
     my $dev = UAV::Pilot::Control::ARDrone->new({
-        sender => $ardrone,
+        driver => $ardrone,
         video  => $driver_video,
     });
 

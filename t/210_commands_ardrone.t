@@ -14,7 +14,7 @@ my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
 $ardrone->connect;
 my $repl = UAV::Pilot::Commands->new({
     device => UAV::Pilot::Control::ARDrone->new({
-        sender => $ardrone,
+        driver => $ardrone,
     }),
 });
 
