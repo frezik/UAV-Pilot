@@ -128,7 +128,7 @@ sub record_usb ()
 
         $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
             condvar => $cv,
-            driver  => $dev->sender,
+            driver  => $dev->driver,
         });
         $vid_driver->init_event_loop;
         $dev->video( $vid_driver );
@@ -171,7 +171,7 @@ sub record_usb ()
         die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
 
         my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
-            driver => $dev->sender,
+            driver => $dev->driver,
             feeder => $dev,
         });
         $events->register( $nav );

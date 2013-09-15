@@ -15,7 +15,7 @@ use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 use constant {
     SDL_TITLE  => 'Nav Output',
-    SDL_WIDTH  => 600,
+    SDL_WIDTH  => 640,
     SDL_HEIGHT => 200,
     SDL_DEPTH  => 24,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
@@ -175,6 +175,16 @@ has 'feeder' => (
     is  => 'ro',
     isa => 'Maybe[UAV::Pilot::SDL::NavFeeder]',
 );
+has 'origin_x' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'origin_y' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
 has '_bg_color' => (
     is  => 'ro',
 );
@@ -316,6 +326,8 @@ sub _clear_screen
 sub _write_label
 {
     my ($self, $text, $x, $y) = @_;
+    $x += $self->origin_x;
+    $y += $self->origin_y;
     my $txt = $self->_txt_label;
     my $app = $self->sdl;
 
@@ -327,6 +339,8 @@ sub _write_label
 sub _write_value
 {
     my ($self, $text, $x, $y) = @_;
+    $x += $self->origin_x;
+    $y += $self->origin_y;
     my $txt = $self->_txt_value;
     my $app = $self->sdl;
 
@@ -338,6 +352,8 @@ sub _write_value
 sub _write_value_float_round
 {
     my ($self, $text, $x, $y) = @_;
+    $x += $self->origin_x;
+    $y += $self->origin_y;
     my $txt = $self->_txt_value;
     my $app = $self->sdl;
 
@@ -351,6 +367,8 @@ sub _write_value_float_round
 sub _draw_line_value
 {
     my ($self, $value, $center_x, $center_y, $color) = @_;
+    $center_x += $self->origin_x;
+    $center_y += $self->origin_y;
     my $app = $self->sdl;
 
     my $y_addition = int( $self->LINE_VALUE_HALF_MAX_HEIGHT * $value );
@@ -367,6 +385,8 @@ sub _draw_line_value
 sub _draw_circle_value
 {
     my ($self, $value, $center_x, $center_y, $value_color) = @_;
+    $center_x += $self->origin_x;
+    $center_y += $self->origin_y;
     my $app = $self->sdl;
     my $radius = $self->CIRCLE_VALUE_RADIUS;
     my $color = $self->DRAW_VALUE_COLOR;
@@ -386,6 +406,8 @@ sub _draw_circle_value
 sub _draw_bar_percent_value
 {
     my ($self, $value, $center_x, $center_y) = @_;
+    $center_x += $self->origin_x;
+    $center_y += $self->origin_y;
     my $app = $self->sdl;
     my $color = $self->BAR_PERCENT_COLOR_GRADIENT->[$value - 1];
     my $half_max_height = $self->BAR_MAX_HEIGHT / 2;
@@ -414,6 +436,8 @@ sub _draw_bar_percent_value
 sub _draw_line_vert_indicator
 {
     my ($self, $value, $center_x, $center_y, $half_height, $width, $color, $top_bottom_color, $border_width_margin) = @_;
+    $center_x += $self->origin_x;
+    $center_y += $self->origin_y;
     my $app = $self->sdl;
     my $half_width = $width / 2;
 
@@ -473,10 +497,16 @@ the process other than C<kill -9>.
 =head2 new
 
   new({
-      driver => UAV::Pilot::Driver::ARDrone->new( ... ),
+      driver   => UAV::Pilot::Driver::ARDrone->new( ... ),
+      origin_x => 0,
+      origin_y => 0,
   })
 
 Constructor.  The param C<driver> takes a C<UAV::Pilot::Driver::ARDrone> object.
+
+The C<origin_x> and C<origin_y> optional parameters set the coords where 
+we will start drawing.  They both default to 0.  This is useful for 
+drawing multiple things (like video) on the same window.
 
 =head2 render
 
