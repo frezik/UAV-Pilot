@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use v5.14;
 use AnyEvent::ReadLine::Gnu;
-use Term::ReadLine::Perl5;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
@@ -80,7 +79,6 @@ sub load_libraries
 
 {
     my $continue = 1;
-    my $term = Term::ReadLine::Perl5->new( 'uav' );
 
     my $driver_args = {
         host => $IP,

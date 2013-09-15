@@ -2,7 +2,6 @@ Version 0.6
 -----------
 * In 'uav', starting the navigation, then starting the video display, will kill the 
   navigation output.  Fix this.
-* Remove Term::ReadLine::Perl5 from bin/uav
 * Send multiconfig commands in order to set video display size and fps
 * Video: Recover from bad PaVE header by reading forward until we find another one
     * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
