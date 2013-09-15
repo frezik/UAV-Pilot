@@ -130,15 +130,10 @@ sub process_raw_frame
 sub process_events
 {
     my ($self) = @_;
-    my $sdl = $self->sdl_app;
-    SDL::Video::fill_rect(
-        $sdl,
-        $self->_bg_rect,
-        $self->_bg_color,
-    );
     my $last_vid_frame = $self->_last_vid_frame;
     return 1 unless defined $last_vid_frame;
 
+    my $sdl = $self->sdl_app;
     my $bg_rect = $self->_bg_rect;
     SDL::Video::fill_rect(
         $sdl,
