@@ -5,7 +5,6 @@ Version 0.6
 * Send multiconfig commands in order to set video display size and fps
 * Video: Recover from bad PaVE header by reading forward until we find another one
     * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
-* Control should take 'driver' arg, not 'sender'
 * Document
     * UAV::Pilot::SDL::VideoOverlay
     * UAV::Pilot::SDL::VideoOverlay::Reticle
