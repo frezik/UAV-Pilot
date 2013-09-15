@@ -1,5 +1,12 @@
 Version 0.6
 -----------
+* New EventHandler interface.  
+    * UAV::Pilot::SDL::EventHandler moved to UAV::Pilot::EventHandler
+    * UAV::Pilot::Events based on previous UAV::Pilot::SDL::Events, except 
+      it doesn't do anything for SDL
+    * UAV::Pilot::SDL::Events changed to an EventHandler
+    * All other EventHandler objects and bin/uav* scripts updated to 
+      reflect this change
 * Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change of 
   'display' to 'displays'
 * Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API change of 
