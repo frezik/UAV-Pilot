@@ -5,7 +5,6 @@ use namespace::autoclean;
 use File::Spec;
 use Math::Trig ();
 use SDL;
-use SDLx::App;
 use SDLx::Text;
 use SDL::Event;
 use SDL::Events;
@@ -155,10 +154,6 @@ use constant {
 };
 
 
-has 'sdl' => (
-    is  => 'ro',
-    isa => 'SDLx::App',
-);
 has 'driver' => (
     is  => 'ro',
     isa => 'UAV::Pilot::Driver',
@@ -217,9 +212,17 @@ sub BUILDARGS
         h_align => 'center',       
     );
 
+
     $$args{_txt_label} = $label;
     $$args{_txt_value} = $value;
     return $args;
+}
+
+sub add_to_window
+{
+    my ($self, $window) = @_;
+    $window->add_child( $self, $window->BOTTOM );
+    return 1;
 }
 
 
@@ -397,8 +400,10 @@ __END__
       condvar => $condvar,
   });
   
+  my $window = UAV::Pilot::SDL::Window->new;
   my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
       driver => UAV::Pilot::Driver::ARDrone->new( ... ),
+      window => $window,
   });
   $events->register( $sdl_nav );
 

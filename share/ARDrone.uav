@@ -187,8 +187,8 @@ sub record_usb ()
             driver => $dev->driver,
             feeder => $dev,
         });
-        $sdl->add_child( $nav, 0, 0 );
         $events->register( $nav );
+        $nav->add_to_window( $sdl );
 
         say "Outputting navigation data";
 
@@ -198,6 +198,7 @@ sub record_usb ()
     sub start_video ()
     {
         $init_events->();
+        $init_sdl->();
         $init_vid_driver->();
         eval "use UAV::Pilot::SDL::Video";
         die "Problem loading UAV::Pilot::SDL::Video: $@\n" if $@;
@@ -209,8 +210,8 @@ sub record_usb ()
             displays => [ $display ],
         });
         $vid_driver->add_handler( $video );
+        $display->add_to_window( $sdl );
 
-        $events->register( $display );
         say "Ouputting video";
         return 1;
     }

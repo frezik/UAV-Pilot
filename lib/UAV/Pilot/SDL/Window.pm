@@ -3,16 +3,23 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use SDL::Video qw{ :surface :video };
+use SDLx::App;
+use UAV::Pilot::SDL::WindowEventHandler;
 
 with 'UAV::Pilot::EventHandler';
 
 use constant {
     SDL_TITLE  => 'UAV::Pilot',
     SDL_WIDTH  => 640,
-    SDL_HEIGHT => 200,
+    SDL_HEIGHT => 360,
     SDL_DEPTH  => 24,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
+
+    TOP    => 0,
+    BOTTOM => 1,
+    LEFT   => 2,
+    RIGHT  => 3,
 };
 
 
@@ -28,6 +35,16 @@ has 'children' => (
     handles => {
         '_add_child' => 'push',
     },
+);
+has 'yuv_overlay' => (
+    is     => 'ro',
+    isa    => 'Maybe[SDL::Overlay]',
+    writer => '_set_yuv_overlay',
+);
+has 'yuv_overlay_rect' => (
+    is     => 'ro',
+    isa    => 'Maybe[SDL::Rect]',
+    writer => '_set_yuv_overlay_rect',
 );
 has '_origin_x' => (
     is  => 'rw',
@@ -74,13 +91,46 @@ sub BUILDARGS
 
 sub add_child
 {
-    my ($self, $child, $origin_x, $origin_y) = @_;
+    my ($self, $child, $float) = @_;
+    $float //= $self->TOP;
+
+    # TODO fix coords based on $float
+    my $x = 0;
+    my $y = 0;
     $self->_add_child({
-        origin_x => $origin_x,
-        origin_y => $origin_y,
+        origin_x => $x,
+        origin_y => $y,
         drawer   => $child,
     });
+
+    return 1;
 }
+
+sub add_child_with_yuv_overlay
+{
+    my ($self, $child, $width, $height, $overlay_flag, $float) = @_;
+    $float //= $self->TOP;
+
+    # TODO correct coords based on $float
+    my $x = 0;
+    my $y = 0;
+
+    my $sdl = $self->sdl;
+    my $overlay = SDL::Overlay->new( $width, $height, $overlay_flag, $sdl );
+    my $overlay_rect = SDL::Rect->new( $x, $y, $width, $height );
+
+    $self->_set_yuv_overlay( $overlay );
+    $self->_set_yuv_overlay_rect( $overlay_rect );
+
+    $self->_add_child({
+        origin_x => $x,
+        origin_y => $y,
+        drawer   => $child,
+    });
+    return 1;
+}
+
+
 
 sub process_events
 {

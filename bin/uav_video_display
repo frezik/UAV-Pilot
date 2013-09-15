@@ -11,6 +11,7 @@ use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
 use UAV::Pilot::SDL::VideoOverlay::Reticle;
+use UAV::Pilot::SDL::Window;
 use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Video::H264Decoder;
 use String::CRC32 'crc32';
@@ -186,10 +187,14 @@ sub set_comm_watchdog
     my $sdl_events = UAV::Pilot::SDL::Events->new;
     $events->register( $sdl_events );
 
-    my @displays = ( UAV::Pilot::SDL::Video->new );
+    my $window = UAV::Pilot::SDL::Window->new;
+
+    my $vid_display = UAV::Pilot::SDL::Video->new;
+    my @displays = ($vid_display);
     my @h264_handlers = UAV::Pilot::Video::H264Decoder->new({
         displays => \@displays,
     });
+    $vid_display->add_to_window( $window );
 
     my $fh = undef;
     if( $FILE_OUT ) {
@@ -200,7 +205,7 @@ sub set_comm_watchdog
         push @h264_handlers, $file_handler;
     }
 
-    $events->register( $displays[0] );
+    $events->register( $window );
     set_reticle_overlay( $displays[0] ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
@@ -227,6 +232,7 @@ sub set_comm_watchdog
         video  => $driver_video,
     });
 
+    warn "Running . . . \n";
     $_->init_event_loop for $driver_video, $events;
     $cv->recv;
 

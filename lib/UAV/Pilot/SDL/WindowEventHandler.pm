@@ -5,6 +5,7 @@ use Moose::Role;
 requires 'draw';
 requires 'width';
 requires 'height';
+requires 'add_to_window';
 
 1;
 __END__
@@ -19,8 +20,12 @@ __END__
 Role for objects that will be passed into C<UAV::Pilot::SDL::Window> as 
 children.
 
-Requires the method C<draw>, which will be called on the object to draw 
-itself.  It will be passed the C<UAV::Pilot::SDL::Window> object.
+The C<add_to_window> method should be called on the object after construction 
+and passed an C<UAV::Pilot::SDL::Window> object.  The handler will add itself 
+as a child to this window.
+
+The method C<draw> will be called on the object to draw itself.  It will be 
+passed the C<UAV::Pilot::SDL::Window> object.
 
 Also requires C<width> and C<height> methods.
 
