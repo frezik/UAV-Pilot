@@ -1,4 +1,4 @@
-use Test::More tests => 28;
+use Test::More tests => 29;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -37,4 +37,5 @@ SKIP: {
     use_ok( 'UAV::Pilot::SDL::Video' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay::Reticle' );
+    use_ok( 'UAV::Pilot::SDL::Window' );
 }

@@ -122,6 +122,18 @@ sub record_usb ()
         return 1;
     };
 
+    my $sdl = undef;
+    my $init_sdl = sub {
+        return 1 if defined $sdl;
+        eval "use UAV::Pilot::SDL::Window;";
+        die "Can't use UAV::Pilot::SDL::Window: $@\n" if $@;
+
+        $init_events->();
+        $sdl = UAV::Pilot::SDL::Window->new;
+        $events->register( $sdl );
+        return 1;
+    };
+
     my $vid_driver = undef;
     my $init_vid_driver = sub {
         return 1 if defined $vid_driver;
@@ -166,14 +178,16 @@ sub record_usb ()
 
     sub start_nav ()
     {
-        $init_events->();
         eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
         die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
+        $init_sdl->();
+        $init_events->();
 
         my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
             driver => $dev->driver,
             feeder => $dev,
         });
+        $sdl->add_child( $nav, 0, 0 );
         $events->register( $nav );
 
         say "Outputting navigation data";
