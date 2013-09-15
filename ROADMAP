@@ -1,7 +1,5 @@
 Version 0.6
 -----------
-* Convert all bin/ files to new EventHandler interface
-  (uav and uav_joystick done)
 * In 'uav', starting the navigation, then starting the video display, will kill the 
   navigation output.  Fix this.
 * Remove Term::ReadLine::Perl5 from bin/uav

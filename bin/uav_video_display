@@ -7,6 +7,7 @@ use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::Video;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
 use UAV::Pilot::SDL::VideoOverlay::Reticle;
@@ -57,13 +58,13 @@ sub set_reticle_overlay
 sub send_config_ids
 {
     my ($driver) = @_;
-    sleep 1;
+    #sleep 1;
     $driver->at_config_ids(
         $CONFIG_SESSION_ID,
         $CONFIG_USER_ID,
         $CONFIG_APP_ID,
     );
-    sleep 1;
+    #sleep 1;
     return 1;
 }
 
@@ -178,9 +179,12 @@ sub set_comm_watchdog
 
 {
     my $cv = AnyEvent->condvar;
-    my $sdl_events = UAV::Pilot::SDL::Events->new({
+    my $events = UAV::Pilot::Events->new({
         condvar => $cv,
     });
+
+    my $sdl_events = UAV::Pilot::SDL::Events->new;
+    $events->register( $sdl_events );
 
     my @displays = ( UAV::Pilot::SDL::Video->new );
     my @h264_handlers = UAV::Pilot::Video::H264Decoder->new({
@@ -196,7 +200,7 @@ sub set_comm_watchdog
         push @h264_handlers, $file_handler;
     }
 
-    $sdl_events->register( $displays[0] );
+    $events->register( $displays[0] );
     set_reticle_overlay( $displays[0] ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
@@ -223,7 +227,7 @@ sub set_comm_watchdog
         video  => $driver_video,
     });
 
-    $_->init_event_loop for $driver_video, $sdl_events;
+    $_->init_event_loop for $driver_video, $events;
     $cv->recv;
 
     close $fh if defined $fh;
