@@ -7,6 +7,8 @@ use File::ShareDir;
 
 use constant DIST_NAME => 'UAV-Pilot';
 
+our $VERSION = '0.6';
+
 
 sub default_module_dir
 {
