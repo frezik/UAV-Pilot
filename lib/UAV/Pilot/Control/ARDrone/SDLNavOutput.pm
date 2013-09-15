@@ -296,8 +296,6 @@ sub process_events
 sub _draw_line_value
 {
     my ($self, $value, $center_x, $center_y, $color, $window) = @_;
-    return 1;
-    my $app = $self->sdl;
 
     my $y_addition = int( $self->LINE_VALUE_HALF_MAX_HEIGHT * $value );
     my $right_y = $center_y - $y_addition;
@@ -306,15 +304,13 @@ sub _draw_line_value
     my $right_x = $center_x + $self->LINE_VALUE_HALF_LENGTH;
     my $left_x  = $center_x - $self->LINE_VALUE_HALF_LENGTH;
 
-    $app->draw_line( [$left_x, $left_y], [$right_x, $right_y], $color );
+    $window->draw_line( [$left_x, $left_y], [$right_x, $right_y], $color );
     return 1;
 }
 
 sub _draw_circle_value
 {
     my ($self, $value, $center_x, $center_y, $value_color, $window) = @_;
-    return 1;
-    my $app = $self->sdl;
     my $radius = $self->CIRCLE_VALUE_RADIUS;
     my $color = $self->DRAW_VALUE_COLOR;
 
@@ -322,10 +318,12 @@ sub _draw_circle_value
     my $line_x = $center_x - (sin($angle) * $radius);
     my $line_y = $center_y - (cos($angle) * $radius);
 
-    $app->draw_circle( [$center_x, $center_y], $radius, $color );
-    $app->draw_line( [$center_x, $center_y], [$center_x, $center_y - $radius], $color );
+    $window->draw_circle( [$center_x, $center_y], $radius, $color );
+    $window->draw_line( [$center_x, $center_y],
+        [$center_x, $center_y - $radius], $color );
 
-    $app->draw_line( [$center_x, $center_y], [$line_x, $line_y], $value_color );
+    $window->draw_line( [$center_x, $center_y], [$line_x, $line_y],
+        $value_color );
 
     return 1;
 }
@@ -333,8 +331,6 @@ sub _draw_circle_value
 sub _draw_bar_percent_value
 {
     my ($self, $value, $center_x, $center_y, $window) = @_;
-    return 1;
-    my $app = $self->sdl;
     my $color = $self->BAR_PERCENT_COLOR_GRADIENT->[$value - 1];
     my $half_max_height = $self->BAR_MAX_HEIGHT / 2;
     my $half_width      = $self->BAR_WIDTH / 2;
@@ -347,14 +343,14 @@ sub _draw_bar_percent_value
     my $percentage_height = sprintf( '%.0f', $self->BAR_MAX_HEIGHT * ($value / 100) );
     my $top_percentage_y = $bottom_y - $percentage_height;
 
-    $app->draw_line( $$_[0], $$_[1], $color ) for (
+    $window->draw_line( $$_[0], $$_[1], $color ) for (
         [ [$left_x, $top_y], [$right_x, $top_y] ],
         [ [$right_x, $top_y], [$right_x, $bottom_y] ],
         [ [$right_x, $bottom_y], [$left_x, $bottom_y] ],
         [ [$left_x, $bottom_y], [$left_x, $top_y] ],
     );
-    $app->draw_rect( [ $left_x, $top_percentage_y, $self->BAR_WIDTH, $percentage_height ],
-        $color );
+    $window->draw_rect( [ $left_x, $top_percentage_y,
+        $self->BAR_WIDTH, $percentage_height ], $color );
 
     return 1;
 }
@@ -362,8 +358,6 @@ sub _draw_bar_percent_value
 sub _draw_line_vert_indicator
 {
     my ($self, $value, $center_x, $center_y, $half_height, $width, $color, $top_bottom_color, $border_width_margin, $window) = @_;
-    return 1;
-    my $app = $self->sdl;
     my $half_width = $width / 2;
 
     my $left_x          = $center_x - $half_width;
@@ -375,11 +369,12 @@ sub _draw_line_vert_indicator
 
     my $indicator_y = $center_y - ($half_height * $value);
 
-    $app->draw_line( [$border_left_x, $border_top_y], [$border_right_x, $border_top_y], 
-        $top_bottom_color );
-    $app->draw_line( [$border_left_x, $border_bottom_y],
+    $window->draw_line( [$border_left_x, $border_top_y],
+        [$border_right_x, $border_top_y], $top_bottom_color );
+    $window->draw_line( [$border_left_x, $border_bottom_y],
         [$border_right_x, $border_bottom_y], $top_bottom_color );
-    $app->draw_line( [$left_x, $indicator_y], [$right_x, $indicator_y], $color );
+    $window->draw_line( [$left_x, $indicator_y], [$right_x, $indicator_y],
+        $color );
 
     return 1;
 }

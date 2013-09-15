@@ -126,10 +126,32 @@ sub draw_txt
 
 sub draw_line
 {
+    my ($self, $left_coords, $right_coords, $color) = @_;
+    $left_coords->[0]  += $self->_origin_x;
+    $left_coords->[1]  += $self->_origin_y;
+    $right_coords->[0] += $self->_origin_x;
+    $right_coords->[1] += $self->_origin_y;
+
+    $self->sdl->draw_line( $left_coords, $right_coords, $color );
+    return 1;
 }
 
 sub draw_circle
 {
+    my ($self, $center_coords, $radius, $color ) = @_;
+    $center_coords->[0] += $self->_origin_x;
+    $center_coords->[1] += $self->_origin_y;
+    $self->sdl->draw_circle( $center_coords, $radius, $color );
+    return 1;
+}
+
+sub draw_rect
+{
+    my ($self, $rect_data, $color) = @_;
+    $rect_data->[0] += $self->_origin_x;
+    $rect_data->[1] += $self->_origin_y;
+    $self->sdl->draw_rect( $rect_data, $color);
+    return 1;
 }
 
 
