@@ -15,6 +15,8 @@ Version 0.6
 
 Version 7
 -----------
+* UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
+  to draw on
 * SDL2 w/Streaming pixels for video?  Or OpenGL?
     * Navigation overlay on top of video
     * Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
