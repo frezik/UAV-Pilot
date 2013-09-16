@@ -15,8 +15,8 @@ has 'reticle_color' => (
 
 
 after 'init_video_overlay' => sub {
-    my ($self) = @_;
-    my $sdl = $self->video_overlay->sdl_app;
+    my ($self, $video, $window) = @_;
+    my $sdl = $window->sdl;
     my @color_parts = @{ $self->RETICLE_COLOR };
     my $reticle_color = SDL::Video::map_RGB( $sdl->format, @color_parts );
     $self->_set_reticle_color( $reticle_color );
@@ -27,10 +27,11 @@ after 'init_video_overlay' => sub {
 
 sub process_video_overlay
 {
-    my ($self) = @_;
-    my $sdl               = $self->video_overlay->sdl_app;
+    my ($self, $window) = @_;
+    my $sdl               = $window->sdl;
     my $reticle_color     = $self->reticle_color;
     my $half_size_percent = $self->RETICLE_HALF_SIZE_PERCENT;
+    # TODO this needs to be based on the rect that the Video is being drawn on
     my $w                 = $sdl->w;
     my $h                 = $sdl->h;
     my $center_x          = int( $w / 2 );

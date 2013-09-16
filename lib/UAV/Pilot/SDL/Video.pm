@@ -76,8 +76,8 @@ sub BUILDARGS
 sub add_to_window
 {
     my ($self, $window) = @_;
-    $window->add_child_with_yuv_overlay( $self, $self->SDL_OVERLAY_FLAG,
-        $window->TOP );
+    $window->add_child_with_yuv_overlay( $self,
+        $self->width, $self->height, $self->SDL_OVERLAY_FLAG, $window->TOP );
 
     my @bg_color_parts = @{ $self->BG_COLOR };
     my $sdl = $window->sdl;
@@ -136,8 +136,8 @@ sub draw
 
 sub register_video_overlay
 {
-    my ($self, $overlay) = @_;
-    $overlay->init_video_overlay( $self );
+    my ($self, $overlay, $window) = @_;
+    $overlay->init_video_overlay( $self, $window );
     $self->_add_video_overlay( $overlay );
     return 1;
 }

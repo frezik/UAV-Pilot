@@ -2,6 +2,7 @@ package UAV::Pilot::SDL::Window;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use SDL;
 use SDL::Video qw{ :surface :video };
 use SDLx::App;
 use UAV::Pilot::SDL::WindowEventHandler;
@@ -12,9 +13,10 @@ use constant {
     SDL_TITLE  => 'UAV::Pilot',
     SDL_WIDTH  => 640,
     SDL_HEIGHT => 360,
-    SDL_DEPTH  => 24,
+    SDL_DEPTH  => 32,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
+    DIAG_COLOR => [ 255, 255, 0   ],
 
     TOP    => 0,
     BOTTOM => 1,
@@ -61,6 +63,9 @@ has '_drawer' => (
 has '_bg_color' => (
     is  => 'ro',
 );
+has '_diag_color' => (
+    is  => 'ro',
+);
 has '_bg_rect' => (
     is  => 'ro',
     isa => 'SDL::Rect',
@@ -81,10 +86,12 @@ sub BUILDARGS
 
     my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
     my $bg_rect = SDL::Rect->new( 0, 0, $class->SDL_WIDTH, $class->SDL_HEIGHT );
+    my $diag_color = SDL::Video::map_RGB( $sdl->format, @{$class->DIAG_COLOR});
 
-    $$args{sdl}       = $sdl;
-    $$args{_bg_color} = $bg_color;
-    $$args{_bg_rect}  = $bg_rect;
+    $$args{sdl}         = $sdl;
+    $$args{_bg_color}   = $bg_color;
+    $$args{_diag_color} = $diag_color;
+    $$args{_bg_rect}    = $bg_rect;
     return $args;
 }
 

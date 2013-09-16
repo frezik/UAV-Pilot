@@ -50,9 +50,9 @@ Getopt::Long::GetOptions(
 
 sub set_reticle_overlay
 {
-    my ($video) = @_;
+    my ($video, $window) = @_;
     my $reticle = UAV::Pilot::SDL::VideoOverlay::Reticle->new;
-    $video->register_video_overlay( $reticle );
+    $video->register_video_overlay( $reticle, $window );
     return 1;
 }
 
@@ -206,7 +206,7 @@ sub set_comm_watchdog
     }
 
     $events->register( $window );
-    set_reticle_overlay( $displays[0] ) if $RETICLE;
+    set_reticle_overlay( $displays[0], $window ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
