@@ -218,13 +218,6 @@ sub BUILDARGS
     return $args;
 }
 
-sub add_to_window
-{
-    my ($self, $window) = @_;
-    $window->add_child( $self, $window->BOTTOM );
-    return 1;
-}
-
 
 sub draw
 {

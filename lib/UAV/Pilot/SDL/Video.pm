@@ -42,16 +42,6 @@ has '_bg_rect' => (
 has '_bg_color' => (
     is  => 'rw',
 );
-has 'width' => (
-    is     => 'ro',
-    isa    => 'Int',
-    writer => '_set_width',
-);
-has 'height' => (
-    is     => 'ro',
-    isa    => 'Int',
-    writer => '_set_height',
-);
 has 'video_overlays' => (
     is      => 'ro',
     isa     => 'ArrayRef[UAV::Pilot::SDL::VideoOverlay]',
