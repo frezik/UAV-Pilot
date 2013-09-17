@@ -20,8 +20,8 @@ use constant {
 
     TOP    => 0,
     BOTTOM => 1,
-    LEFT   => 2,
-    RIGHT  => 3,
+    #LEFT   => 2,
+    #RIGHT  => 3,
 };
 
 
@@ -117,12 +117,10 @@ sub add_child
     my ($self, $child, $float) = @_;
     $float //= $self->TOP;
 
-    my $x = 0;
-    my $y = 0;
-    if( $self->_has_no_children ) {
-        $self->_resize( $child->width, $child->height );
-    }
+    my ($x, $y, $new_width, $new_height) = $self->_calc_new_child(
+        $child, $float );
 
+    $self->_resize( $new_width, $new_height );
     $self->_add_child({
         origin_x => $x,
         origin_y => $y,
@@ -134,12 +132,13 @@ sub add_child
 
 sub add_child_with_yuv_overlay
 {
-    my ($self, $child, $width, $height, $overlay_flag, $float) = @_;
+    my ($self, $child, $overlay_flag, $float) = @_;
     $float //= $self->TOP;
 
-    # TODO correct coords based on $float
-    my $x = 0;
-    my $y = 0;
+    my $width  = $child->width;
+    my $height = $child->height;
+    my ($x, $y, $new_width, $new_height) = $self->_calc_new_child(
+        $child, $float );
 
     my $sdl = $self->sdl;
     my $overlay = SDL::Overlay->new( $width, $height, $overlay_flag, $sdl );
@@ -148,6 +147,7 @@ sub add_child_with_yuv_overlay
     $self->_set_yuv_overlay( $overlay );
     $self->_set_yuv_overlay_rect( $overlay_rect );
 
+    $self->_resize( $new_width, $new_height );
     $self->_add_child({
         origin_x => $x,
         origin_y => $y,
@@ -238,6 +238,56 @@ sub _resize
     $self->_set_width( $width );
     $self->_set_height( $height );
     return 1;
+}
+
+sub _calc_new_child
+{
+    my ($self, $child, $float) = @_;
+    my $x = 0;
+    my $y = 0;
+    my $new_width = 0;
+    my $new_height = 0;
+
+    if( $self->_has_no_children ) {
+        $new_width  = $child->width;
+        $new_height = $child->height;
+    }
+    elsif( $self->BOTTOM == $float ) {
+        ($new_width, $new_height) = $self->_calc_resize_vert( $child );
+        ($x, $y) = $self->_calc_position_bottom( $child );
+    }
+    else {
+        # Assume TOP
+        ($new_width, $new_height) = $self->_calc_resize_vert( $child );
+    }
+
+    return ($x, $y, $new_width, $new_height);
+}
+
+sub _calc_resize_vert
+{
+    my ($self, $child) = @_;
+    my $child_height = $child->height;
+    my $child_width  = $child->width;
+    my $new_width  = $child_width;
+    my $new_height = $child_height + $self->height;
+
+    foreach my $child (@{ $self->children }) {
+        my $width = $child->{drawer}->width;
+        $new_width = $width
+            if $width > $new_width;
+    }
+
+    return ($new_width, $new_height);
+}
+
+sub _calc_position_bottom
+{
+    my ($self, $child) = @_;
+    my $x = 0;
+    my $y = 0;
+    $y += $_->{drawer}->height for @{ $self->children };
+    return ($x, $y);
 }
 
 
