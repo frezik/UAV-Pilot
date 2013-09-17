@@ -188,7 +188,7 @@ sub record_usb ()
             feeder => $dev,
         });
         $events->register( $nav );
-        $nav->add_to_window( $sdl );
+        $nav->add_to_window( $sdl, $sdl->BOTTOM );
 
         say "Outputting navigation data";
 
@@ -210,7 +210,7 @@ sub record_usb ()
             displays => [ $display ],
         });
         $vid_driver->add_handler( $video );
-        $display->add_to_window( $sdl );
+        $display->add_to_window( $sdl, $sdl->TOP );
 
         say "Ouputting video";
         return 1;
