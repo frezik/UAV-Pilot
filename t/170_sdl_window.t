@@ -24,7 +24,6 @@ cmp_ok( $window->width,  '==', 0, "No width set on base window" );
 cmp_ok( $window->height, '==', 0, "No height set on base window" );
 
 
-local $TODO = "Not yet implemented";
 my $child1 = MockWindowEventHandler->new({
     width  => 1,
     height => 1,

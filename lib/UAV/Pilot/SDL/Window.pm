@@ -35,7 +35,8 @@ has 'children' => (
     isa     => 'ArrayRef[HashRef[Item]]',
     default => sub {[]},
     handles => {
-        '_add_child' => 'push',
+        '_add_child'       => 'push',
+        '_has_no_children' => 'is_empty',
     },
 );
 has 'yuv_overlay' => (
@@ -89,11 +90,12 @@ sub BUILDARGS
     my ($class, $args) = @_;
     my @bg_color_parts = @{ $class->BG_COLOR };
     my $sdl = SDLx::App->new(
-        title  => $class->SDL_TITLE,
-        width  => $class->SDL_WIDTH,
-        height => $class->SDL_HEIGHT,
-        depth  => $class->SDL_DEPTH,
-        flags  => $class->SDL_FLAGS,
+        title      => $class->SDL_TITLE,
+        width      => $class->SDL_WIDTH,
+        height     => $class->SDL_HEIGHT,
+        depth      => $class->SDL_DEPTH,
+        flags      => $class->SDL_FLAGS,
+        resizeable => 1,
     );
 
     my $bg_color = SDL::Video::map_RGB( $sdl->format, @bg_color_parts );
@@ -115,9 +117,12 @@ sub add_child
     my ($self, $child, $float) = @_;
     $float //= $self->TOP;
 
-    # TODO fix coords based on $float
     my $x = 0;
     my $y = 0;
+    if( $self->_has_no_children ) {
+        $self->_resize( $child->width, $child->height );
+    }
+
     $self->_add_child({
         origin_x => $x,
         origin_y => $y,
@@ -222,6 +227,16 @@ sub draw_rect
     $rect_data->[0] += $self->_origin_x;
     $rect_data->[1] += $self->_origin_y;
     $self->sdl->draw_rect( $rect_data, $color);
+    return 1;
+}
+
+
+sub _resize
+{
+    my ($self, $width, $height) = @_;
+    $self->sdl->resize( $width, $height );
+    $self->_set_width( $width );
+    $self->_set_height( $height );
     return 1;
 }
 

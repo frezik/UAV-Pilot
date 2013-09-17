@@ -5,10 +5,18 @@ use namespace::autoclean;
 
 extends 'UAV::Pilot::SDL::Window';
 
+has 'sdl' => (
+    is  => 'rw',
+    isa => 'MockSDL',
+);
+
 
 sub BUILDARGS
 {
-    # Do nothing, so the parent's SDLx::App is never created
+    my ($class, $args) = @_;
+    my $sdl = MockSDL->new;
+    $$args{sdl} = $sdl;
+    return $args;
 }
 
 sub process_events
@@ -16,6 +24,15 @@ sub process_events
     # Do nothing, so nothing is ever drawn
 }
 
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+
+package MockSDL;
+use Moose;
+
+sub resize {} # ignore
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
