@@ -65,9 +65,10 @@ sub BUILDARGS
 
 sub add_to_window
 {
-    my ($self, $window) = @_;
+    my ($self, $window, $location) = @_;
+    $location //= $window->TOP;
     $window->add_child_with_yuv_overlay( $self,
-        $self->width, $self->height, $self->SDL_OVERLAY_FLAG, $window->TOP );
+        $self->width, $self->height, $self->SDL_OVERLAY_FLAG, $location );
 
     my @bg_color_parts = @{ $self->BG_COLOR };
     my $sdl = $window->sdl;

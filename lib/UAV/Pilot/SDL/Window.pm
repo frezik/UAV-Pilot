@@ -11,8 +11,8 @@ with 'UAV::Pilot::EventHandler';
 
 use constant {
     SDL_TITLE  => 'UAV::Pilot',
-    SDL_WIDTH  => 640,
-    SDL_HEIGHT => 360,
+    SDL_WIDTH  => 0,
+    SDL_HEIGHT => 0,
     SDL_DEPTH  => 32,
     SDL_FLAGS  => SDL_HWSURFACE | SDL_HWACCEL | SDL_ANYFORMAT,
     BG_COLOR   => [ 0,   0,   0   ],
@@ -47,6 +47,18 @@ has 'yuv_overlay_rect' => (
     is     => 'ro',
     isa    => 'Maybe[SDL::Rect]',
     writer => '_set_yuv_overlay_rect',
+);
+has 'width' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+    writer  => '_set_width',
+);
+has 'height' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+    writer  => '_set_height',
 );
 has '_origin_x' => (
     is  => 'rw',
@@ -89,6 +101,8 @@ sub BUILDARGS
     my $diag_color = SDL::Video::map_RGB( $sdl->format, @{$class->DIAG_COLOR});
 
     $$args{sdl}         = $sdl;
+    $$args{width}       = $class->SDL_WIDTH;
+    $$args{height}      = $class->SDL_HEIGHT;
     $$args{_bg_color}   = $bg_color;
     $$args{_diag_color} = $diag_color;
     $$args{_bg_rect}    = $bg_rect;

@@ -19,8 +19,9 @@ requires 'draw';
 
 sub add_to_window
 {
-    my ($self, $window) = @_;
-    $window->add_child( $self, $window->BOTTOM );
+    my ($self, $window, $location) = @_;
+    $location //= $window->BOTTOM;
+    $window->add_child( $self, $location );
     return 1;
 }
 
@@ -43,9 +44,10 @@ passed the C<UAV::Pilot::SDL::Window> object.  This is the only method that
 is required for the class doing the role to implement.
 
 The C<add_to_window> method should be called on the object after construction 
-and passed an C<UAV::Pilot::SDL::Window> object.  The handler will add itself 
-as a child to this window.  The default code for the method in the role will do 
-this for you, adding the child at the bottom.
+and passed an C<UAV::Pilot::SDL::Window> object.  A second optional parameter 
+is the float value (default bottom).  The handler will add itself as a child to 
+this window.  The default code for the method in the role will do this for you, 
+adding the child at the bottom.
 
 Also has C<width> and C<height> attributes.  They are read-only attributes, but 
 can be set with the C<_set_width> and C<_set_height> methods.  These methods 
