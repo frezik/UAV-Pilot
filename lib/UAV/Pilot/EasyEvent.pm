@@ -26,10 +26,10 @@ has '_timers' => (
 has '_events' => (
     traits  => [ 'Hash' ],
     is      => 'ro',
-    isa     => 'HashRef[ArrayRef[CodeRef]]',
+    isa     => 'HashRef[ArrayRef[HashRef[Item]]]',
     default => sub { {} },
     handles => {
-        '_add_event'           => 'set',
+        '_set_event_callbacks' => 'set',
         '_event_type_exists'   => 'exists',
         '_get_event_callbacks' => 'get',
     },
@@ -59,7 +59,8 @@ sub add_timer
 
 sub add_event
 {
-    my ($self, $name, $callback) = @_;
+    my ($self, $name, $callback, $is_oneoff) = @_;
+    $is_oneoff //= 0;
 
     my @callbacks;
     if( $self->_event_type_exists( $name ) ) {
@@ -69,8 +70,11 @@ sub add_event
         @callbacks = ();
     }
 
-    push @callbacks, $callback;
-    $self->_add_event( $name => \@callbacks );
+    push @callbacks, {
+        callback   => $callback,
+        is_one_off => $is_oneoff,
+    };
+    $self->_set_event_callbacks( $name => \@callbacks );
 
     return 1;
 }
@@ -78,8 +82,25 @@ sub add_event
 sub send_event
 {
     my ($self, $name, @args) = @_;
-    my $callbacks = $self->_get_event_callbacks( $name );
-    $_->() for @$callbacks;
+    my $callbacks            = $self->_get_event_callbacks( $name );
+    my @callbacks            = (@$callbacks);
+    my $is_callbacks_changed = 0;
+
+    foreach my $i (0 .. $#callbacks) {
+        # Always modify the *original* arrayref $callbacks here, not the 
+        # copy @callbacks.  If we splice out a one-off, @callbacks will be
+        # changed and the index will be off.
+        my $cb         = $callbacks->[$i]{callback};
+        my $is_one_off = $callbacks->[$i]{is_one_off};
+        $cb->();
+
+        if( $is_one_off ) {
+            splice @callbacks, $i, 1;
+            $is_callbacks_changed = 1;
+        }
+    }
+
+    $self->_set_event_callbacks( $name => \@callbacks) if $is_callbacks_changed;
     return 1;
 }
 

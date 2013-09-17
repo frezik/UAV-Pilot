@@ -69,11 +69,11 @@ $event->add_event( 'foo_happens' => sub {
 });
 $event->add_event( 'foo_happens' => sub {
     cmp_ok( $i, '==', 1, "More foo happened" );
-    $i++;
+    $i += 2;
     $did_one_off = 1;
 }, 1 );
 $event->add_event( 'foo_happens' => sub {
-    my $expect_i = $did_one_off ? 2 : 1;
+    my $expect_i = $did_one_off ? 3 : 1;
     cmp_ok( $i, '==', $expect_i, "Even more foo happened" );
 });
 
