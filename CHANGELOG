@@ -8,11 +8,14 @@ Version 0.6
     * All other EventHandler objects and bin/uav* scripts updated to 
       reflect this change
 * In UAV::Pilot::Control, change the 'sender' param to 'driver'
-* Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change of 
-  'display' to 'displays'
-* Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API change of 
-  'handler' to 'handlers'
+* Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change 
+  of 'display' to 'displays'
+* Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API 
+  change of 'handler' to 'handlers'
 * 'uav' shell handles dumping video to file while displaying it at the same time
+* Implement 'NavCollector' to receive nav packets as they're read from the 
+  driver.  
+* SDLNavDisplay implemented as a NavCollector rather than an EventHandler
 
 Version 0.5
 -----------
