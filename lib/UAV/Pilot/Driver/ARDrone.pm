@@ -237,6 +237,15 @@ has 'seq' => (
     default => 0,
     writer  => '__set_seq',
 );
+has 'nav_processors' => (
+    traits  => ['Array'],
+    is      => 'ro',
+    isa     => 'ArrayRef[UAV::Pilot::NavProcessor]',
+    default => sub {[]},
+    handles => {
+        add_nav_processor => 'push',
+    },
+);
 
 has '_socket' => (
     is => 'rw',
@@ -592,6 +601,13 @@ sub _init_nav_data
     $self->_nav_socket( $nav_sock );
     return 1;
 }
+
+
+after '_set_last_nav_packet' => sub {
+    my ($self, $nav_packet) = @_;
+    $_->got_new_nav_packet( $nav_packet ) for @{ $self->nav_processors };
+    return 1;
+};
 
 
 no Moose;

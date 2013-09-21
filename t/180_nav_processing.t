@@ -1,0 +1,131 @@
+use Test::More tests => 7;
+use v5.14;
+use warnings;
+use AnyEvent;
+use UAV::Pilot::Driver::ARDrone::Mock;
+use UAV::Pilot::EasyEvent;
+use UAV::Pilot::NavCollector;
+use UAV::Pilot::NavProcessor;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
+
+package MockNavCollector;
+use Moose;
+
+with 'UAV::Pilot::NavCollector';
+
+has 'cb' => (
+    is  => 'ro',
+    isa => 'CodeRef',
+);
+
+sub got_new_nav_packet
+{
+    my ($self, $nav_packet) = @_;
+    $self->cb->( $nav_packet );
+    return 1;
+}
+
+
+
+package main;
+
+my $condvar = AnyEvent->condvar;
+my $easy_events = UAV::Pilot::EasyEvent->new({
+    condvar => $condvar,
+});
+
+my @packet_data_ack_on = (
+    # These are in little-endian order
+    '88776655',   # Header
+    'ffffffff',   # Drone state
+    '336f0000',   # Sequence number
+    '01000000',   # Vision flag
+    # No options on this packet besides checksum
+    'ffff',       # Checksum ID
+    '0800',       # Checksum size
+    'c1030000',   # Checksum data (will be wrong)
+);
+my @packet_data_ack_off = (
+    # These are in little-endian order
+    '88776655',   # Header
+    '00000000',   # Drone state
+    '336f0000',   # Sequence number
+    '01000000',   # Vision flag
+    # No options on this packet besides checksum
+    'ffff',       # Checksum ID
+    '0800',       # Checksum size
+    'c1030000',   # Checksum data (will be wrong)
+);
+my $packet_ack_on = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+    packet => make_packet( join( '', @packet_data_ack_on )),
+});
+my $packet_ack_off = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+    packet => make_packet( join( '', @packet_data_ack_off )),
+});
+ok( $packet_ack_on->state_control_received, "Ack received on packet" );
+ok(! $packet_ack_off->state_control_received, "Ack not received on packet" );
+
+
+my $mock_driver = UAV::Pilot::Driver::ARDrone::Mock->new;
+my $nav_processor = UAV::Pilot::NavProcessor->new({
+    easy_event => $easy_events,
+});
+isa_ok( $nav_processor => 'UAV::Pilot::NavProcessor' );
+
+
+my ($nav_status_on_test, $nav_status_off_test, $nav_status_toggle_test,
+    $nav_collector_test) = (0, 0, 0, 0);
+my $nav_collector = MockNavCollector->new({
+    cb => sub {
+        $nav_collector_test++;
+    },
+});
+$nav_processor->add_nav_collector( $nav_collector );
+$mock_driver->add_nav_processor( $nav_processor );
+
+$easy_events->add_event( 'nav_ack_on' => sub {
+    $nav_status_on_test++;
+});
+$easy_events->add_event( 'nav_ack_off' => sub {
+    $nav_status_off_test++;
+});
+$easy_events->add_event( 'nav_ack_toggle' => sub {
+    $nav_status_toggle_test++;
+});
+
+
+$easy_events->add_timer({
+    duration       => 100,
+    duration_units => $easy_events->UNITS_MILLISECOND,
+    cb => sub {
+        $mock_driver->read_nav_packet( @packet_data_ack_on );
+    },
+})->add_timer({
+    duration       => 100,
+    duration_units => $easy_events->UNITS_MILLISECOND,
+    cb => sub {
+        $mock_driver->read_nav_packet( @packet_data_ack_off );
+        $condvar->send;
+    },
+});
+$easy_events->add_timer({
+    duration       => 1000,
+    duration_units => $easy_events->UNITS_MILLISECOND,
+    cb => sub {
+        diag "Gave up waiting";
+        $condvar->send;
+    },
+});
+$easy_events->init_event_loop;
+$condvar->recv;
+
+cmp_ok( $nav_status_on_test,     '==', 1, "Nav status on"          );
+cmp_ok( $nav_status_off_test,    '==', 1, "Nav status off"         );
+cmp_ok( $nav_status_toggle_test, '==', 2, "Nav status toggled"     );
+cmp_ok( $nav_collector_test,     '==', 2, "Nav collector callback" );
+
+sub make_packet
+{
+    my ($hex_str) = @_;
+    pack 'H*', $hex_str;
+}

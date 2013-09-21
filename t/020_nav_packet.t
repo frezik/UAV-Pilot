@@ -46,8 +46,8 @@ cmp_ok( $packet->drone_state,     '==', 0x0f8004d0, "Drone state parsed" );
 cmp_ok( $packet->sequence_num,    '==', 0x00006f33, "Sequence number parsed" );
 cmp_ok( $packet->vision_flag,     '==', 0x00000001, "Vision flag parsed" );
 
-# Drone state tests.  Numbers before each test are a binary conversion of 0x0f8004d0,
-# converted to big endian
+# Drone state tests.  Numbers before each test are a binary conversion of 
+# 0x0f8004d0, converted to big endian
 #
 # 0000
 ok(!$packet->state_flying,                        "Flying state" );
