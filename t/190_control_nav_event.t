@@ -59,7 +59,7 @@ my $timer; $timer = AnyEvent->timer(
     after    => $read_duration,
     cb => sub {
         cmp_ok( $driver->num_read_nav, '==', 2, "Read nav events" );
-        cmp_ok( $toggle, '==', 2, "Toggle event" );
+        cmp_ok( $toggle, '==', 1, "Toggle event" );
         $cv->send;
         $timer;
     },

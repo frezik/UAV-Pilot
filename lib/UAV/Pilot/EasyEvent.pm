@@ -83,6 +83,7 @@ sub send_event
 {
     my ($self, $name, @args) = @_;
     my $callbacks            = $self->_get_event_callbacks( $name );
+    return 1 unless defined $callbacks;
     my @callbacks            = (@$callbacks);
     my $is_callbacks_changed = 0;
 

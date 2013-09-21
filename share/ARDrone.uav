@@ -101,8 +101,9 @@ sub record_usb ()
 }
 
 {
-    my $cv     = undef;
-    my $events = undef;
+    my $cv          = undef;
+    my $events      = undef;
+    my $easy_events = undef;
     my $init_events = sub {
         return 1 if defined $events;
         die "Can't init UAV::Pilot::Events without a condvar\n" unless defined $cv;
@@ -110,7 +111,12 @@ sub record_usb ()
         $events = UAV::Pilot::Events->new({
             condvar => $cv,
         });
+        $easy_events = UAV::Pilot::EasyEvent->new({
+            condvar => $cv,
+        });
+        $dev->setup_read_nav_event( $easy_events );
         $events->init_event_loop;
+        $easy_events->init_event_loop;
 
         # If we can load SDL, then init it here
         eval "use UAV::Pilot::SDL::Events";

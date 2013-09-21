@@ -221,7 +221,7 @@ sub draw
 {
     my ($self, $window) = @_;
     my $nav = $self->_last_nav_packet;
-    return 1 unless defined $nav;
+    return $self->_draw_no_nav_packet( $window ) unless defined $nav;
     $window->clear_screen;
 
     my $txt_label = $self->_txt_label;
@@ -359,6 +359,15 @@ sub _draw_line_vert_indicator
     $window->draw_line( [$left_x, $indicator_y], [$right_x, $indicator_y],
         $color );
 
+    return 1;
+}
+
+sub _draw_no_nav_packet
+{
+    my ($self, $window) = @_;
+    $window->clear_screen;
+    my $txt_label = $self->_txt_label;
+    $window->draw_txt( 'No Nav Data Received', 20, 100, $txt_label );
     return 1;
 }
 
