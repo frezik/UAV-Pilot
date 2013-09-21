@@ -5,6 +5,7 @@ use namespace::autoclean;
 use IO::Socket;
 use IO::Socket::Multicast;
 use UAV::Pilot::Exceptions;
+use UAV::Pilot::NavCollector;
 
 with 'UAV::Pilot::Driver';
 
@@ -237,13 +238,13 @@ has 'seq' => (
     default => 0,
     writer  => '__set_seq',
 );
-has 'nav_processors' => (
+has 'nav_collectors' => (
     traits  => ['Array'],
     is      => 'ro',
-    isa     => 'ArrayRef[UAV::Pilot::NavProcessor]',
+    isa     => 'ArrayRef[UAV::Pilot::NavCollector]',
     default => sub {[]},
     handles => {
-        add_nav_processor => 'push',
+        add_nav_collector => 'push',
     },
 );
 
@@ -605,7 +606,7 @@ sub _init_nav_data
 
 after '_set_last_nav_packet' => sub {
     my ($self, $nav_packet) = @_;
-    $_->got_new_nav_packet( $nav_packet ) for @{ $self->nav_processors };
+    $_->got_new_nav_packet( $nav_packet ) for @{ $self->nav_collectors };
     return 1;
 };
 

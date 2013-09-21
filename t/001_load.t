@@ -21,8 +21,8 @@ use_ok( 'UAV::Pilot::Commands' );
 use_ok( 'UAV::Pilot::EasyEvent' );
 use_ok( 'UAV::Pilot::EventHandler' );
 use_ok( 'UAV::Pilot::Events' );
-use_ok( 'UAV::Pilot::NavProcessor' );
 use_ok( 'UAV::Pilot::NavCollector' );
+use_ok( 'UAV::Pilot::NavCollector::AckEvents' );
 use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installed
 use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
 use_ok( 'UAV::Pilot::Video::H264Handler' );

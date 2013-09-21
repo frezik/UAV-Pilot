@@ -7,8 +7,8 @@ Version 0.6
     * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
 * Document
     * UAV::Pilot::Driver::ARDrone (nav processor)
-    * UAV::Pilot::NavProcessor
     * UAV::Pilot::NavCollector
+    * UAV::Pilot::NavCollector::AckEvents
     * UAV::Pilot::SDL::VideoOverlay
     * UAV::Pilot::SDL::VideoOverlay::Reticle
     * UAV::Pilot::SDL::Window

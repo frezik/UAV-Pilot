@@ -1,11 +1,11 @@
-use Test::More tests => 7;
+use Test::More tests => 6;
 use v5.14;
 use warnings;
 use AnyEvent;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::EasyEvent;
 use UAV::Pilot::NavCollector;
-use UAV::Pilot::NavProcessor;
+use UAV::Pilot::NavCollector::AckEvents;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 package MockNavCollector;
@@ -67,11 +67,6 @@ ok(! $packet_ack_off->state_control_received, "Ack not received on packet" );
 
 
 my $mock_driver = UAV::Pilot::Driver::ARDrone::Mock->new;
-my $nav_processor = UAV::Pilot::NavProcessor->new({
-    easy_event => $easy_events,
-});
-isa_ok( $nav_processor => 'UAV::Pilot::NavProcessor' );
-
 
 my ($nav_status_on_test, $nav_status_off_test, $nav_status_toggle_test,
     $nav_collector_test) = (0, 0, 0, 0);
@@ -80,8 +75,10 @@ my $nav_collector = MockNavCollector->new({
         $nav_collector_test++;
     },
 });
-$nav_processor->add_nav_collector( $nav_collector );
-$mock_driver->add_nav_processor( $nav_processor );
+my $ack_events = UAV::Pilot::NavCollector::AckEvents->new({
+    easy_event => $easy_events,
+});
+$mock_driver->add_nav_collector( $_ ) for $nav_collector, $ack_events;
 
 $easy_events->add_event( 'nav_ack_on' => sub {
     $nav_status_on_test++;
