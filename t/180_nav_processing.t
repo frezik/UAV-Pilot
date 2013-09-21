@@ -121,6 +121,7 @@ cmp_ok( $nav_status_off_test,    '==', 1, "Nav status off"         );
 cmp_ok( $nav_status_toggle_test, '==', 2, "Nav status toggled"     );
 cmp_ok( $nav_collector_test,     '==', 2, "Nav collector callback" );
 
+
 sub make_packet
 {
     my ($hex_str) = @_;

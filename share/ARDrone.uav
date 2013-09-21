@@ -184,10 +184,9 @@ sub record_usb ()
         $init_events->();
 
         my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
-            driver => $dev->driver,
             feeder => $dev,
         });
-        $events->register( $nav );
+        $dev->driver->add_nav_collector( $nav );
         $nav->add_to_window( $sdl, $sdl->BOTTOM );
 
         say "Outputting navigation data";

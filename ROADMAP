@@ -2,9 +2,12 @@ Version 0.6
 -----------
 * In 'uav', using 'start_nav;' seems to make a blank area for a while.  
   Moving the window seems to make it come back.  Fix this.
+* Event module for reading nav off the driver in a timed loop
 * Send multiconfig commands in order to set video display size and fps
-* Video: Recover from bad PaVE header by reading forward until we find another one
-    * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
+* Video: Recover from bad PaVE header by reading forward until we find another 
+  one
+    * Send bad PaVE packets to a web server?  If done, user should opt-in at 
+      install time.
 * Document
     * UAV::Pilot::Driver::ARDrone (nav processor)
     * UAV::Pilot::NavCollector
@@ -16,7 +19,7 @@ Version 0.6
     * UAV::Pilot::EasyEvent (add_event() interface)
 
 
-Version 7
+Version 0.7
 -----------
 * UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
   to draw on

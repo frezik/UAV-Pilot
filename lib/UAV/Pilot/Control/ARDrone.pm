@@ -402,7 +402,10 @@ L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
 
-=head1 new
+=head2 new
+
+B<NOTE>: It's highly recommended that you initialize the subclass 
+C<UAV::Pilot::Control::ARDrone::Event> instead of this one.
 
     new({
         driver => $driver,

@@ -11,6 +11,7 @@ use SDL::Events;
 use UAV::Pilot;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 
+
 use constant {
     BG_COLOR   => [ 0,   0,   0   ],
     DRAW_VALUE_COLOR        => [ 0x33, 0xff, 0x33 ],
@@ -154,10 +155,6 @@ use constant {
 };
 
 
-has 'driver' => (
-    is  => 'ro',
-    isa => 'UAV::Pilot::Driver',
-);
 has 'feeder' => (
     is  => 'ro',
     isa => 'Maybe[UAV::Pilot::SDL::NavFeeder]',
@@ -181,12 +178,13 @@ has '_txt_value' => (
     isa => 'SDLx::Text',
 );
 has '_last_nav_packet' => (
-    is  => 'rw',
-    isa => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
+    is     => 'ro',
+    isa    => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
+    writer => 'got_new_nav_packet',
 );
 
 with 'UAV::Pilot::SDL::WindowEventHandler';
-with 'UAV::Pilot::EventHandler';
+with 'UAV::Pilot::NavCollector';
 
 
 sub BUILDARGS
@@ -274,17 +272,6 @@ sub draw
     $self->_draw_bar_percent_value( $nav->battery_voltage_percentage,
         $self->BATTERY_DISPLAY_X, 100, $window );
 
-    return 1;
-}
-
-sub process_events
-{
-    my ($self) = @_;
-    my $driver = $self->driver;
-    if( $driver->read_nav_packet ) {
-        my $nav_packet = $driver->last_nav_packet;
-        $self->_last_nav_packet( $nav_packet );
-    }
     return 1;
 }
 
@@ -415,10 +402,10 @@ the process other than C<kill -9>.
 =head2 new
 
   new({
-      driver   => UAV::Pilot::Driver::ARDrone->new( ... ),
+      feeder => ...
   })
 
-Constructor.  The param C<driver> takes a C<UAV::Pilot::Driver::ARDrone> object.
+Constructor.  The param C<feeder> takes a C<UAV::Pilot::SDL::NavFeeder> object.
 
 =head2 render
 
