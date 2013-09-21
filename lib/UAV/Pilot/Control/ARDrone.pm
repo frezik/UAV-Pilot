@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 use DateTime;
 use UAV::Pilot::EasyEvent;
+use UAV::Pilot::NavCollector::AckEvents;
 
 
 with 'UAV::Pilot::Control';
@@ -377,7 +378,13 @@ sub record_usb
 
 sub setup_read_nav_event
 {
-    my ($self) = @_;
+    my ($self, $event) = @_;
+
+    my $ack = UAV::Pilot::NavCollector::AckEvents->new({
+        easy_event => $event,
+    });
+    $self->driver->add_nav_collector( $ack );
+
     my $w; $w = AnyEvent->timer(
         after    => $self->NAV_EVENT_READ_TIME,
         interval => $self->NAV_EVENT_READ_TIME,
