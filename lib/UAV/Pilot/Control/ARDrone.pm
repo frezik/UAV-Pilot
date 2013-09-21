@@ -3,9 +3,13 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use DateTime;
+use UAV::Pilot::EasyEvent;
 
 
 with 'UAV::Pilot::Control';
+
+use constant NAV_EVENT_READ_TIME => 1 / 60;
+
 
 has 'video' => (
     is  => 'rw',
@@ -367,6 +371,21 @@ sub record_usb
     $self->driver->at_config(
         $self->driver->ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB,
         'TRUE',
+    );
+    return 1;
+}
+
+sub setup_read_nav_event
+{
+    my ($self) = @_;
+    my $w; $w = AnyEvent->timer(
+        after    => $self->NAV_EVENT_READ_TIME,
+        interval => $self->NAV_EVENT_READ_TIME,
+        cb => sub {
+            my $driver = $self->driver;
+            $driver->read_nav_packet;
+            $w;
+        },
     );
     return 1;
 }
