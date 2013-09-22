@@ -38,6 +38,7 @@ my $build = Module::Build->new(
         'File::Spec'              => 0,
         'File::Temp'              => 0,
         'IO::Socket::Multicast'   => 0,
+        'Log::Log4perl'           => 0,
         'Math::Trig'              => 0,
         'Moose'                   => 0,
         'MooseX::Event'           => 0,
