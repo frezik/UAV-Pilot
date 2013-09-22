@@ -252,6 +252,10 @@ has 'camera_detection_type' => (
     is  => 'ro',
     isa => 'Int',
 );
+has 'packet_bytes' => (
+    is  => 'ro',
+    isa => 'ArrayRef[Int]',
+);
 
 
 sub BUILDARGS
@@ -276,6 +280,7 @@ sub BUILDARGS
         drone_state  => $state,
         sequence_num => $seq,
         vision_flag  => $vision_flag,
+        packet_bytes => \@packet_bytes,
         %{ $class->_parse_state( $state ) },
         %{ $class->_parse_options( @option_bytes ) },
     );
@@ -295,6 +300,13 @@ sub to_string
     push @strs => "Altitude: " . $self->altitude;
 
     return join ', ', @strs;
+}
+
+sub to_hex_string
+{
+    my ($self) = @_;
+    my @packet_bytes = @{ $self->packet_bytes };
+    return sprintf( ('%02x' x @packet_bytes), @packet_bytes );
 }
 
 

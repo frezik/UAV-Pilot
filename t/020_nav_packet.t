@@ -1,4 +1,4 @@
-use Test::More tests => 43;
+use Test::More tests => 44;
 use v5.14;
 use warnings;
 
@@ -24,7 +24,7 @@ else {
 }
 
 
-my $packet_data = make_packet( join('',
+my $packet_str = join('',
     # These are in little-endian order
     '88776655',   # Header
     'd004800f',   # Drone state
@@ -34,11 +34,14 @@ my $packet_data = make_packet( join('',
     'ffff',       # Checksum ID
     '0800',       # Checksum size
     'c1030000',   # Checksum data
-) );
+);
+my $packet_data = make_packet( $packet_str );
 my $packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
     packet => $packet_data
 });
 isa_ok( $packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
+
+cmp_ok( $packet->to_hex_string, 'eq', $packet_str, "Converts to hex string" );
 
 # Header tests
 cmp_ok( $packet->header,          '==', 0x55667788, "Header (magic number) parsed" );

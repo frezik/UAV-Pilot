@@ -8,6 +8,7 @@ use UAV::Pilot::Exceptions;
 use UAV::Pilot::NavCollector;
 
 with 'UAV::Pilot::Driver';
+with 'UAV::Pilot::Logger';
 
 use constant {
     TRUE  => 'TRUE',
@@ -231,7 +232,6 @@ has 'iface' => (
     isa     => 'Str',
     default => 'wlan0',
 );
-
 has 'seq' => (
     is      => 'ro',
     isa     => 'Int',
@@ -606,6 +606,8 @@ sub _init_nav_data
 
 after '_set_last_nav_packet' => sub {
     my ($self, $nav_packet) = @_;
+    $self->_logger->info( "Received nav packet" );
+    $self->_logger->debug( "Output: " . $nav_packet->to_hex_string );
     $_->got_new_nav_packet( $nav_packet ) for @{ $self->nav_collectors };
     return 1;
 };

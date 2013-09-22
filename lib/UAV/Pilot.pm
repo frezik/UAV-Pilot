@@ -4,10 +4,14 @@ use Moose;
 use namespace::autoclean;
 use File::Spec;
 use File::ShareDir;
+use File::HomeDir;
+use Log::Log4perl;
 
-use constant DIST_NAME => 'UAV-Pilot';
+use constant DIST_NAME     => 'UAV-Pilot';
+use constant LOG_CONF_FILE => 'log4perl.conf';
 
-our $VERSION = '0.6';
+our $VERSION       = '0.6';
+our $LOG_WAS_INITD = 0;
 
 
 sub default_module_dir
@@ -26,6 +30,19 @@ sub default_config_dir
     return $dir,
 }
 
+sub init_log
+{
+    my ($class) = @_;
+    return if $LOG_WAS_INITD;
+    my $conf_dir = $class->default_config_dir;
+    my $log_conf = File::Spec->catfile( $conf_dir, $class->LOG_CONF_FILE );
+
+    $class->_make_default_log_conf( $log_conf ) if ! -e $log_conf;
+
+    Log::Log4perl::init( $log_conf );
+    return 1;
+}
+
 sub convert_32bit_LE
 {
     my ($class, @bytes) = @_;
@@ -41,6 +58,23 @@ sub convert_16bit_LE
     my ($class, @bytes) = @_;
     my $val = $bytes[0] | ($bytes[1] << 8);
     return $val;
+}
+
+sub _make_default_log_conf
+{
+    my ($class, $out_file) = @_;
+
+    open( my $out, '>', $out_file )
+        or die "Can't open [$out_file] for writing: $!\n";
+
+    print $out "log4j.rootLogger=WARN, A1\n";
+    print $out "log4j.appender.A1=Log::Log4perl::Appender::Screen\n";
+    print $out "log4j.appender.A1.layout=org.apache.log4j.PatternLayout\n";
+    print $out "log4j.appender.A1.layout.ConversionPattern="
+        . '%-4r [%t] %-5p %c %t - %m%n' . "\n";
+
+    close $out;
+    return 1;
 }
 
 
