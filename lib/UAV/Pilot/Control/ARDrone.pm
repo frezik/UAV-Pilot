@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use DateTime;
+use String::CRC32 ();
 
 
 with 'UAV::Pilot::Control';
@@ -359,6 +360,22 @@ sub take_picture
         ),
     );
     return 1;
+}
+
+sub set_multiconfig
+{
+    my ($self, $user_id, $app_id, $session_id) = @_;
+    $session_id //= $self->_generate_session_id;
+    return 1;
+}
+
+
+sub _generate_session_id
+{
+    my ($self) = @_;
+    my $id     = String::CRC32::crc32( int rand 2**16 );
+    my $hex_id = sprintf '%x', $id;
+    return $hex_id;
 }
 
 

@@ -69,21 +69,19 @@ sub send_config_ids
 
 sub set_driver_config
 {
-    my ($driver) = @_;
+    my ($control, $driver) = @_;
 
-say "Session: $CONFIG_SESSION_ID";
+    $control->set_multiconfig( $CONFIG_USER_ID, $CONFIG_APP_ID );
     #send_config_ids( $driver );
     $driver->at_config(
         $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID,
         $CONFIG_SESSION_ID,
     );
-say "User: $CONFIG_USER_ID";
     send_config_ids( $driver );
     $driver->at_config(
         $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID,
         $CONFIG_USER_ID,
     );
-say "App: $CONFIG_APP_ID";
     send_config_ids( $driver );
     $driver->at_config(
         $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID,
@@ -203,7 +201,6 @@ sub set_comm_watchdog
         host => $IP,
     });
     $ardrone->connect;
-    set_driver_config( $ardrone );
     set_comm_watchdog( $ardrone, $cv );
 
     my %video_args = (
@@ -222,6 +219,8 @@ sub set_comm_watchdog
         sender => $ardrone,
         video  => $driver_video,
     });
+    set_driver_config( $dev, $ardrone );
+
 
     $_->init_event_loop for $driver_video, $sdl_events;
     $cv->recv;
