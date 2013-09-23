@@ -18,16 +18,16 @@ my @link_flags = (
 
 
 my $build = Module::Build->new(
-    module_name    => 'UAV::Pilot',
-    dist_abstract  => 'Control UAVs',
-    dist_author    => q{Timm Murray <tmurray@wumpus-cave.net>},
-    dist_version   => '0.5',
-    license        => 'bsd',
-    needs_compiler => 1,
-    build_requires => {
+    module_name       => 'UAV::Pilot',
+    dist_abstract     => 'Control UAVs',
+    dist_author       => q{Timm Murray <tmurray@wumpus-cave.net>},
+    dist_version_from => 'lib/UAV/Pilot.pm',
+    license           => 'bsd',
+    needs_compiler    => 1,
+    build_requires    => {
         'ExtUtils::CBuilder' => 0, # For FFmpeg; make optional with that
     },
-    requires       => {
+    requires          => {
         perl                      => '>= 5.12.0',
         'namespace::autoclean'    => 0,
         'AnyEvent'                => 0,
@@ -38,10 +38,10 @@ my $build = Module::Build->new(
         'File::Spec'              => 0,
         'File::Temp'              => 0,
         'IO::Socket::Multicast'   => 0,
+        'Log::Log4perl'           => 0,
         'Math::Trig'              => 0,
         'Moose'                   => 0,
         'MooseX::Event'           => 0,
-        'Term::ReadLine::Perl5'   => 0,
         'Test::More'              => 0,
         'Throwable'               => 0,
         'YAML'                    => 0,

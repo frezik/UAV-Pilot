@@ -1,7 +1,9 @@
-use Test::More tests => 43;
+use Test::More tests => 44;
 use v5.14;
 use warnings;
 
+use AnyEvent;
+use UAV::Pilot::EasyEvent;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 
 my $bad_header = make_packet( '55667788' );
@@ -22,7 +24,7 @@ else {
 }
 
 
-my $packet_data = make_packet( join('',
+my $packet_str = join('',
     # These are in little-endian order
     '88776655',   # Header
     'd004800f',   # Drone state
@@ -32,11 +34,14 @@ my $packet_data = make_packet( join('',
     'ffff',       # Checksum ID
     '0800',       # Checksum size
     'c1030000',   # Checksum data
-) );
+);
+my $packet_data = make_packet( $packet_str );
 my $packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
     packet => $packet_data
 });
 isa_ok( $packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
+
+cmp_ok( $packet->to_hex_string, 'eq', $packet_str, "Converts to hex string" );
 
 # Header tests
 cmp_ok( $packet->header,          '==', 0x55667788, "Header (magic number) parsed" );
@@ -44,8 +49,8 @@ cmp_ok( $packet->drone_state,     '==', 0x0f8004d0, "Drone state parsed" );
 cmp_ok( $packet->sequence_num,    '==', 0x00006f33, "Sequence number parsed" );
 cmp_ok( $packet->vision_flag,     '==', 0x00000001, "Vision flag parsed" );
 
-# Drone state tests.  Numbers before each test are a binary conversion of 0x0f8004d0,
-# converted to big endian
+# Drone state tests.  Numbers before each test are a binary conversion of 
+# 0x0f8004d0, converted to big endian
 #
 # 0000
 ok(!$packet->state_flying,                        "Flying state" );
@@ -157,7 +162,6 @@ cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt pars
 cmp_ok( $demo_packet->pitch, '==', -0.800000011920929, "Pitch parsed" );
 cmp_ok( $demo_packet->roll, '>', 2.99569025183973e-39, "Roll parsed (less than float)" );
 cmp_ok( $demo_packet->roll, '<', 2.99569025183975e-39, "Roll parsed (greater than float)" );
-
 
 
 sub make_packet

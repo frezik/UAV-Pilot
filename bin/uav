@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use v5.14;
 use AnyEvent::ReadLine::Gnu;
-use Term::ReadLine::Perl5;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
@@ -80,7 +79,6 @@ sub load_libraries
 
 {
     my $continue = 1;
-    my $term = Term::ReadLine::Perl5->new( 'uav' );
 
     my $driver_args = {
         host => $IP,
@@ -91,7 +89,7 @@ sub load_libraries
     $ardrone->connect;
 
     my $dev = UAV::Pilot::Control::ARDrone::Event->new({
-        sender => $ardrone,
+        driver => $ardrone,
     });
     my $cv = $dev->init_event_loop;
     my $repl = UAV::Pilot::Commands->new({
@@ -125,7 +123,7 @@ __END__
 =head1 SYNOPSIS
 
     uav \
-        --ip 192.168.1.1 \
+        --host 192.168.1.1 \
         -L /path/to/libraries
         -l ARDrone
 
@@ -141,7 +139,7 @@ with a semi-colon.  With the Parrot AR.Drone, try:
 
 =head1 OPTIONS
 
-=head2 --ip
+=head2 --host
 
 Host IP to connect to.  Out of the box, the Parrot AR.Drone will be its own wireless 
 access point on IP 192.168.1.1 (which is the default here).

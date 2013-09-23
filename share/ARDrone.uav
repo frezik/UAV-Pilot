@@ -1,6 +1,7 @@
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Driver::ARDrone::Video;
+use UAV::Pilot::Events;
 
 
 {
@@ -94,20 +95,48 @@ sub take_picture ($$;$)
     $dev->take_picture( @_ );
 }
 
+sub record_usb ()
 {
-    my $cv         = undef;
-    my $sdl_events = undef;
-    my $init_sdl_events = sub {
-        return 1 if defined $sdl_events;
-        die "Can't init UAV::Pilot::SDL::Events without a condvar\n" unless defined $cv;
-        eval "use UAV::Pilot::SDL::Events";
-        die "Problem loading UAV::Pilot::SDL::Events: $@\n" if $@;
+    $dev->record_usb;
+}
 
-        $sdl_events = UAV::Pilot::SDL::Events->new({
+{
+    my $cv          = undef;
+    my $events      = undef;
+    my $easy_events = undef;
+    my $init_events = sub {
+        return 1 if defined $events;
+        die "Can't init UAV::Pilot::Events without a condvar\n" unless defined $cv;
+
+        $events = UAV::Pilot::Events->new({
             condvar => $cv,
         });
-        $sdl_events->init_event_loop;
+        $easy_events = UAV::Pilot::EasyEvent->new({
+            condvar => $cv,
+        });
+        $dev->setup_read_nav_event( $easy_events );
+        $events->init_event_loop;
+        $easy_events->init_event_loop;
 
+        # If we can load SDL, then init it here
+        eval "use UAV::Pilot::SDL::Events";
+        if(! $@ ) {
+            my $sdl_events = UAV::Pilot::SDL::Events->new;
+            $events->register( $sdl_events );
+        }
+
+        return 1;
+    };
+
+    my $sdl = undef;
+    my $init_sdl = sub {
+        return 1 if defined $sdl;
+        eval "use UAV::Pilot::SDL::Window;";
+        die "Can't use UAV::Pilot::SDL::Window: $@\n" if $@;
+
+        $init_events->();
+        $sdl = UAV::Pilot::SDL::Window->new;
+        $events->register( $sdl );
         return 1;
     };
 
@@ -117,7 +146,7 @@ sub take_picture ($$;$)
 
         $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
             condvar => $cv,
-            driver  => $dev->sender,
+            driver  => $dev->driver,
         });
         $vid_driver->init_event_loop;
         $dev->video( $vid_driver );
@@ -136,7 +165,7 @@ sub take_picture ($$;$)
 
     sub start_joystick ()
     {
-        $init_sdl_events->();
+        $init_events->();
         eval "use UAV::Pilot::SDL::Joystick";
         die "Problem loading UAV::Pilot::SDL::Joystick: $@\n" if $@;
 
@@ -144,7 +173,7 @@ sub take_picture ($$;$)
             condvar    => $cv,
             controller => $dev,
         });
-        $sdl_events->register( $joystick );
+        $events->register( $joystick );
 
         say 'Ready for joystick input on ['
             . SDL::Joystick::name( $joystick->joystick->index )
@@ -155,15 +184,16 @@ sub take_picture ($$;$)
 
     sub start_nav ()
     {
-        $init_sdl_events->();
         eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
         die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
+        $init_sdl->();
+        $init_events->();
 
         my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
-            driver => $dev->sender,
             feeder => $dev,
         });
-        $sdl_events->register( $nav );
+        $dev->driver->add_nav_collector( $nav );
+        $nav->add_to_window( $sdl, $sdl->BOTTOM );
 
         say "Outputting navigation data";
 
@@ -172,7 +202,8 @@ sub take_picture ($$;$)
 
     sub start_video ()
     {
-        $init_sdl_events->();
+        $init_events->();
+        $init_sdl->();
         $init_vid_driver->();
         eval "use UAV::Pilot::SDL::Video";
         die "Problem loading UAV::Pilot::SDL::Video: $@\n" if $@;
@@ -184,8 +215,8 @@ sub take_picture ($$;$)
             displays => [ $display ],
         });
         $vid_driver->add_handler( $video );
+        $display->add_to_window( $sdl, $sdl->TOP );
 
-        $sdl_events->register( $display );
         say "Ouputting video";
         return 1;
     }

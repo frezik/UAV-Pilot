@@ -42,7 +42,7 @@ use constant BUTTON_ACTIONS => {
 };
 
 
-with 'UAV::Pilot::SDL::EventHandler';
+with 'UAV::Pilot::EventHandler';
 
 has 'condvar' => (
     is  => 'ro',
@@ -279,8 +279,11 @@ __END__
 =head1 DESCRIPTION
 
 Handles joystick control for SDL joysticks.  This does the role 
-C<UAV::Pilot::SDL::EventHandler>, so it can be passed to 
-C<<UAV::Pilot::SDL::Events->register()>>.
+C<UAV::Pilot::EventHandler>, so it can be passed to 
+C<<UAV::Pilot::Events->register()>>.  It's recommended to also add the 
+C<UAV::Pilot::SDL::Events> handler to the events object, as that will 
+take care of the C<SDL_QUIT> events.  Without that, there's no way to stop 
+the process other than C<kill -9>.
 
 Joystick configuration will be loaded from a C<YAML> config file.  You can find the 
 path with C<<UAV::Pilot->default_config_dir()>>.  If the file does not exist, it will 

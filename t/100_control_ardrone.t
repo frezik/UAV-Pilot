@@ -1,4 +1,4 @@
-use Test::More tests => 63;
+use Test::More tests => 64;
 use v5.14;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Control::ARDrone;
@@ -9,7 +9,7 @@ my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
 });
 $ardrone->connect;
 my $dev = UAV::Pilot::Control::ARDrone->new({
-    sender => $ardrone,
+    driver => $ardrone,
 });
 isa_ok( $dev => 'UAV::Pilot::Control::ARDrone' );
 does_ok( $dev => 'UAV::Pilot::Control' );
@@ -349,6 +349,12 @@ my @TESTS = (
         expect => [ qq{AT*CONFIG=~SEQ~,"userbox:userbox_cmd","2,5,3,20130629_173900"\r} ],
             # Fix arg value
         name   => "Take picture command",
+    },
+    {
+        method => 'record_usb',
+        args   => [ ],
+        expect => [ qq{AT*CONFIG=~SEQ~,"video:video_on_usb","TRUE"\r} ],
+        name   => "Record USB command",
     },
 );
 foreach my $test (@TESTS) {

@@ -7,6 +7,7 @@ use UAV::Pilot::Commands;
 use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::NavPacket;
 use UAV::Pilot::Control::ARDrone::Event;
+use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Joystick;
 use Getopt::Long ();
@@ -26,7 +27,7 @@ Getopt::Long::GetOptions(
 
 sub show_nav
 {
-    my ($driver, $cv, $sdl_events, $nav_feeder) = @_;
+    my ($driver, $cv, $events, $nav_feeder) = @_;
     eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
     die $@ if $@;
 
@@ -35,7 +36,7 @@ sub show_nav
         driver  => $driver,
         feeder  => $nav_feeder,
     });
-    $sdl_events->register( $sdl_nav );
+    $events->register( $sdl_nav );
 
     return 1;
 }
@@ -48,23 +49,26 @@ sub show_nav
     $ardrone->connect;
 
     my $dev = UAV::Pilot::Control::ARDrone::Event->new({
-        sender => $ardrone,
+        driver => $ardrone,
     });
 
     my $cv = $dev->init_event_loop;
-    my $sdl_events = UAV::Pilot::SDL::Events->new({
+    my $events = UAV::Pilot::Events->new({
         condvar => $cv,
     });
+
+    my $sdl_events = UAV::Pilot::SDL::Events->new;
+    $events->register( $sdl_events );
 
     my $joystick = UAV::Pilot::SDL::Joystick->new({
         condvar    => $cv,
         controller => $dev,
         conf_path  => $CONF,
     });
-    $sdl_events->register( $joystick );
+    $events->register( $joystick );
 
-    show_nav( $ardrone, $cv, $sdl_events, $dev ) if $SHOW_NAV;
-    $sdl_events->init_event_loop;
+    show_nav( $ardrone, $cv, $events, $dev ) if $SHOW_NAV;
+    $events->init_event_loop;
     say "Ready to fly";
     $cv->recv;
     $joystick->close;

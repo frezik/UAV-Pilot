@@ -4,7 +4,7 @@ use Moose::Role;
 
 with 'UAV::Pilot::SDL::JoystickConverter';
 
-has 'sender' => (
+has 'driver' => (
     is   => 'ro',
     does => 'UAV::Pilot::Driver',
 );
@@ -25,7 +25,7 @@ module that does this role.
 
 =head1 ATTRIBUTES
 
-=head2 sender
+=head2 driver
 
 Instantiated C<UAV::Pilot::Driver> object.
 

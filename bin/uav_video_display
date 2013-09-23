@@ -7,9 +7,11 @@ use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::Video;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
 use UAV::Pilot::SDL::VideoOverlay::Reticle;
+use UAV::Pilot::SDL::Window;
 use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::Video::H264Decoder;
 use String::CRC32 'crc32';
@@ -48,22 +50,22 @@ Getopt::Long::GetOptions(
 
 sub set_reticle_overlay
 {
-    my ($video) = @_;
+    my ($video, $window) = @_;
     my $reticle = UAV::Pilot::SDL::VideoOverlay::Reticle->new;
-    $video->register_video_overlay( $reticle );
+    $video->register_video_overlay( $reticle, $window );
     return 1;
 }
 
 sub send_config_ids
 {
     my ($driver) = @_;
-    sleep 1;
+    #sleep 1;
     $driver->at_config_ids(
         $CONFIG_SESSION_ID,
         $CONFIG_USER_ID,
         $CONFIG_APP_ID,
     );
-    sleep 1;
+    #sleep 1;
     return 1;
 }
 
@@ -176,14 +178,21 @@ sub set_comm_watchdog
 
 {
     my $cv = AnyEvent->condvar;
-    my $sdl_events = UAV::Pilot::SDL::Events->new({
+    my $events = UAV::Pilot::Events->new({
         condvar => $cv,
     });
 
-    my @displays = ( UAV::Pilot::SDL::Video->new );
+    my $sdl_events = UAV::Pilot::SDL::Events->new;
+    $events->register( $sdl_events );
+
+    my $window = UAV::Pilot::SDL::Window->new;
+
+    my $vid_display = UAV::Pilot::SDL::Video->new;
+    my @displays = ($vid_display);
     my @h264_handlers = UAV::Pilot::Video::H264Decoder->new({
         displays => \@displays,
     });
+    $vid_display->add_to_window( $window );
 
     my $fh = undef;
     if( $FILE_OUT ) {
@@ -194,8 +203,8 @@ sub set_comm_watchdog
         push @h264_handlers, $file_handler;
     }
 
-    $sdl_events->register( $displays[0] );
-    set_reticle_overlay( $displays[0] ) if $RETICLE;
+    $events->register( $window );
+    set_reticle_overlay( $displays[0], $window ) if $RETICLE;
 
     my $ardrone = UAV::Pilot::Driver::ARDrone->new({
         host => $IP,
@@ -216,13 +225,14 @@ sub set_comm_watchdog
         : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
 
     my $dev = UAV::Pilot::Control::ARDrone->new({
-        sender => $ardrone,
+        driver => $ardrone,
         video  => $driver_video,
     });
     set_driver_config( $dev, $ardrone );
 
 
-    $_->init_event_loop for $driver_video, $sdl_events;
+    warn "Running . . . \n";
+    $_->init_event_loop for $driver_video, $events;
     $cv->recv;
 
     close $fh if defined $fh;

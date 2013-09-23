@@ -14,6 +14,6 @@ my $ardrone = UAV::Pilot::Driver::ARDrone->new({
 });
 $ardrone->connect;
 my $ar = UAV::Pilot::Control::ARDrone->new({
-    sender => $ardrone,
+    driver => $ardrone,
 });
 $ar->emergency;

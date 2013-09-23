@@ -3,10 +3,18 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use DateTime;
+<<<<<<< HEAD
 use String::CRC32 ();
+=======
+use UAV::Pilot::EasyEvent;
+use UAV::Pilot::NavCollector::AckEvents;
+>>>>>>> master
 
 
 with 'UAV::Pilot::Control';
+
+use constant NAV_EVENT_READ_TIME => 1 / 60;
+
 
 has 'video' => (
     is  => 'rw',
@@ -17,50 +25,50 @@ has 'video' => (
 sub takeoff
 {
     my ($self) = @_;
-    $self->sender->at_ref( 1, 0 );
+    $self->driver->at_ref( 1, 0 );
     return 1;
 }
 
 sub land
 {
     my ($self) = @_;
-    $self->sender->at_ref( 0, 0 );
+    $self->driver->at_ref( 0, 0 );
 }
 
 sub pitch
 {
     my ($self, $pitch) = @_;
-    $self->sender->at_pcmd( 1, 0, 0, $pitch, 0, 0 );
+    $self->driver->at_pcmd( 1, 0, 0, $pitch, 0, 0 );
 }
 
 sub roll
 {
     my ($self, $roll) = @_;
-    $self->sender->at_pcmd( 1, 0, $roll, 0, 0, 0 );
+    $self->driver->at_pcmd( 1, 0, $roll, 0, 0, 0 );
 }
 
 sub yaw
 {
     my ($self, $yaw) = @_;
-    $self->sender->at_pcmd( 1, 0, 0, 0, 0, $yaw );
+    $self->driver->at_pcmd( 1, 0, 0, 0, 0, $yaw );
 }
 
 sub vert_speed
 {
     my ($self, $speed) = @_;
-    $self->sender->at_pcmd( 1, 0, 0, 0, $speed, 0 );
+    $self->driver->at_pcmd( 1, 0, 0, 0, $speed, 0 );
 }
 
 sub calibrate
 {
     my ($self) = @_;
-    $self->sender->at_calib( $self->sender->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
+    $self->driver->at_calib( $self->driver->ARDRONE_CALIBRATION_DEVICE_MAGNETOMETER );
 }
 
 sub emergency
 {
     my ($self) = @_;
-    $self->sender->at_ref( 0, 1 );
+    $self->driver->at_ref( 0, 1 );
     $self->video->emergency_restart if defined $self->video;
     return 1;
 }
@@ -68,7 +76,7 @@ sub emergency
 sub reset_watchdog
 {
     my ($self) = @_;
-    $self->sender->at_comwdg();
+    $self->driver->at_comwdg();
     return 1;
 }
 
@@ -190,8 +198,8 @@ sub hover
         no strict 'refs';
         *$name = sub {
             my ($self) = @_;
-            $self->sender->at_config(
-                $self->sender->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
+            $self->driver->at_config(
+                $self->driver->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
                 sprintf( '%d,%d', $anim, $mayday ),
             );
         };
@@ -294,11 +302,11 @@ sub hover
         no strict 'refs';
         *$name = sub {
             my ($self, $freq, $duration) = @_;
-            $self->sender->at_config(
-                $self->sender->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
+            $self->driver->at_config(
+                $self->driver->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
                 sprintf( '%d,%d,%d',
                     $anim,
-                    $self->sender->float_convert( $freq ),
+                    $self->driver->float_convert( $freq ),
                     $duration,
                 ),
             );
@@ -318,9 +326,9 @@ sub convert_sdl_input
 sub start_userbox_nav_data
 {
     my ($self) = @_;
-    $self->sender->at_config(
-        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
-        $self->sender->ARDRONE_USERBOX_CMD_START,
+    $self->driver->at_config(
+        $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->driver->ARDRONE_USERBOX_CMD_START,
     );
     return 1;
 }
@@ -328,9 +336,9 @@ sub start_userbox_nav_data
 sub stop_userbox_nav_data
 {
     my ($self) = @_;
-    $self->sender->at_config(
-        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
-        $self->sender->ARDRONE_USERBOX_CMD_STOP,
+    $self->driver->at_config(
+        $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->driver->ARDRONE_USERBOX_CMD_STOP,
     );
     return 1;
 }
@@ -338,9 +346,9 @@ sub stop_userbox_nav_data
 sub cancel_userbox_nav_data
 {
     my ($self) = @_;
-    $self->sender->at_config(
-        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
-        $self->sender->ARDRONE_USERBOX_CMD_CANCEL,
+    $self->driver->at_config(
+        $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+        $self->driver->ARDRONE_USERBOX_CMD_CANCEL,
     );
     return 1;
 }
@@ -350,10 +358,10 @@ sub take_picture
     my ($self, $delay, $num_pics, $date) = @_;
     $date = DateTime->now->strftime( '%Y%m%d_%H%M%S' )
         if ! defined $date;
-    $self->sender->at_config(
-        $self->sender->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+    $self->driver->at_config(
+        $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
         sprintf( '%d,%d,%d,%s', 
-            $self->sender->ARDRONE_USERBOX_CMD_SCREENSHOT,
+            $self->driver->ARDRONE_USERBOX_CMD_SCREENSHOT,
             $delay,
             $num_pics,
             $date,
@@ -369,6 +377,37 @@ sub set_multiconfig
     return 1;
 }
 
+sub record_usb
+{
+    my ($self) = @_;
+    $self->driver->at_config(
+        $self->driver->ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB,
+        'TRUE',
+    );
+    return 1;
+}
+
+sub setup_read_nav_event
+{
+    my ($self, $event) = @_;
+
+    my $ack = UAV::Pilot::NavCollector::AckEvents->new({
+        easy_event => $event,
+    });
+    $self->driver->add_nav_collector( $ack );
+
+    my $w; $w = AnyEvent->timer(
+        after    => $self->NAV_EVENT_READ_TIME,
+        interval => $self->NAV_EVENT_READ_TIME,
+        cb => sub {
+            my $driver = $self->driver;
+            $driver->read_nav_packet;
+            $w;
+        },
+    );
+    return 1;
+}
+
 
 sub _generate_session_id
 {
@@ -377,6 +416,7 @@ sub _generate_session_id
     my $hex_id = sprintf '%x', $id;
     return $hex_id;
 }
+
 
 
 no Moose;
@@ -409,7 +449,10 @@ L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
 
-=head1 new
+=head2 new
+
+B<NOTE>: It's highly recommended that you initialize the subclass 
+C<UAV::Pilot::Control::ARDrone::Event> instead of this one.
 
     new({
         driver => $driver,
@@ -507,6 +550,11 @@ Saves a picture in JPG format to:
     /boxes/flight_YYYYMMDD_hhmmss/picture_YYYYMMDD_hhmmss.jpg
 
 You can FTP into the AR.Drone to retrieve this.
+
+=head2 record_usb
+
+Start recording the video stream to a USB stick attached to the AR.Drone's internal USB 
+port.  The stick must have at least 100MB free.
 
 =head1 FLIGHT ANIMATION METHODS
 

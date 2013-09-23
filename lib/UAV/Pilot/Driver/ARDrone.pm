@@ -5,8 +5,10 @@ use namespace::autoclean;
 use IO::Socket;
 use IO::Socket::Multicast;
 use UAV::Pilot::Exceptions;
+use UAV::Pilot::NavCollector;
 
 with 'UAV::Pilot::Driver';
+with 'UAV::Pilot::Logger';
 
 use constant {
     TRUE  => 'TRUE',
@@ -109,7 +111,7 @@ use constant {
     ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE => 'video:bitrate_control_mode',
     ARDRONE_CONFIG_VIDEO_BITRATE_STORAGE      => 'video:bitrate_storage',
     ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL        => 'video:video_channel',
-    ARDRONE_CONFIG_VIDEO_ON_USB               => 'video:video_on_usb',
+    ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB         => 'video:video_on_usb',
     ARDRONE_CONFIG_VIDEO_VIDEO_FILE_INDEX     => 'video:video_file_index',
 
     ARDRONE_CONFIG_LEDS_LEDS_ANIM => 'leds:leds_anim',
@@ -230,12 +232,20 @@ has 'iface' => (
     isa     => 'Str',
     default => 'wlan0',
 );
-
 has 'seq' => (
     is      => 'ro',
     isa     => 'Int',
     default => 0,
     writer  => '__set_seq',
+);
+has 'nav_collectors' => (
+    traits  => ['Array'],
+    is      => 'ro',
+    isa     => 'ArrayRef[UAV::Pilot::NavCollector]',
+    default => sub {[]},
+    handles => {
+        add_nav_collector => 'push',
+    },
 );
 
 has '_socket' => (
@@ -594,6 +604,15 @@ sub _init_nav_data
 }
 
 
+after '_set_last_nav_packet' => sub {
+    my ($self, $nav_packet) = @_;
+    $self->_logger->info( "Received nav packet" );
+    $self->_logger->debug( "Output: " . $nav_packet->to_hex_string );
+    $_->got_new_nav_packet( $nav_packet ) for @{ $self->nav_collectors };
+    return 1;
+};
+
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
@@ -845,7 +864,7 @@ This is a non-blocking IO operation.
     ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE
     ARDRONE_CONFIG_VIDEO_BITRATE_STORAGE
     ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL
-    ARDRONE_CONFIG_VIDEO_ON_USB
+    ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB
     ARDRONE_CONFIG_VIDEO_VIDEO_FILE_INDEX
 
 =head3 LEDS

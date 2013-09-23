@@ -1,21 +1,32 @@
 Version 0.6
 -----------
+* In 'uav', using 'start_nav;' seems to make a blank area for a while.  
+  Moving the window seems to make it come back.  Fix this.
 * Send multiconfig commands in order to set video display size and fps
-* Navigation overlay on top of video
-* Object recognition with opencv
-* Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
-* Video: Recover from bad PaVE header by reading forward until we find another one
-    * Send bad PaVE packets to a web server?  If done, user should opt-in at install time.
-* Control should take 'driver' arg, not 'sender'
+* Video: Recover from bad PaVE header by reading forward until we find another 
+  one
+    * Send bad PaVE packets to a web server?  If done, user should opt-in at 
+      install time.
 * Document
+    * UAV::Pilot (init logger)
+    * UAV::Pilot::Control::ARDrone (setup_read_nav_event() interface)
+    * UAV::Pilot::Driver::ARDrone (nav processor)
+    * UAV::Pilot::NavCollector
+    * UAV::Pilot::NavCollector::AckEvents
     * UAV::Pilot::SDL::VideoOverlay
     * UAV::Pilot::SDL::VideoOverlay::Reticle
+    * UAV::Pilot::SDL::Window
     * UAV::Pilot::Video::H264Decoder (ways to get the last processed frame)
     * UAV::Pilot::EasyEvent (add_event() interface)
 
 
-Version 7
+Version 0.7
 -----------
+* UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
+  to draw on
+* SDL2 w/Streaming pixels for video?  Or OpenGL?
+    * Navigation overlay on top of video
+    * Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
 * UAV::SDL::Video (xs) -- Use sws_getCachedContext() instead of sws_getContext()
 * Error message formatting in REPL
 * EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")

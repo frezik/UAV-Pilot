@@ -10,7 +10,7 @@ my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
 });
 $ardrone->connect;
 my $dev = UAV::Pilot::Control::ARDrone::Event->new({
-    sender => $ardrone,
+    driver => $ardrone,
 });
 
 my $cv = $dev->init_event_loop;
