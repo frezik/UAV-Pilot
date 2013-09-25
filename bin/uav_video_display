@@ -3,6 +3,7 @@ use v5.14;
 use warnings;
 use AnyEvent;
 use UAV::Pilot;
+use UAV::Pilot::EasyEvent;
 use UAV::Pilot::Driver::ARDrone;
 use UAV::Pilot::Driver::ARDrone::Video;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
@@ -69,11 +70,25 @@ sub send_config_ids
     return 1;
 }
 
+sub setup_nav_events
+{
+    my ($condvar, $driver) = @_;
+    my $easy_event = UAV::Pilot::EasyEvent->new({
+        condvar => $condvar,
+    });
+    my $ack_events = UAV::Pilot::NavCollector::AckEvents->new({
+        easy_event => $easy_event,
+    });
+    $driver->add_nav_collector( $ack_events );
+
+    return $easy_event;
+}
+
 sub set_driver_config
 {
-    my ($control, $driver) = @_;
+    my ($control, $driver, $easy_event) = @_;
 
-    $control->set_multiconfig( $CONFIG_USER_ID, $CONFIG_APP_ID );
+    $control->set_multiconfig( $easy_event, $CONFIG_USER_ID, $CONFIG_APP_ID );
     #send_config_ids( $driver );
     $driver->at_config(
         $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID,
@@ -228,7 +243,9 @@ sub set_comm_watchdog
         driver => $ardrone,
         video  => $driver_video,
     });
-    set_driver_config( $dev, $ardrone );
+
+    my $easy_event = setup_nav_events( $cv, $ardrone );
+    set_driver_config( $dev, $ardrone, $easy_event );
 
 
     warn "Running . . . \n";

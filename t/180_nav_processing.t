@@ -95,9 +95,22 @@ $easy_events->add_timer({
     duration       => 100,
     duration_units => $easy_events->UNITS_MILLISECOND,
     cb => sub {
+        $mock_driver->read_nav_packet( @packet_data_ack_off );
+    },
+})->add_timer({
+    duration       => 100,
+    duration_units => $easy_events->UNITS_MILLISECOND,
+    cb => sub {
         $mock_driver->read_nav_packet( @packet_data_ack_on );
     },
 })->add_timer({
+    duration       => 100,
+    duration_units => $easy_events->UNITS_MILLISECOND,
+    cb => sub {
+        $mock_driver->read_nav_packet( @packet_data_ack_on );
+    },
+})
+->add_timer({
     duration       => 100,
     duration_units => $easy_events->UNITS_MILLISECOND,
     cb => sub {
@@ -116,10 +129,10 @@ $easy_events->add_timer({
 $easy_events->init_event_loop;
 $condvar->recv;
 
-cmp_ok( $nav_status_on_test,     '==', 1, "Nav status on"          );
-cmp_ok( $nav_status_off_test,    '==', 1, "Nav status off"         );
+cmp_ok( $nav_status_on_test,     '==', 2, "Nav status on"          );
+cmp_ok( $nav_status_off_test,    '==', 2, "Nav status off"         );
 cmp_ok( $nav_status_toggle_test, '==', 2, "Nav status toggled"     );
-cmp_ok( $nav_collector_test,     '==', 2, "Nav collector callback" );
+cmp_ok( $nav_collector_test,     '==', 4, "Nav collector callback" );
 
 
 sub make_packet

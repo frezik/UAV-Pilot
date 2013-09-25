@@ -4,6 +4,7 @@ use Moose;
 use namespace::autoclean;
 
 with 'UAV::Pilot::NavCollector';
+with 'UAV::Pilot::Logger';
 
 
 has 'easy_event' => (
@@ -22,18 +23,19 @@ sub got_new_nav_packet
     my ($self, $packet) = @_;
     my $new_ack = $packet->state_control_received;
     my $last_ack = $self->_last_ack_status;
+    my $event = $self->easy_event;
+    my $logger = $self->_logger;
+
+    $logger->info( "Got nav ACK of $new_ack, old ack is $last_ack" );
+    my $send_event = $new_ack
+        ? 'nav_ack_on'
+        : 'nav_ack_off';
+    $logger->inf( "Sending $send_event event" );
+    $event->send_event( $send_event );
 
     if( $new_ack != $last_ack ) {
-        my $event = $self->easy_event;
+        $logger->inf( "Sending nav_ack_toggle event" );
         $event->send_event( 'nav_ack_toggle', $new_ack );
-
-        if( $new_ack ) {
-            $event->send_event( 'nav_ack_on' );
-        }
-        else {
-            $event->send_event( 'nav_ack_off' );
-        }
-
         $self->_last_ack_status( $new_ack );
     }
 
