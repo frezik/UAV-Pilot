@@ -569,6 +569,10 @@ sub _init_nav_data
     my $port           = $self->ARDRONE_PORT_NAV_DATA;
     my $socket_type    = $self->ARDRONE_PORT_NAV_DATA_TYPE;
     my $iface          = $self->iface;
+    my $logger         = $self->_logger;
+
+    $logger->info( "Init nav data connection; iface [$iface], host [$host], "
+        . " multicast address [$multicast_addr], port [$port]" );
 
     # Init navigation data socket with the UAV
     my $nav_sock = IO::Socket::Multicast->new(
@@ -583,23 +587,35 @@ sub _init_nav_data
         or die "Could not subscribe to '$multicast_addr': $!\n";
     $nav_sock->send( 'foo' );
 
+    $logger->info( "Nav data connected, setting parameters" );
+
     # Set UAV to demo nav data mode, which sends most of the data we care about
     $self->at_config(
         $self->ARDRONE_CONFIG_GENERAL_NAVDATA_DEMO,
         $self->TRUE,
     );
 
+    $logger->debug( "Nav data set to demo mode" );
+
+    $logger->debug( "Waiting to receive first nav packet . . . " );
     # Receive first status packet from UAV
     my $buf = '';
     my $in = $nav_sock->recv( $buf, 1024 );
+    $logger->debug( "Received first nav packet" );
 
+    $logger->debug( "Setting nav data connection to non-blocking" );
     if(! defined $nav_sock->blocking( 0 ) ) {
         UAV::Pilot::IOException->throw({
             error => "Could not set nav socket to non-blocking IO: $!",
         });
     }
+    $logger->debug( "Nav data connection set to non-blocking" );
 
+    $logger->debug( "Parsing first nav packet" );
     $self->_nav_socket( $nav_sock );
+    $logger->debug( "First nav packet parsed" );
+
+    $logger->info( "Nav data init finished" );
     return 1;
 }
 

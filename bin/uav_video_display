@@ -5,6 +5,7 @@ use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::EasyEvent;
 use UAV::Pilot::Driver::ARDrone;
+use UAV::Pilot::Driver::ARDrone::NavPacket;
 use UAV::Pilot::Driver::ARDrone::Video;
 use UAV::Pilot::Driver::ARDrone::Video::Mock;
 use UAV::Pilot::Control::ARDrone;
@@ -68,20 +69,6 @@ sub send_config_ids
     );
     #sleep 1;
     return 1;
-}
-
-sub setup_nav_events
-{
-    my ($condvar, $driver) = @_;
-    my $easy_event = UAV::Pilot::EasyEvent->new({
-        condvar => $condvar,
-    });
-    my $ack_events = UAV::Pilot::NavCollector::AckEvents->new({
-        easy_event => $easy_event,
-    });
-    $driver->add_nav_collector( $ack_events );
-
-    return $easy_event;
 }
 
 sub set_driver_config
@@ -244,7 +231,10 @@ sub set_comm_watchdog
         video  => $driver_video,
     });
 
-    my $easy_event = setup_nav_events( $cv, $ardrone );
+    my $easy_event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+    $dev->setup_read_nav_event( $easy_event );
     set_driver_config( $dev, $ardrone, $easy_event );
 
 

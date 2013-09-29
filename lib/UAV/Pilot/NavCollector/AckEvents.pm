@@ -30,11 +30,11 @@ sub got_new_nav_packet
     my $send_event = $new_ack
         ? 'nav_ack_on'
         : 'nav_ack_off';
-    $logger->inf( "Sending $send_event event" );
+    $logger->info( "Sending $send_event event" );
     $event->send_event( $send_event );
 
     if( $new_ack != $last_ack ) {
-        $logger->inf( "Sending nav_ack_toggle event" );
+        $logger->info( "Sending nav_ack_toggle event" );
         $event->send_event( 'nav_ack_toggle', $new_ack );
         $self->_last_ack_status( $new_ack );
     }
