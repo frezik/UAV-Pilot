@@ -1,52 +1,60 @@
-Version 0.6
------------
-* New EventHandler interface.  
-    * UAV::Pilot::SDL::EventHandler moved to UAV::Pilot::EventHandler
-    * UAV::Pilot::Events based on previous UAV::Pilot::SDL::Events, except 
-      it doesn't do anything for SDL
-    * UAV::Pilot::SDL::Events changed to an EventHandler
-    * All other EventHandler objects and bin/uav* scripts updated to 
-      reflect this change
-* In UAV::Pilot::Control, change the 'sender' param to 'driver'
-* Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change 
+Revision history for perl module UAV::Pilot
+
+0.6 2013-??-??
+
+[EventHandler Interface]
+- UAV::Pilot::SDL::EventHandler moved to UAV::Pilot::EventHandler
+- UAV::Pilot::Events based on previous UAV::Pilot::SDL::Events, except it 
+  doesn't do anything for SDL
+- UAV::Pilot::SDL::Events changed to an EventHandler
+- All other EventHandler objects and bin/uav* scripts updated to reflect this 
+  change
+
+[Other Changes]
+- In UAV::Pilot::Control, change the 'sender' param to 'driver'
+- Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change 
   of 'display' to 'displays'
-* Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API 
+- Stack handlers passed to UAV::Pilot::Driver::ARDrone::Video.  Note the API 
   change of 'handler' to 'handlers'
-* 'uav' shell handles dumping video to file while displaying it at the same time
-* Implement 'NavCollector' to receive nav packets as they're read from the 
-  driver.  
-* SDLNavDisplay implemented as a NavCollector rather than an EventHandler
-
-Version 0.5
------------
-* Real-time video implemented (this is the big one)
-* VideoHandler and FileDump moved into UAV::Pilot::Video namespace.  Handler role now named 
-  "H264Handler".
-* Joystick buttons can be mapped to actions
-* Joystick module can take a path to a conf file
-* bin/uav gets an --iface option for a network interface for binding
+- 'uav' shell handles dumping video to file while displaying it at the same time
+- Implement 'NavCollector' to receive nav packets as they're read from the driver
+- SDLNavDisplay implemented as a NavCollector rather than an EventHandler
 
 
-Version 0.4
------------
-* Dump video to file
-    * If using mplayer to show the file, set the FPS manually with 
+0.5 2013-07-31
+
+- Real-time video implemented (this is the big one)
+- VideoHandler and FileDump moved into UAV::Pilot::Video namespace.  Handler 
+  role now named "H264Handler".
+- Joystick buttons can be mapped to actions
+- Joystick module can take a path to a conf file
+- bin/uav gets an --iface option for a network interface for binding
+
+
+0.4 2013-07-04
+
+- Dump video to file
+    - If using mplayer to show the file, set the FPS manually with 
       "mplayer -fps 30 /path/to/file.h264"
-* Rename anything that starts an event loop to init_event_loop()
-* Joystick to UAV control number conversion decoupled from ARDrone specifics
-* Add methods to UAV::Pilot::Control::ARDrone for userbox nav data and picture taking
+- Rename anything that starts an event loop to init_event_loop()
+- Joystick to UAV control number conversion decoupled from ARDrone specifics
+- Add methods to UAV::Pilot::Control::ARDrone for userbox nav data and picture 
+  taking
 
-Version 0.3
------------
-* Event-based interface
-* Joystick control
 
-Version 0.2
------------
-* Device renamed to Control
-* Sender renamed to Driver
-* Fetch demo navigation data
+0.3 2013-06-17
 
-Version 0.1
------------
-* Piloting commands work
+- Event-based interface
+- Joystick control
+
+
+0.2 2013-06-02
+
+- Device renamed to Control
+- Sender renamed to Driver
+- Fetch demo navigation data
+
+
+0.1 2013-05-09
+
+- Piloting commands work
