@@ -1,7 +1,5 @@
 Version 0.6
 -----------
-* Fix ffmpeg example code copyright header
-  (http://ffmpeg.org/doxygen/trunk/decoding__encoding_8c-source.html)
 * In 'uav', using 'start_nav;' seems to make a blank area for a while.  
   Moving the window seems to make it come back.  Fix this.
 * Send multiconfig commands in order to set video display size and fps
