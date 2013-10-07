@@ -185,6 +185,7 @@ has '_last_nav_packet' => (
 
 with 'UAV::Pilot::SDL::WindowEventHandler';
 with 'UAV::Pilot::NavCollector';
+with 'UAV::Pilot::Logger';
 
 
 sub BUILDARGS
@@ -221,7 +222,11 @@ sub draw
 {
     my ($self, $window) = @_;
     my $nav = $self->_last_nav_packet;
-    return $self->_draw_no_nav_packet( $window ) unless defined $nav;
+    if(! defined $nav) {
+        $self->_logger->info( 'No nav packet yet, not drawing anything' );
+        return $self->_draw_no_nav_packet( $window );
+    }
+    $self->_logger->info( 'Drawing nav packet' );
     $window->clear_screen;
 
     my $txt_label = $self->_txt_label;
@@ -272,8 +277,15 @@ sub draw
     $self->_draw_bar_percent_value( $nav->battery_voltage_percentage,
         $self->BATTERY_DISPLAY_X, 100, $window );
 
+    $self->_logger->info( 'Done drawing nav packet' );
     return 1;
 }
+
+before 'got_new_nav_packet' => sub {
+    my ($self, $packet) = @_;
+    $self->_logger->info( 'Received nav packet to draw' );
+    return 1;
+};
 
 
 sub _draw_line_value

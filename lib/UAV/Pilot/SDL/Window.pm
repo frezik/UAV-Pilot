@@ -8,6 +8,7 @@ use SDLx::App;
 use UAV::Pilot::SDL::WindowEventHandler;
 
 with 'UAV::Pilot::EventHandler';
+with 'UAV::Pilot::Logger';
 
 use constant {
     SDL_TITLE  => 'UAV::Pilot',
@@ -80,7 +81,7 @@ has '_diag_color' => (
     is  => 'ro',
 );
 has '_bg_rect' => (
-    is  => 'ro',
+    is  => 'rw',
     isa => 'SDL::Rect',
 );
 
@@ -161,25 +162,38 @@ sub add_child_with_yuv_overlay
 sub process_events
 {
     my ($self) = @_;
+    my $logger = $self->_logger;
+    $logger->info( 'Start drawing of SDL window' );
+
     foreach my $child (@{ $self->children }) {
         my $drawer = $child->{drawer};
+        $logger->debug( 'Drawing child ' . ref($drawer) );
         $self->_origin_x( $child->{origin_x} );
         $self->_origin_y( $child->{origin_y} );
         $self->_drawer( $drawer );
         $drawer->draw( $self );
     }
 
+    my $rect = $self->_bg_rect;
+    $logger->debug( 'Updating rect'
+        . '. X: '     . $rect->x
+        . ' Y: '      . $rect->y
+        . ' Width: '  . $rect->w
+        . ' Height: ' . $rect->h );
     SDL::Video::update_rects( $self->sdl, $self->_bg_rect );
     # Cleanup
     $self->_origin_x( 0 );
     $self->_origin_y( 0 );
     $self->_drawer( undef );
+
+    $logger->info( 'Done drawing to SDL window' );
     return 1;
 }
 
 sub clear_screen
 {
     my ($self) = @_;
+    $self->_logger->debug( 'Clearing screen' );
     my $drawer = $self->_drawer;
     my $bg_rect = SDL::Rect->new( $self->_origin_x, $self->_origin_y,
         $drawer->width, $drawer->height );
@@ -234,9 +248,12 @@ sub draw_rect
 sub _resize
 {
     my ($self, $width, $height) = @_;
+    my $bg_rect = SDL::Rect->new( 0, 0, $width, $height );
+
     $self->sdl->resize( $width, $height );
     $self->_set_width( $width );
     $self->_set_height( $height );
+    $self->_bg_rect( $bg_rect );
     return 1;
 }
 
