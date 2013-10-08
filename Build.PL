@@ -60,6 +60,11 @@ my $build = Module::Build->new(
     # Not sure how portable this is
     extra_compiler_flags => join( ' ', @build_flags ),
     extra_linker_flags   => join( ' ', @link_flags ),
+    meta_merge => {
+        resources => {
+            repository => 'https://github.com/frezik/UAV-Pilot',
+        },
+    },
 );
 
 $build->create_build_script;
