@@ -389,48 +389,22 @@ sub set_multiconfig
     my ($self, $easy_event, $user_id, $app_id, $session_id) = @_;
     $session_id //= $self->_generate_session_id;
     my $driver = $self->driver;
-    my $logger = $self->_logger;
 
-    $logger->info( "Setting multiconfig keys.  App ID [$app_id],"
+    $self->_logger->info( "Setting multiconfig keys.  App ID [$app_id],"
         . "User ID [$user_id], Session ID [$session_id]" );
 
-    $driver->at_config_ids( $session_id, $user_id, $app_id );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID, $session_id );
+    $driver->multi_cmds( sub {
+        $driver->at_config_ids( $session_id, $user_id, $app_id );
+        $driver->at_config(
+            $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID, $session_id );
+        $driver->at_config(
+            $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID, $user_id );
+        $driver->at_config(
+            $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID,
+            $app_id );
+    });
 
-    $logger->debug( "Set Session ID config, waiting for ACK on" );
-
-    my $wait_condvar = AnyEvent->condvar;
-    $easy_event->add_event( 'nav_ack_on' => sub {
-        $logger->debug( "ACK on received, waiting for ACK off" );
-        $easy_event->add_event( 'nav_ack_off' => sub {
-            $logger->debug( "ACK off received, sending User ID" );
-            $driver->at_config_ids( $session_id, $user_id, $app_id );
-            $driver->at_config(
-                $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID, $user_id );
-            $logger->debug( "Set User ID config, waiting for ACK on" );
-
-            $easy_event->add_event( 'nav_ack_on' => sub {
-                $logger->debug( "ACK on received, waiting for ACK off" );
-                $easy_event->add_event( 'nav_ack_off' => sub {
-                    $logger->debug( "ACK off received, sending App ID" );
-                    $driver->at_config_ids( $session_id, $user_id, $app_id );
-                    $driver->at_config(
-                        $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID,
-                        $app_id );
-                    $logger->debug( "Set App ID, all done setting multiconfig");
-
-                    $self->_set_session_id( $session_id );
-                    $self->_set_app_id( $app_id );
-                    $self->_set_user_id( $user_id );
-
-                    $wait_condvar->send( 1 );
-                }, 1 );
-            }, 1 );
-        }, 1 );
-    }, 1 );
-
-    return $wait_condvar->recv;
+    return 1;
 }
 
 sub record_usb

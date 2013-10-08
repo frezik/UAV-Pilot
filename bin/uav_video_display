@@ -67,7 +67,7 @@ sub send_config_ids
         $CONFIG_USER_ID,
         $CONFIG_APP_ID,
     );
-    #sleep 1;
+    sleep 1;
     return 1;
 }
 
@@ -76,37 +76,6 @@ sub set_driver_config
     my ($control, $driver, $easy_event) = @_;
 
     $control->set_multiconfig( $easy_event, $CONFIG_USER_ID, $CONFIG_APP_ID );
-    #send_config_ids( $driver );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID,
-        $CONFIG_SESSION_ID,
-    );
-    send_config_ids( $driver );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID,
-        $CONFIG_USER_ID,
-    );
-    send_config_ids( $driver );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID,
-        $CONFIG_APP_ID,
-    );
-
-    send_config_ids( $driver );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_SESSION_DESC,
-        "uav_video_display session",
-    );
-    send_config_ids( $driver );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_DESC,
-        "uav_video_display user",
-    );
-    $driver->at_config(
-        $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_DESC,
-        "uav_video_display",
-    );
-
 
     send_config_ids( $driver );
     $driver->at_config(
@@ -184,6 +153,21 @@ sub set_comm_watchdog
         condvar => $cv,
     });
 
+    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+        host => $IP,
+    });
+    $ardrone->connect;
+    set_comm_watchdog( $ardrone, $cv );
+    my $easy_event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+
+    my $dev = UAV::Pilot::Control::ARDrone->new({
+        driver => $ardrone,
+    });
+    $dev->setup_read_nav_event( $easy_event );
+    set_driver_config( $dev, $ardrone, $easy_event );
+
     my $sdl_events = UAV::Pilot::SDL::Events->new;
     $events->register( $sdl_events );
 
@@ -208,12 +192,6 @@ sub set_comm_watchdog
     $events->register( $window );
     set_reticle_overlay( $displays[0], $window ) if $RETICLE;
 
-    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
-        host => $IP,
-    });
-    $ardrone->connect;
-    set_comm_watchdog( $ardrone, $cv );
-
     my %video_args = (
         handlers => \@h264_handlers,
         condvar => $cv,
@@ -226,19 +204,9 @@ sub set_comm_watchdog
         })
         : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
 
-    my $dev = UAV::Pilot::Control::ARDrone->new({
-        driver => $ardrone,
-        video  => $driver_video,
-    });
+    $dev->video( $driver_video );
 
-    my $easy_event = UAV::Pilot::EasyEvent->new({
-        condvar => $cv,
-    });
-    $dev->setup_read_nav_event( $easy_event );
-    set_driver_config( $dev, $ardrone, $easy_event );
-
-
-    warn "Running . . . \n";
+    say "Running . . .";
     $_->init_event_loop for $driver_video, $events;
     $cv->recv;
 
