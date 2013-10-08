@@ -16,6 +16,7 @@ use constant PAVE_HEADER_PARTIAL_PROCESS_SIZE => 8;
 use constant PAVE_SIGNATURE           => 'PaVE';
 use constant PAVE_SIGNATURE_LE        => 0x45566150;
 use constant PAVE_SIGNATURE_BE        => 0x50615645;
+use constant PAVE_SIGNATURE_BE_ARRAY  => [ 0x50, 0x61, 0x56, 0x45 ];
 use constant {
     CODEC_TYPES => {
         UNKNOWN      => 0,
@@ -61,7 +62,12 @@ use constant {
     _MODE_PARTIAL_PAVE_HEADER   => 0,
     _MODE_REMAINING_PAVE_HEADER => 1,
     _MODE_FRAME                 => 2,
+    _MODE_NEXT_PAVE             => 3,
 };
+
+
+with 'UAV::Pilot::Logger';
+
 
 has '_io' => (
     is     => 'ro',
@@ -195,9 +201,13 @@ sub _read_partial_pave_header
     $packet{video_codec}             = $bytes[5];
     $packet{packet_size}             = UAV::Pilot->convert_16bit_LE( @bytes[6,7]);
 
-    warn "Bad PaVE header.  Got [$packet{signature}], expected " . $self->PAVE_SIGNATURE
-        . "\n"
-        if $packet{signature} ne $self->PAVE_SIGNATURE;
+    #warn "Bad PaVE header.  Got [$packet{signature}], expected " . $self->PAVE_SIGNATURE
+    if( $packet{signature} ne $self->PAVE_SIGNATURE ) {
+        $self->_logger->error( "Bad PaVE header.  Got [$packet{signature}],"
+            . " expected " . $self->PAVE_SIGNATURE );
+        $self->_mode( $self->_MODE_NEXT_PAVE );
+        return $self->_read_to_next_pave_header;
+    }
 
     $self->_last_pave_header( \%packet );
     $self->_mode( $self->_MODE_REMAINING_PAVE_HEADER );
@@ -254,6 +264,28 @@ sub _read_remaining_pave_header
     return $self->_read_frame;
 }
 
+sub _read_to_next_pave_header
+{
+    my ($self) = @_;
+    my @byte_buf = @{ $self->_byte_buffer };
+    my @expect_signature = @{ $self->PAVE_SIGNATURE_BE_ARRAY };
+
+    foreach my $i (0 .. $#byte_buf) {
+        if( ($expect_signature[0] == $byte_buf[$i])
+            && ($expect_signature[1] == $byte_buf[$i + 1])
+            && ($expect_signature[2] == $byte_buf[$i + 2])
+            && ($expect_signature[3] == $byte_buf[$i + 3])
+        ) {
+            my @new_byte_buffer = @byte_buf[$i..$#byte_buf];
+            $self->_byte_buffer( \@new_byte_buffer );
+            $self->_mode( $self->_MODE_PARTIAL_PAVE_HEADER );
+            return $self->_read_partial_pave_header;
+        }
+    }
+
+    return 1;
+}
+
 sub _read_frame
 {
     my ($self) = @_;
@@ -295,6 +327,9 @@ sub _process_io
     }
     elsif( $self->_mode == $self->_MODE_FRAME ) {
         $self->_read_frame;
+    }
+    elsif( $self->_mode == $self->_MODE_NEXT_PAVE ) {
+        $self->_read_to_next_pave_header;
     }
 
     return 1;
