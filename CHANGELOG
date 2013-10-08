@@ -19,6 +19,9 @@ Revision history for perl module UAV::Pilot
 - 'uav' shell handles dumping video to file while displaying it at the same time
 - Implement 'NavCollector' to receive nav packets as they're read from the driver
 - SDLNavDisplay implemented as a NavCollector rather than an EventHandler
+- When we get a bad PaVE header on the video stream, fast forward to the next
+  one.  This helps recover the video stream gracefully.  The video will be 
+  messed up until the next keyframe, but at least it keeps going.
 
 
 0.5 2013-07-31
