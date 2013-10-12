@@ -1,8 +1,9 @@
-use Test::More tests => 64;
+use Test::More tests => 66;
 use v5.14;
 use UAV::Pilot::Driver::ARDrone::Mock;
 use UAV::Pilot::Control::ARDrone;
 use Test::Moose;
+use String::CRC32 'crc32';
 
 my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
     host => 'localhost',
@@ -384,3 +385,16 @@ cmp_ok( $dev->convert_sdl_input( -32767 ), '==', -0.999969482421875,
     "Convert SDL input -(2**15 + 1)" );
 cmp_ok( $dev->convert_sdl_input( 16384 ),  '==', 0.5,  "Convert SDL input 16384" );
 cmp_ok( $dev->convert_sdl_input( -32768 ), '==', -1.0, "Convert overflow input" );
+
+
+$ardrone->saved_commands; # Flush commands
+my $session_id = sprintf( '%x', crc32( int rand 2**16 ) );
+my $user_id    = sprintf( '%x', crc32( 'uav_pilot_user' ) );
+my $app_id     = sprintf( '%x', crc32( 'uav_pilot' ) );
+$dev->set_multiconfig( $user_id, $app_id, $session_id );
+my @multiconfig_cmds = $ardrone->saved_commands;
+cmp_ok( scalar(@multiconfig_cmds), '==', 6, "Init'd multiconfig" );
+$dev->send_config( $ardrone->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
+    $ardrone->ARDRONE_USERBOX_CMD_START );
+my @config_cmds = $ardrone->saved_commands;
+cmp_ok( scalar(@config_cmds), '==', 2, "Config with multiconfig" );

@@ -58,27 +58,11 @@ sub set_reticle_overlay
     return 1;
 }
 
-sub send_config_ids
-{
-    my ($driver) = @_;
-    #sleep 1;
-    $driver->at_config_ids(
-        $CONFIG_SESSION_ID,
-        $CONFIG_USER_ID,
-        $CONFIG_APP_ID,
-    );
-    sleep 1;
-    return 1;
-}
-
 sub set_driver_config
 {
     my ($control, $driver, $easy_event) = @_;
 
-    $control->set_multiconfig( $easy_event, $CONFIG_USER_ID, $CONFIG_APP_ID );
-
-    send_config_ids( $driver );
-    $driver->at_config(
+    $control->send_config(
         $driver->ARDRONE_CONFIG_VIDEO_BITRATE_CONTROL_MODE,
         $driver->ARDRONE_CONFIG_VIDEO_VBC_MODE_DYNAMIC,
     );
@@ -86,8 +70,7 @@ sub set_driver_config
     my $camera_setting = ($CAMERA eq BOTTOM_CAMERA)
         ? $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_VERT
         : $driver->ARDRONE_CONFIG_VIDEO_CHANNEL_ZAP_CHANNEL_HORI;
-    send_config_ids( $driver );
-    $driver->at_config(
+    $control->send_config(
         $driver->ARDRONE_CONFIG_VIDEO_VIDEO_CHANNEL,
         $camera_setting,
     );
@@ -95,9 +78,8 @@ sub set_driver_config
     my $format_setting = ($FORMAT eq RESOLUTION_SD)
         ? $driver->ARDRONE_CONFIG_VIDEO_CODEC_H264_360P
         : $driver->ARDRONE_CONFIG_VIDEO_CODEC_H264_720P;
-    send_config_ids( $driver );
     say "Setting codec $format_setting";
-    $driver->at_config(
+    $control->send_config(
         $driver->ARDRONE_CONFIG_VIDEO_VIDEO_CODEC,
         $format_setting,
     );
@@ -105,12 +87,10 @@ sub set_driver_config
     my $bitrate_setting = ($FORMAT eq RESOLUTION_SD)
         ? 2000
         : 4000;
-    send_config_ids( $driver );
-    $driver->at_config(
+    $control->send_config(
         $driver->ARDRONE_CONFIG_VIDEO_BITRATE,
         $bitrate_setting,
     );
-
 
     my $fps = $FPS;
     if( $fps > $driver->ARDRONE_CONFIG_VIDEO_MAX_FPS ) {
@@ -121,8 +101,7 @@ sub set_driver_config
         warn "*** Min FPS is " . $driver->ARDRONE_CONFIG_VIDEO_MIN_FPS . "\n";
         $fps = $driver->ARDRONE_CONFIG_VIDEO_MIN_FPS;
     }
-    send_config_ids( $driver );
-    $driver->at_config(
+    $control->send_config(
         $driver->ARDRONE_CONFIG_VIDEO_CODEC_FPS,
         $fps,
     );
@@ -163,10 +142,13 @@ sub set_comm_watchdog
     });
 
     my $dev = UAV::Pilot::Control::ARDrone->new({
-        driver => $ardrone,
+        driver     => $ardrone,
+        user_id    => $CONFIG_USER_ID,
+        app_id     => $CONFIG_APP_ID,
+        session_id => $CONFIG_SESSION_ID,
     });
-    $dev->setup_read_nav_event( $easy_event );
     set_driver_config( $dev, $ardrone, $easy_event );
+    $dev->setup_read_nav_event( $easy_event );
 
     my $sdl_events = UAV::Pilot::SDL::Events->new;
     $events->register( $sdl_events );

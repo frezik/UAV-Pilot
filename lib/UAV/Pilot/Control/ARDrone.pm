@@ -32,8 +32,26 @@ has 'user_id' => (
     isa    => 'Maybe[Str]',
     writer => '_set_user_id',
 );
+has '_did_set_multiconfig' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
 
 with 'UAV::Pilot::Logger';
+
+
+sub BUILD
+{
+    my ($self) = @_;
+
+    if( defined $self->user_id && defined $self->app_id ) {
+        $self->set_multiconfig( $self->user_id, $self->app_id,
+            $self->session_id );
+    }
+
+    return 1;
+}
 
 
 sub takeoff
@@ -212,7 +230,7 @@ sub hover
         no strict 'refs';
         *$name = sub {
             my ($self) = @_;
-            $self->driver->at_config(
+            $self->send_config(
                 $self->driver->ARDRONE_CONFIG_CONTROL_FLIGHT_ANIM,
                 sprintf( '%d,%d', $anim, $mayday ),
             );
@@ -316,7 +334,7 @@ sub hover
         no strict 'refs';
         *$name = sub {
             my ($self, $freq, $duration) = @_;
-            $self->driver->at_config(
+            $self->send_config(
                 $self->driver->ARDRONE_CONFIG_LEDS_LEDS_ANIM,
                 sprintf( '%d,%d,%d',
                     $anim,
@@ -340,7 +358,7 @@ sub convert_sdl_input
 sub start_userbox_nav_data
 {
     my ($self) = @_;
-    $self->driver->at_config(
+    $self->send_config(
         $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
         $self->driver->ARDRONE_USERBOX_CMD_START,
     );
@@ -350,7 +368,7 @@ sub start_userbox_nav_data
 sub stop_userbox_nav_data
 {
     my ($self) = @_;
-    $self->driver->at_config(
+    $self->send_config(
         $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
         $self->driver->ARDRONE_USERBOX_CMD_STOP,
     );
@@ -360,7 +378,7 @@ sub stop_userbox_nav_data
 sub cancel_userbox_nav_data
 {
     my ($self) = @_;
-    $self->driver->at_config(
+    $self->send_config(
         $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
         $self->driver->ARDRONE_USERBOX_CMD_CANCEL,
     );
@@ -372,7 +390,7 @@ sub take_picture
     my ($self, $delay, $num_pics, $date) = @_;
     $date = DateTime->now->strftime( '%Y%m%d_%H%M%S' )
         if ! defined $date;
-    $self->driver->at_config(
+    $self->send_config(
         $self->driver->ARDRONE_CONFIG_USERBOX_USERBOX_CMD,
         sprintf( '%d,%d,%d,%s', 
             $self->driver->ARDRONE_USERBOX_CMD_SCREENSHOT,
@@ -386,31 +404,49 @@ sub take_picture
 
 sub set_multiconfig
 {
-    my ($self, $easy_event, $user_id, $app_id, $session_id) = @_;
+    my ($self, $user_id, $app_id, $session_id) = @_;
     $session_id //= $self->_generate_session_id;
     my $driver = $self->driver;
 
     $self->_logger->info( "Setting multiconfig keys.  App ID [$app_id],"
         . "User ID [$user_id], Session ID [$session_id]" );
 
-    $driver->multi_cmds( sub {
-        $driver->at_config_ids( $session_id, $user_id, $app_id );
-        $driver->at_config(
-            $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID, $session_id );
-        $driver->at_config(
-            $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID, $user_id );
-        $driver->at_config(
-            $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID,
-            $app_id );
-    });
+    $driver->at_config_ids( $session_id, $user_id, $app_id );
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_CUSTOM_SESSION_ID, $session_id );
+    sleep 1;
 
+    $driver->at_config_ids( $session_id, $user_id, $app_id );
+    $driver->at_config( $driver->ARDRONE_CONFIG_CUSTOM_PROFILE_ID, $user_id );
+    sleep 1;
+
+    $driver->at_config_ids( $session_id, $user_id, $app_id );
+    $driver->at_config(
+        $driver->ARDRONE_CONFIG_CUSTOM_APPLICATION_ID, $app_id );
+    sleep 1;
+
+    $self->_set_session_id( $session_id );
+    $self->_set_app_id( $app_id );
+    $self->_set_user_id( $user_id );
+    $self->_did_set_multiconfig( 1 );
+
+    return 1;
+}
+
+sub send_config
+{
+    my ($self, $name, $value) = @_;
+    my $driver = $self->driver;
+    $driver->at_config_ids( $self->session_id, $self->user_id, $self->app_id )
+        if $self->_did_set_multiconfig;
+    $driver->at_config( $name, $value );
     return 1;
 }
 
 sub record_usb
 {
     my ($self) = @_;
-    $self->driver->at_config(
+    $self->send_config(
         $self->driver->ARDRONE_CONFIG_VIDEO_VIDEO_ON_USB,
         'TRUE',
     );
