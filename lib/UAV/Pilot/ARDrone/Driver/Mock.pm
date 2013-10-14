@@ -1,10 +1,10 @@
-package UAV::Pilot::Driver::ARDrone::Mock;
+package UAV::Pilot::ARDrone::Driver::Mock;
 use v5.14;
 use Moose;
 use namespace::autoclean;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::NavPacket;
 
-extends 'UAV::Pilot::Driver::ARDrone';
+extends 'UAV::Pilot::ARDrone::Driver';
 
 
 has 'last_cmd' => (
@@ -59,7 +59,7 @@ sub read_nav_packet
 {
     my ($self, @packet) = @_;
     my $packet = pack( 'H*', join('', @packet) );
-    my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+    my $nav_packet = UAV::Pilot::ARDrone::NavPacket->new({
         packet => $packet,
     });
     $self->_set_last_nav_packet( $nav_packet );

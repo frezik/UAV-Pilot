@@ -1,4 +1,4 @@
-package UAV::Pilot::Driver::ARDrone::Video;
+package UAV::Pilot::ARDrone::Video;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -89,7 +89,7 @@ has 'condvar' => (
 );
 has 'driver' => (
     is  => 'ro',
-    isa => 'UAV::Pilot::Driver::ARDrone',
+    isa => 'UAV::Pilot::ARDrone::Driver',
 );
 has 'frames_processed' => (
     traits  => ['Number'],
@@ -344,7 +344,7 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Driver::ARDrone::Video
+  UAV::Pilot::ARDrone::Video
 
 =head1 SYNOPSIS
 

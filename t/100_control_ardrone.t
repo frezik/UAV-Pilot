@@ -1,18 +1,18 @@
 use Test::More tests => 66;
 use v5.14;
-use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver::Mock;
+use UAV::Pilot::ARDrone::Control;
 use Test::Moose;
 use String::CRC32 'crc32';
 
-my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver::Mock->new({
     host => 'localhost',
 });
 $ardrone->connect;
-my $dev = UAV::Pilot::Control::ARDrone->new({
+my $dev = UAV::Pilot::ARDrone::Control->new({
     driver => $ardrone,
 });
-isa_ok( $dev => 'UAV::Pilot::Control::ARDrone' );
+isa_ok( $dev => 'UAV::Pilot::ARDrone::Control' );
 does_ok( $dev => 'UAV::Pilot::Control' );
 does_ok( $dev => 'UAV::Pilot::SDL::JoystickConverter' );
 

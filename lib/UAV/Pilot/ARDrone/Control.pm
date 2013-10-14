@@ -1,4 +1,4 @@
-package UAV::Pilot::Control::ARDrone;
+package UAV::Pilot::ARDrone::Control;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -15,7 +15,7 @@ use constant NAV_EVENT_READ_TIME => 1 / 60;
 
 has 'video' => (
     is  => 'rw',
-    isa => 'Maybe[UAV::Pilot::Driver::ARDrone::Video]',
+    isa => 'Maybe[UAV::Pilot::ARDrone::Video]',
 );
 has 'session_id' => (
     is     => 'ro',
@@ -119,7 +119,7 @@ sub hover
 }
 
 {
-    my $send = 'UAV::Pilot::Driver::ARDrone';
+    my $send = 'UAV::Pilot::ARDrone::Driver';
     my @FLIGHT_ANIMS = (
         {
             name   => 'phi_m30',
@@ -239,7 +239,7 @@ sub hover
 }
 
 {
-    my $send = 'UAV::Pilot::Driver::ARDrone';
+    my $send = 'UAV::Pilot::ARDrone::Driver';
 
     my @LED_ANIMS = (
         {
@@ -493,14 +493,14 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Control::ARDrone
+  UAV::Pilot::ARDrone::Control
 
 =head1 SYNOPSIS
 
-    my $sender = UAV::Pilot::Driver::ARDrone->new( ... );
-    $sender->connect;
-    my $dev = UAV::Pilot::Control::ARDrone->new({
-        sender => $sender,
+    my $driver = UAV::Pilot::ARDrone::Driver->new( ... );
+    $driver->connect;
+    my $dev = UAV::Pilot::ARDrone::Control->new({
+        driver => $driver,
     });
     
     $dev->takeoff;

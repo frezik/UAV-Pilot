@@ -1,4 +1,4 @@
-package UAV::Pilot::Driver::ARDrone;
+package UAV::Pilot::ARDrone::Driver;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -257,7 +257,7 @@ has '_nav_socket' => (
 );
 has 'last_nav_packet' => (
     is     => 'ro',
-    isa    => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
+    isa    => 'Maybe[UAV::Pilot::ARDrone::NavPacket]',
     writer => '_set_last_nav_packet',
 );
 has '_is_multi_cmd_mode' => (
@@ -637,11 +637,11 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Driver::ARDrone
+  UAV::Pilot::ARDrone::Driver
 
 =head1 SYNOPSIS
 
-    my $sender = UAV::Pilot::Driver::ARDrone->new({
+    my $sender = UAV::Pilot::ARDrone::Driver->new({
         host => '192.168.1.1',
     });
     $sender->connect;

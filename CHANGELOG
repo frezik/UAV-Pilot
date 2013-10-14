@@ -10,6 +10,11 @@ Revision history for perl module UAV::Pilot
 - All other EventHandler objects and bin/uav* scripts updated to reflect this 
   change
 
+[Controller and Driver Interface]
+- Rename UAV::Pilot::Driver::ARDrone to UAV::Pilot::ARDrone::Driver
+- Rename UAV::Pilot::Control::ARDrone to UAV::Pilot::ARDrone::Control
+- All the other modules under those namespaces were renamed accordingly
+
 [Other Changes]
 - In UAV::Pilot::Control, change the 'sender' param to 'driver'
 - Stack handlers passed to UAV::Pilot::Video::H264Decoder.  Note the API change 

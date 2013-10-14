@@ -1,4 +1,4 @@
-package UAV::Pilot::Driver::ARDrone::NavPacket;
+package UAV::Pilot::ARDrone::NavPacket;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -453,11 +453,11 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Driver::ARDrone::NavPacket
+  UAV::Pilot::ARDrone::NavPacket
 
 =head1 SYNOPSIS
 
-  my $nav = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+  my $nav = UAV::Pilot::ARDrone::NavPacket->new({
       packet => '...',
   });
   say "Roll: " . $nav->roll;

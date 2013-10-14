@@ -1,4 +1,4 @@
-package UAV::Pilot::Control::ARDrone::SDLNavOutput;
+package UAV::Pilot::ARDrone::SDLNavOutput;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -392,7 +392,7 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Control::ARDrone::SDLNavOutput
+  UAV::Pilot::ARDrone::SDLNavOutput
 
 =head1 SYNOPSIS
 

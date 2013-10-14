@@ -1,9 +1,9 @@
 use Test::More tests => 1;
 use v5.14;
 use UAV::Pilot;
-use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Driver::ARDrone::Video::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver::Mock;
+use UAV::Pilot::ARDrone::Video::Mock;
+use UAV::Pilot::ARDrone::Control;
 use File::Temp ();
 use AnyEvent;
 use Test::Moose;
@@ -15,15 +15,15 @@ use constant EXPECT_FRAMES_PROCESSED => 24;
 
 
 my $cv = AnyEvent->condvar;
-my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver::Mock->new({
     host => 'localhost',
 });
-my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
+my $driver_video = UAV::Pilot::ARDrone::Video::Mock->new({
     file     => VIDEO_DUMP_FILE,
     condvar  => $cv,
     driver   => $ardrone,
 });
-my $dev = UAV::Pilot::Control::ARDrone->new({
+my $dev = UAV::Pilot::ARDrone::Control->new({
     driver => $ardrone,
     video  => $driver_video,
 });

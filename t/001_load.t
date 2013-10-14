@@ -1,4 +1,4 @@
-use Test::More tests => 31;
+use Test::More tests => 32;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -9,14 +9,15 @@ my $is_sdl_installed = do {
 use_ok( 'UAV::Pilot' );
 use_ok( 'UAV::Pilot::Exceptions' );
 use_ok( 'UAV::Pilot::Driver' );
-use_ok( 'UAV::Pilot::Driver::ARDrone' );
-use_ok( 'UAV::Pilot::Driver::ARDrone::NavPacket' );
-use_ok( 'UAV::Pilot::Driver::ARDrone::Mock' );
-use_ok( 'UAV::Pilot::Driver::ARDrone::Video' );
-use_ok( 'UAV::Pilot::Driver::ARDrone::Video::Mock' );
+use_ok( 'UAV::Pilot::ARDrone::Driver' );
+use_ok( 'UAV::Pilot::ARDrone::NavPacket' );
+use_ok( 'UAV::Pilot::ARDrone::Driver::Mock' );
+use_ok( 'UAV::Pilot::ARDrone::Video' );
+use_ok( 'UAV::Pilot::ARDrone::Video::Mock' );
 use_ok( 'UAV::Pilot::Control' );
-use_ok( 'UAV::Pilot::Control::ARDrone' );
-use_ok( 'UAV::Pilot::Control::ARDrone::Event' );
+use_ok( 'UAV::Pilot::ARDrone::Control' );
+use_ok( 'UAV::Pilot::ARDrone::Control' );
+use_ok( 'UAV::Pilot::ARDrone::Control::Event' );
 use_ok( 'UAV::Pilot::Commands' );
 use_ok( 'UAV::Pilot::EasyEvent' );
 use_ok( 'UAV::Pilot::EventHandler' );
@@ -33,7 +34,7 @@ use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );
 
 SKIP: {
     skip "SDL not installed", 5 unless $is_sdl_installed;
-    use_ok( 'UAV::Pilot::Control::ARDrone::SDLNavOutput' );
+    use_ok( 'UAV::Pilot::ARDrone::SDLNavOutput' );
     use_ok( 'UAV::Pilot::SDL::Joystick' );
     use_ok( 'UAV::Pilot::SDL::EventHandler' );
     use_ok( 'UAV::Pilot::SDL::Video' );

@@ -1,9 +1,9 @@
-package UAV::Pilot::Driver::ARDrone::Video::Mock;
+package UAV::Pilot::ARDrone::Video::Mock;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 
-extends 'UAV::Pilot::Driver::ARDrone::Video';
+extends 'UAV::Pilot::ARDrone::Video';
 
 has 'emergency_count' => (
     is      => 'rw',

@@ -1,6 +1,5 @@
 Version 0.6
 -----------
-* Send multiconfig commands in order to set video display size and fps
 * Document
     * UAV::Pilot (init logger)
     * UAV::Pilot::Control::ARDrone (setup_read_nav_event() and
@@ -16,6 +15,12 @@ Version 0.6
 
 
 Version 0.7
+-----------
+* Send multiconfig commands in order to set video display size and fps
+* Implement WumpusRover
+
+
+Version 0.8
 -----------
 * UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
   to draw on

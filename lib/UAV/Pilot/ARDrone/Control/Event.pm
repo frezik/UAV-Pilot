@@ -1,10 +1,10 @@
-package UAV::Pilot::Control::ARDrone::Event;
+package UAV::Pilot::ARDrone::Control::Event;
 use v5.14;
 use Moose;
 use namespace::autoclean;
 use AnyEvent;
 
-extends 'UAV::Pilot::Control::ARDrone';
+extends 'UAV::Pilot::ARDrone::Control';
 
 # The AR.Drone SDK manual says sending commands every 30ms is needed for smooth control
 use constant CONTROL_TIMING_INTERVAL => 30 / 1000;
@@ -98,14 +98,14 @@ __END__
 
 =head1 NAME
 
-  UAV::Pilot::Control::ARDrone::Event
+  UAV::Pilot::ARDrone::Control::Event
 
 =head1 SYNOPSIS
 
-    my $sender = UAV::Pilot::Driver::ARDrone->new( ... );
-    $sender->connect;
+    my $driver = UAV::Pilot::Driver::ARDrone->new( ... );
+    $driver->connect;
     my $dev = UAV::Pilot::Control::ARDrone::Event->new({
-        sender => $sender,
+        driver => $driver,
     });
     
     my $cv = $uav->init_event_loop;

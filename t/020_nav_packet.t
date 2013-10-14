@@ -4,12 +4,12 @@ use warnings;
 
 use AnyEvent;
 use UAV::Pilot::EasyEvent;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::NavPacket;
 
 my $bad_header = make_packet( '55667788' );
 eval {
     local $SIG{__WARN__} = sub {}; # Temporarily suppress warnings
-    UAV::Pilot::Driver::ARDrone::NavPacket->new({
+    UAV::Pilot::ARDrone::NavPacket->new({
         packet => $bad_header
     });
 };
@@ -82,10 +82,10 @@ foreach my $state_test (@STATE_TESTS) {
     my $packet_data = make_packet( $packet_str );
     my $fields = $state_test->{fields};
 
-    my $packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+    my $packet = UAV::Pilot::ARDrone::NavPacket->new({
         packet => $packet_data
     });
-    isa_ok( $packet => 'UAV::Pilot::Driver::ARDrone::NavPacket' );
+    isa_ok( $packet => 'UAV::Pilot::ARDrone::NavPacket' );
 
     cmp_ok( $packet->to_hex_string, 'eq', $packet_str, "Convert back into hex");
 
@@ -159,7 +159,7 @@ my $demo_packet_data = make_packet( join('',
     '0800',     # Checksum Length
     '201b0000', # Checksum Data
 ) );
-my $demo_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+my $demo_packet = UAV::Pilot::ARDrone::NavPacket->new({
     packet => $demo_packet_data
 });
 cmp_ok( $demo_packet->battery_voltage_percentage, '==', 0x59, "Battery volt parsed" );
