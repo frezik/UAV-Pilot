@@ -1,5 +1,6 @@
 Version 0.6
 -----------
+* Fix everything in bin/ for the new API
 * Document
     * UAV::Pilot (init logger)
     * UAV::Pilot::Control::ARDrone (setup_read_nav_event() and
