@@ -3,7 +3,8 @@ Version 0.6
 * Send multiconfig commands in order to set video display size and fps
 * Document
     * UAV::Pilot (init logger)
-    * UAV::Pilot::Control::ARDrone (setup_read_nav_event() interface)
+    * UAV::Pilot::Control::ARDrone (setup_read_nav_event() and
+      set_multiconfig() interfaces)
     * UAV::Pilot::Driver::ARDrone (nav processor)
     * UAV::Pilot::NavCollector
     * UAV::Pilot::NavCollector::AckEvents
