@@ -622,6 +622,40 @@ You can FTP into the AR.Drone to retrieve this.
 Start recording the video stream to a USB stick attached to the AR.Drone's internal USB 
 port.  The stick must have at least 100MB free.
 
+=head2 setup_read_nav_event
+
+  setup_read_nav_event( $event );
+
+Pass a C<UAV::Pilot::EasyEvent> object.  Sets up a 
+C<UAV::Pilot::NavCollector::AckEvents> and starts an event timer for reading 
+nav packets.
+
+=head2 set_multiconfig
+
+  set_multiconfig( $user_id, $app_id, $session_id )
+
+B<NOTE>: This doesn't yet seem to work right.  You can set the keys, but 
+the UAV won't respond to config commands after that.  It should just be a 
+matter of sending C<AT*CONFIG_IDS> before each C<AT*CONFIG>, which is what 
+C<send_config()> will do for you.  But it doesn't work.  Still debugging . . . 
+
+Pass a unique user, app, and session ID.  The best way to generate these is 
+to take a string identifying your user and app and run it through a CRC32.  
+The C<$session_id> is optional; if passed, it should be unique to this 
+particular run.
+
+In the AR.Drone, "multiconfig" is a way to set configurations that are unique 
+to the user, app, or session.  For backwards compatibility with old apps, 
+the AR.Drone only lets you set some keys when using multiconfig.  See the 
+AR.Drone SDK docs for details.
+
+=head2 send_config
+
+  send_config( $name, $value )
+
+Send a config name/value.  If you used C<set_multiconfig()>, this will send 
+the necessary commands before the config setting.
+
 =head1 FLIGHT ANIMATION METHODS
 
 The Parrot AR.Drone comes preprogrammed with a bunch of "flight animations" (complicated 
