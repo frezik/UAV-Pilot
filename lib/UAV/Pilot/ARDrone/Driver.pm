@@ -504,7 +504,7 @@ sub read_nav_packet
     my $in = $self->_nav_socket->recv( $buf, 4096 );
 
     if( $in ) {
-        my $nav_packet = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+        my $nav_packet = UAV::Pilot::ARDrone::NavPacket->new({
             packet => $buf,
         });
         $self->_set_last_nav_packet( $nav_packet );

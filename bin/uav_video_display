@@ -4,11 +4,11 @@ use warnings;
 use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::EasyEvent;
-use UAV::Pilot::Driver::ARDrone;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
-use UAV::Pilot::Driver::ARDrone::Video;
-use UAV::Pilot::Driver::ARDrone::Video::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::Video;
+use UAV::Pilot::ARDrone::Video::Mock;
+use UAV::Pilot::ARDrone::Control;
 use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Video;
@@ -132,7 +132,7 @@ sub set_comm_watchdog
         condvar => $cv,
     });
 
-    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+    my $ardrone = UAV::Pilot::ARDrone::Driver->new({
         host => $IP,
     });
     $ardrone->connect;
@@ -141,7 +141,7 @@ sub set_comm_watchdog
         condvar => $cv,
     });
 
-    my $dev = UAV::Pilot::Control::ARDrone->new({
+    my $dev = UAV::Pilot::ARDrone::Control->new({
         driver     => $ardrone,
         user_id    => $CONFIG_USER_ID,
         app_id     => $CONFIG_APP_ID,
@@ -180,11 +180,11 @@ sub set_comm_watchdog
         driver  => $ardrone,
     );
     my $driver_video = $FILE_IN
-        ? UAV::Pilot::Driver::ARDrone::Video::Mock->new({
+        ? UAV::Pilot::ARDrone::Video::Mock->new({
             %video_args,
             file => $FILE_IN,
         })
-        : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
+        : UAV::Pilot::ARDrone::Video->new( \%video_args );
 
     $dev->video( $driver_video );
 
