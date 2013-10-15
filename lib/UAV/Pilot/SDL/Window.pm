@@ -313,3 +313,97 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+=head1 NAME
+
+  UAV::Pilot::SDL::Window
+
+=head1 SYNOPSIS
+
+    my $window = UAV::Pilot::SDL::Window->new;
+    $window->add_child( $window_event_handler );
+
+    # In the child's draw method
+    $window->clear_screen;
+    $window->draw_line( [0, 0], [128, 128], $color );
+    $window->draw_circle( [ 512, 512 ], 10, $color );
+
+=head1 DESCRIPTION
+
+A basic windowing system for drawing widgets.  Currently only supports adding 
+new widgets on top or below an existing widget.
+
+Does the C<UAV::Pilot::EventHandler> role.
+
+=head1 METHODS
+
+=head2 add_child
+
+    add_child( $handler, $float ).
+
+Pass a child that does the C<UAV::Pilot::SDL::WindowEventHandler> role.  
+Float should be C<<$window->TOP>> or C<<$window->BOTTOM>> for the location to 
+draw this child.  The window will be expanded to fit the child's width/height.
+
+=head2 add_child_with_yuv_overlay
+
+    add_child_with_yuv_overlay( $handle, $overlay_flag, $float )
+
+Pass a child that does the C<UAV::Pilot::SDL::WindowEventHandler> role.  The 
+C<$overlay_flag> will be the flag passed to C<SDL::Overlay> (see that module's 
+docs for details).  The C<$float> param is the same as C<add_child()>.
+
+=head2 sdl
+
+Returns the C<SDLx::App> object for the given SDL window.
+
+=head2 yuv_overlay
+
+If a child was added with C<add_child_with_yuv_overlay()>, returns the 
+C<SDL::Overlay> object.
+
+=head2 yuv_overlay_rect
+
+If a child was added with C<add_child_with_yuv_overlay()>, returns an 
+C<SDL::Rect> object that covers the overlay area.
+
+=head1 DRAWING METHODS
+
+The should only be used by widgets when their C<draw()> method is called.
+
+All C<$x, $y> coordinates are relative to the widgets's drawing area.
+
+=head2 clear_screen
+
+Blanks the area that the current widget is being drawn in.
+
+=head2 draw_txt
+
+    draw_txt( $string, $x, $y, $sdl_text )
+
+Draws text to the screen.  Params:
+
+C<$string>: The string to write
+
+C<$x, $y>: The coords to draw at
+
+C<$sdl_text>: An C<SDLx::Text> object
+
+=head2 draw_line
+
+    draw_line( [$x0,$y0], [$x1,$y1], $color )
+
+Draws a line.  The C<$color> param is an C<SDL::Color> object.
+
+=head2 draw_circle
+
+    draw_circle( [$x,$y], $radius, $color )
+
+Draws a circle.  The C<$color> param is an C<SDL::Color> object.
+
+=head2 draw_rect
+
+    draw_rect( [$x, $y, $width, $height], $color )
+
+Draws a rect.  the C<$color> param is an C<SDL::Color> object.
+
+=cut

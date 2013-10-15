@@ -1,9 +1,3 @@
-Version 0.6
------------
-* Document
-    * UAV::Pilot::EasyEvent (add_event() interface)
-
-
 Version 0.7
 -----------
 * Send multiconfig commands in order to set video display size and fps
