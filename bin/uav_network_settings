@@ -5,7 +5,7 @@ use UAV::Pilot::Driver::ARDrone;
 use Getopt::Long;
 
 my $HOST         = '192.168.1.1';
-my $PORT         = UAV::Pilot::Driver::ARDrone->ARDRONE_PORT_COMMAND;
+my $PORT         = UAV::Pilot::ARDrone::Driver->ARDRONE_PORT_COMMAND;
 my $SSID         = undef;
 my $MODE_AP      = 0;
 my $MODE_JOIN    = 0;
@@ -22,7 +22,7 @@ GetOptions(
 );
 
 
-my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver->new({
     host => $HOST,
     ($PORT ? (port => $PORT) : ()),
 });
