@@ -1,6 +1,6 @@
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::Video::FileDump;
-use UAV::Pilot::Driver::ARDrone::Video;
+use UAV::Pilot::ARDrone::Video;
 use UAV::Pilot::Events;
 
 
@@ -144,7 +144,7 @@ sub record_usb ()
     my $init_vid_driver = sub {
         return 1 if defined $vid_driver;
 
-        $vid_driver = UAV::Pilot::Driver::ARDrone::Video->new({
+        $vid_driver = UAV::Pilot::ARDrone::Video->new({
             condvar => $cv,
             driver  => $dev->driver,
         });
@@ -184,12 +184,12 @@ sub record_usb ()
 
     sub start_nav ()
     {
-        eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
-        die "Problem loading UAV::Pilot::Control::ARDrone::SDLNavOutput: $@\n" if $@;
+        eval "use UAV::Pilot::ARDrone::SDLNavOutput";
+        die "Problem loading UAV::Pilot::ARDrone::SDLNavOutput: $@\n" if $@;
         $init_sdl->();
         $init_events->();
 
-        my $nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
+        my $nav = UAV::Pilot::ARDrone::SDLNavOutput->new({
             feeder => $dev,
         });
         $dev->driver->add_nav_collector( $nav );

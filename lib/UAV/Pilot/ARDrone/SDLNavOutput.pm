@@ -9,7 +9,7 @@ use SDLx::Text;
 use SDL::Event;
 use SDL::Events;
 use UAV::Pilot;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::NavPacket;
 
 
 use constant {
@@ -179,7 +179,7 @@ has '_txt_value' => (
 );
 has '_last_nav_packet' => (
     is     => 'ro',
-    isa    => 'Maybe[UAV::Pilot::Driver::ARDrone::NavPacket]',
+    isa    => 'Maybe[UAV::Pilot::ARDrone::NavPacket]',
     writer => 'got_new_nav_packet',
 );
 
@@ -402,15 +402,15 @@ __END__
   });
   
   my $window = UAV::Pilot::SDL::Window->new;
-  my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
-      driver => UAV::Pilot::Driver::ARDrone->new( ... ),
+  my $sdl_nav = UAV::Pilot::ARDrone::SDLNavOutput->new({
+      driver => UAV::Pilot::ARDrone::Driver->new( ... ),
       window => $window,
   });
   $events->register( $sdl_nav );
 
 =head1 DESCRIPTION
 
-Graphically renders a C<UAV::Pilot::Driver::ARDrone::NavPacket> using SDL.
+Graphically renders a C<UAV::Pilot::ARDrone::NavPacket> using SDL.
 
 It does the C<UAV::Pilot::EventHandler> role, and thus can be processed by 
 C<UAV::Pilot::Events>.  It's recommended to also add the 

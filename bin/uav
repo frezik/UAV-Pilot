@@ -3,8 +3,8 @@ use v5.14;
 use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
-use UAV::Pilot::Driver::ARDrone;
-use UAV::Pilot::Control::ARDrone::Event;
+use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::Control::Event;
 use Getopt::Long qw( :config no_ignore_case );
 
 my $IP               = '192.168.1.1';
@@ -85,10 +85,10 @@ sub load_libraries
     };
     $driver_args->{iface} = $IFACE if defined $IFACE;
 
-    my $ardrone = UAV::Pilot::Driver::ARDrone->new( $driver_args );
+    my $ardrone = UAV::Pilot::ARDrone::Driver->new( $driver_args );
     $ardrone->connect;
 
-    my $dev = UAV::Pilot::Control::ARDrone::Event->new({
+    my $dev = UAV::Pilot::ARDrone::Control::Event->new({
         driver => $ardrone,
     });
     my $cv = $dev->init_event_loop;

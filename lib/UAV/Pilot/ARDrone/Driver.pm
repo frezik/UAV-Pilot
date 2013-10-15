@@ -6,6 +6,7 @@ use IO::Socket;
 use IO::Socket::Multicast;
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::NavCollector;
+use UAV::Pilot::ARDrone::NavPacket;
 
 with 'UAV::Pilot::Driver';
 with 'UAV::Pilot::Logger';
