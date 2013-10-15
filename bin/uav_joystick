@@ -4,9 +4,9 @@ use warnings;
 use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
-use UAV::Pilot::Driver::ARDrone;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
-use UAV::Pilot::Control::ARDrone::Event;
+use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::Control::Event;
 use UAV::Pilot::Events;
 use UAV::Pilot::SDL::Events;
 use UAV::Pilot::SDL::Joystick;
@@ -28,10 +28,10 @@ Getopt::Long::GetOptions(
 sub show_nav
 {
     my ($driver, $cv, $events, $nav_feeder) = @_;
-    eval "use UAV::Pilot::Control::ARDrone::SDLNavOutput";
+    eval "use UAV::Pilot::ARDrone::SDLNavOutput";
     die $@ if $@;
 
-    my $sdl_nav = UAV::Pilot::Control::ARDrone::SDLNavOutput->new({
+    my $sdl_nav = UAV::Pilot::ARDrone::SDLNavOutput->new({
         condvar => $cv,
         driver  => $driver,
         feeder  => $nav_feeder,
@@ -43,12 +43,12 @@ sub show_nav
 
 
 {
-    my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+    my $ardrone = UAV::Pilot::ARDrone::Driver->new({
         host => $IP,
     });
     $ardrone->connect;
 
-    my $dev = UAV::Pilot::Control::ARDrone::Event->new({
+    my $dev = UAV::Pilot::ARDrone::Control::Event->new({
         driver => $ardrone,
     });
 
