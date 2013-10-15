@@ -242,4 +242,26 @@ to call this on the root object, not the children.
 
 You must call C<recv> on the C<condvar> yourself.
 
+=head1 add_event
+
+  add_event( 'foo', sub {...}, 0 )
+
+Add a subref that will be called when the named event is fired off.  The 
+first parameter is the name of the event, and the second is the subref.
+
+The third is optional, and specifies if the call will be a "one-off" or not.  
+If it's a one-off, then after the first call to the sub, it will be removed 
+from list of callbacks.  Defaults to false.
+
+The callback will receive the arguments that were passed to C<send_event()> 
+when the event is triggered.
+
+=head1 send_event
+
+  send_event( 'foo', @args )
+
+Trigger an event with the given name.  The first arg is the name of the event.  
+All subsequent args will be passed to the callbacks attached to that event 
+name.
+
 =cut
