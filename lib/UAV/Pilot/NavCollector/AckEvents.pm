@@ -48,3 +48,33 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::NavCollector::AckEvents
+
+=head1 SYNOPSIS
+
+   my $easy_event = UAV::Pilot::EasyEvent->new;
+   my $ack = UAV::Pilot::NavCollector::AckEvents->new({
+       easy_event => $easy_event,
+   });
+
+   $easy_event->add_event( 'nav_ack_on' => sub {
+       say "ACK control bit is on";
+   });
+   $easy_event->add_event( 'nav_ack_off' => sub {
+       say "ACK control bit is off";
+   });
+   $easy_event->add_event( 'nav_ack_toggle' => sub {
+       say "ACK control bit toggled";
+   });
+
+=head1 DESCRIPTION
+
+Does the C<UAV::Pilot::NavCollector> role to fire off events into 
+C<UAV::Pilot::EasyEvent> based on the ACK control bit.  Each nav packet with 
+the bit on will fire a C<nav_ack_on> event, and C<nav_ack_off> when off.  If 
+the state toggles, C<nav_ack_toggle> is sent.
+
+=cut

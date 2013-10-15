@@ -1,7 +1,6 @@
 Version 0.6
 -----------
 * Document
-    * UAV::Pilot::NavCollector::AckEvents
     * UAV::Pilot::SDL::VideoOverlay
     * UAV::Pilot::SDL::VideoOverlay::Reticle
     * UAV::Pilot::SDL::Window
