@@ -3,10 +3,10 @@ use v5.14;
 use warnings;
 use IO::Socket::INET;
 use UAV::Pilot;
-use UAV::Pilot::Driver::ARDrone;
-use UAV::Pilot::Driver::ARDrone::Video;
-use UAV::Pilot::Driver::ARDrone::Video::Mock;
-use UAV::Pilot::Control::ARDrone::Video::FileDump;
+use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::Video;
+use UAV::Pilot::ARDrone::Video::Mock;
+use UAV::Pilot::Video::FileDump;
 use AnyEvent;
 use Getopt::Long;
 
@@ -21,7 +21,7 @@ Getopt::Long::GetOptions(
 $SIG{'INT'} = 'cleanup';
 
 
-my $ardrone = UAV::Pilot::Driver::ARDrone->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver->new({
     host => $HOST,
 });
 
@@ -33,7 +33,7 @@ else {
     open( $fh, '>', $FILE_OUT )
         or die "Can't open $FILE_OUT for writing: $!\n";
 }
-my $control_video = UAV::Pilot::Control::ARDrone::Video::FileDump->new({
+my $control_video = UAV::Pilot::Video::FileDump->new({
     fh => $fh,
 });
 
@@ -45,11 +45,11 @@ my %video_args = (
 );
 
 my $driver_video = $FILE_IN
-    ? UAV::Pilot::Driver::ARDrone::Video::Mock->new({
+    ? UAV::Pilot::ARDrone::Video::Mock->new({
         %video_args,
         file => $FILE_IN,
     })
-    : UAV::Pilot::Driver::ARDrone::Video->new( \%video_args );
+    : UAV::Pilot::ARDrone::Video->new( \%video_args );
 $driver_video->init_event_loop;
 my $start_time = time;
 $cv->recv;
