@@ -2,7 +2,6 @@ Version 0.6
 -----------
 * Document
     * UAV::Pilot::SDL::Window
-    * UAV::Pilot::Video::H264Decoder (ways to get the last processed frame)
     * UAV::Pilot::EasyEvent (add_event() interface)
 
 

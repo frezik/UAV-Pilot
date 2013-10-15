@@ -59,29 +59,24 @@ __END__
 
 =head1 DESCRIPTION
 
-Decodes a stream of h.264 frames using ffmpeg.  Does the C<UAV::Pilot::Video::H264Handler> 
-role.
+Decodes a stream of h.264 frames using ffmpeg.  Does the
+C<UAV::Pilot::Video::H264Handler> role.
 
-=head1 LICENSE
+=head1 FETCHING LAST PROCESSED FRAME
 
-Most of UAV::Pilot is under the BSD license, but because C<UAV::Pilot::Video::H264Decoder>
-directly includes code from the ffmpeg library, it's licensed under the Lesser GPL:
+After a frame is decoded, there are two ways to fetch it: a fast way for things 
+implemented in C, and a slow way for things implemented in Perl.
 
+=head2 get_last_frame_c_obj
 
-Copyright (C) 2013  Timm Murray
+Returns a scalar which contains a pointer to the decoded AVFrame object.  In C, 
+you can derefernce the pointer to get the AVFrame and handle it from there.
 
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
+=head2 get_last_frame_pixel_arrayref
 
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+Converts data of the three YUV channels  into one array each, and then pushes 
+those onto an array and returns the an arrayref.  This is really, really slow, 
+and not at all suitable for real-time processing.  It has the advantage that you 
+can do everything in Perl.
 
 =cut
