@@ -741,6 +741,13 @@ Reset the communication watchdog.
 
 A useful but rather under-documented command for initing things like navigation data.
 
+=head2 add_nav_collector
+
+  add_nav_collector( $nav_collector )
+
+Add an object that does the C<UAV::Pilot::NavCollector> role.  It will be 
+passed a fresh nav packet each time it comes in.
+
 =head2 multi_cmds
 
     $driver->multi_cmds( sub {

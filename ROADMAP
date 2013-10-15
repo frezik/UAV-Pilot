@@ -1,8 +1,6 @@
 Version 0.6
 -----------
 * Document
-    * UAV::Pilot::Driver::ARDrone (nav processor)
-    * UAV::Pilot::NavCollector
     * UAV::Pilot::NavCollector::AckEvents
     * UAV::Pilot::SDL::VideoOverlay
     * UAV::Pilot::SDL::VideoOverlay::Reticle
