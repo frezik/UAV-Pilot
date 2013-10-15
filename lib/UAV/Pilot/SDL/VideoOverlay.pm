@@ -22,3 +22,22 @@ sub init_video_overlay
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::SDL::VideoOverlay
+
+=head1 DESCRIPTION
+
+A role for objects to draw on top of a video.  Requires a
+C<process_video_overlay()> method, which will be passed the C<UAV::Pilot::SDL::Window> object that the video is drawing to.
+
+Where C<$video> is an C<UAV::Pilot::SDL::Video> object, you can set an 
+C<$overlay> object with:
+
+    $video->register_video_overlay( $overlay );
+
+B<NOTE>: This is still experimental.  Lines tend to flicker and show up as 
+black.  This is probably due to the SDL YUV hardware overlay.
+
+=cut

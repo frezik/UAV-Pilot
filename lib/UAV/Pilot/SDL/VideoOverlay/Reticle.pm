@@ -55,3 +55,14 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::SDL::VideoOverlay::Reticle
+
+=head1 DESCRIPTION
+
+A C<UAV::Pilot::SDL::Overlay> for drawing a targeting reticle in the middle 
+of the screen.
+
+=cut
