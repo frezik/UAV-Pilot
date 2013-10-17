@@ -13,6 +13,13 @@ with 'UAV::Pilot::Driver';
 with 'UAV::Pilot::Logger';
 
 
+sub connect
+{
+    my ($self) = @_;
+    return 1;
+}
+
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
