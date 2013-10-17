@@ -5,6 +5,7 @@ Version 0.7
 * Document
     * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover
+    * UAV::Pilot::WumpusRover::Driver
 
 
 Version 0.8

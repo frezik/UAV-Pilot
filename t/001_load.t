@@ -33,7 +33,7 @@ use_ok( 'UAV::Pilot::Video::RawHandler' );
 use_ok( 'UAV::Pilot::Video::H264Decoder' );
 use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );
 use_ok( 'UAV::Pilot::ControlRover' );
-use_ok( 'UAV::Pilot::WumpusRoverClient' );
+use_ok( 'UAV::Pilot::WumpusRover::Driver' );
 
 SKIP: {
     skip "SDL not installed", 5 unless $is_sdl_installed;
