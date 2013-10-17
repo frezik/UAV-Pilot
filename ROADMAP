@@ -2,6 +2,8 @@ Version 0.7
 -----------
 * Send multiconfig commands in order to set video display size and fps
 * Implement WumpusRover
+* Document
+    * UAV::Pilot::ControlHelicopter
 
 
 Version 0.8

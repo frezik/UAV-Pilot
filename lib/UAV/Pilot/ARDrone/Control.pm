@@ -8,7 +8,7 @@ use UAV::Pilot::EasyEvent;
 use UAV::Pilot::NavCollector::AckEvents;
 
 
-with 'UAV::Pilot::Control';
+with 'UAV::Pilot::ControlHelicopter';
 
 use constant NAV_EVENT_READ_TIME => 1 / 60;
 
@@ -511,14 +511,14 @@ __END__
 
 =head1 DESCRIPTION
 
-L<UAV::Pilot::Control> implementation for the Parrot AR.Drone.
+L<UAV::Pilot::ControlHelicopter> implementation for the Parrot AR.Drone.
 
 =head1 METHODS
 
 =head2 new
 
 B<NOTE>: It's highly recommended that you initialize the subclass 
-C<UAV::Pilot::Control::ARDrone::Event> instead of this one.
+C<UAV::Pilot::ARDrone::Control::Event> instead of this one.
 
     new({
         driver => $driver,
