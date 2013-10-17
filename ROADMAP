@@ -4,6 +4,7 @@ Version 0.7
 * Implement WumpusRover
 * Document
     * UAV::Pilot::ControlHelicopter
+    * UAV::Pilot::ControlRover
 
 
 Version 0.8
