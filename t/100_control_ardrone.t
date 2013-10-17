@@ -1,4 +1,4 @@
-use Test::More tests => 66;
+use Test::More tests => 67;
 use v5.14;
 use UAV::Pilot::ARDrone::Driver::Mock;
 use UAV::Pilot::ARDrone::Control;
@@ -15,6 +15,7 @@ my $dev = UAV::Pilot::ARDrone::Control->new({
 isa_ok( $dev => 'UAV::Pilot::ARDrone::Control' );
 does_ok( $dev => 'UAV::Pilot::Control' );
 does_ok( $dev => 'UAV::Pilot::SDL::JoystickConverter' );
+does_ok( $dev => 'UAV::Pilot::ControlHelicopter' );
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
 
