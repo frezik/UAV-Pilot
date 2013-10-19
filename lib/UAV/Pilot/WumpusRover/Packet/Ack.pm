@@ -7,7 +7,16 @@ use namespace::autoclean;
 use constant {
     payload_length => 3,
     message_id     => 0x00,
-    payload_fields => [qw{ message_received_id checksum_received }],
+    payload_fields => [qw{
+        message_received_id
+        checksum_received1
+        checksum_received2
+    }],
+    payload_fields_length => {
+        message_received_id => 1,
+        checksum_received1  => 1,
+        checksum_received2  => 1,
+    },
 };
 
 
@@ -25,20 +34,6 @@ has 'checksum_received2' => (
 );
 
 with 'UAV::Pilot::WumpusRover::Packet';
-
-
-sub BUILDARGS
-{
-    my ($class, $args) = @_;
-    my $payload = delete $args->{payload};
-    my @payload = @$payload;
-
-    $args->{message_received_id} = $payload[0];
-    $args->{checksum_received1}  = $payload[1];
-    $args->{checksum_received2}  = $payload[2];
-
-    return $args;
-}
 
 
 no Moose;

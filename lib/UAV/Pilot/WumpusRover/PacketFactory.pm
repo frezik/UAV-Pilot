@@ -5,6 +5,7 @@ use UAV::Pilot;
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::WumpusRover::Packet;
 use UAV::Pilot::WumpusRover::Packet::Ack;
+use UAV::Pilot::WumpusRover::Packet::Heartbeat;
 
 use constant PACKET_CLASS_PREFIX  => 'UAV::Pilot::WumpusRover::Packet::';
 use constant PREAMBLE             => 0x3444;
@@ -59,7 +60,9 @@ sub fresh_packet
     my $class = $self->PACKET_CLASS_PREFIX . $type;
 
     my $packet = eval {
-        $class->new;
+        $class->new({
+            fresh => 1,
+        });
     };
     if( $@ ) {
         die "[PacketFactory] Could not init '$class': $@\n";

@@ -3,6 +3,9 @@ use v5.14;
 use Moose::Role;
 
 
+use constant _USE_DEFAULT_BUILDARGS => 1;
+
+
 has 'preamble' => (
     is      => 'rw',
     isa     => 'Int',
@@ -29,8 +32,37 @@ has '_is_checksum_clean' => (
 requires 'payload_length';
 requires 'message_id';
 requires 'payload_fields';
+requires 'payload_fields_length';
+
+with 'UAV::Pilot::Logger';
 
 
+before 'BUILDARGS' => sub {
+    my ($class, $args) = @_;
+    return $args if delete $args->{fresh};
+    return $args unless $class->_USE_DEFAULT_BUILDARGS;
+
+    my $payload = delete $args->{payload};
+    my @payload = @$payload;
+
+    my %payload_fields_length = %{ $class->payload_fields_length };
+    foreach my $field (@{ $class->payload_fields }) {
+         $class->_logger->warn(
+            "No entry for '$field' in $class->payload_fields_length"
+        ) unless exists $payload_fields_length{$field};
+        my $length = $payload_fields_length{$field} // 0;
+
+        my $value = 0;
+        foreach (1 .. $length) {
+            $value <<= 8;
+            $value |= shift @payload;
+        }
+
+        $args->{$field} = $value;
+    }
+
+    return $args;
+};
 sub write
 {
     my ($self, $fh) = @_;

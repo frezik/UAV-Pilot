@@ -4,16 +4,16 @@ use Moose::Role;
 use UAV::Pilot;
 use Log::Log4perl;
 
-has '_logger' => (
-    is      => 'ro',
-    isa     => 'Log::Log4perl::Logger',
-    default => sub {
-        my ($self) = @_;
-        UAV::Pilot->init_log;
-        return Log::Log4perl->get_logger( $self->_logger_name );
-    },
-);
+my $LOGGER = undef;
 
+
+sub _logger
+{
+    my ($class) = @_;
+    return $LOGGER if defined $LOGGER;
+    UAV::Pilot->init_log;
+    return Log::Log4perl->get_logger( $class->_logger_name );
+}
 
 sub _logger_name
 {
