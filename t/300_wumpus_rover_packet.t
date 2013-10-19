@@ -1,4 +1,4 @@
-use Test::More tests => 27;
+use Test::More tests => 31;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -93,10 +93,21 @@ my @TESTS = (
     {
         expect_class => 'RequestStartupMessage',
         packet => make_packet( '3444', '02', '07', '00', '0A', 'A0',
-            'B3', 'DA' ), # TODO checksum fix
+            'B3', 'DA' ),
         fields => {
             system_type => 0x0A,
             system_id   => 0xA0,
+        },
+    },
+
+    {
+        expect_class => 'StartupMessage',
+        packet => make_packet( '3444', '05', '08', '00', '0A', 'A0',
+            'B0', '0B', 'C0', '32', 'F8' ),
+        fields => {
+            system_type      => 0x0A,
+            system_id        => 0xA0,
+            firmware_version => 0xB00BC0,
         },
     },
 );

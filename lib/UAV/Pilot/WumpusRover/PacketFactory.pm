@@ -8,7 +8,7 @@ use UAV::Pilot::WumpusRover::Packet::Ack;
 use UAV::Pilot::WumpusRover::Packet::Heartbeat;
 # TODO these packet types
 use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
-#use UAV::Pilot::WumpusRover::Packet::StartupMessage;
+use UAV::Pilot::WumpusRover::Packet::StartupMessage;
 #use UAV::Pilot::WumpusRover::Packet::RadioTrims;
 #use UAV::Pilot::WumpusRover::Packet::RadioMins;
 #use UAV::Pilot::WumpusRover::Packet::RadioMaxes;
@@ -21,6 +21,7 @@ use constant MESSAGE_ID_CLASS_MAP => {
     0x00 => 'Ack',
     0x01 => 'Heartbeat',
     0x07 => 'RequestStartupMessage',
+    0x08 => 'StartupMessage',
 };
 
 
@@ -45,6 +46,7 @@ sub read_packet
 
     my ($expect_checksum1, $expect_checksum2) = UAV::Pilot->checksum_fletcher8(
         $payload_length, $message_id, $version, @payload );
+warn "Expect checksum: $expect_checksum1, $expect_checksum2\n";
     UAV::Pilot::ArdupilotPacketException::BadChecksum->throw({
         got_checksum1      => $checksum1,
         got_checksum2      => $checksum2,
@@ -52,6 +54,11 @@ sub read_packet
         expected_checksum2 => $expect_checksum2,
     }) if ($expect_checksum1 != $checksum1) || ($expect_checksum2 != $checksum2);
 
+    if(! exists $self->MESSAGE_ID_CLASS_MAP->{$message_id}) {
+        warn sprintf( 'No class found for message ID 0x%02x', $message_id )
+            . "\n";
+        return undef;
+    }
     my $class = $self->PACKET_CLASS_PREFIX
         . $self->MESSAGE_ID_CLASS_MAP->{$message_id};
     my $new_packet = $class->new({
