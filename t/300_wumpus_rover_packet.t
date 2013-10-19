@@ -80,7 +80,8 @@ $fresh_packet->batt( 450 );
 $fresh_packet->command_index( 0 );
 ok(! $fresh_packet->_is_checksum_clean, "Checksum no longer correct" );
 
-my $expect_packet = make_packet( '3444', );
+my $expect_packet = make_packet( '3444', '07', '01', '00', '01123401C20000',
+    '12', '10' );
 my $got_packet = to_hex_string( write_packet( $fresh_packet ) );
 cmp_ok( $got_packet, 'eq', to_hex_string($expect_packet),
     "Wrote heartbeat packet" );

@@ -50,10 +50,10 @@ before 'BUILDARGS' => sub {
 
     my %payload_fields_length = %{ $class->payload_fields_length };
     foreach my $field (@{ $class->payload_fields }) {
-         $class->_logger->warn(
+        $class->_logger->warn(
             "No entry for '$field' in $class->payload_fields_length"
         ) unless exists $payload_fields_length{$field};
-        my $length = $payload_fields_length{$field} // 0;
+        my $length = $payload_fields_length{$field} // 1;
 
         my $value = 0;
         foreach (1 .. $length) {
@@ -96,16 +96,45 @@ sub get_ordered_payload_values
     return map $self->$_, @{ $self->payload_fields };
 }
 
+sub get_ordered_payload_value_bytes
+{
+    my ($self) = @_;
+    my @bytes;
+    my %payload_fields_length = %{ $self->payload_fields_length };
+
+    foreach my $field (@{ $self->payload_fields }) {
+        $self->_logger->warn(
+            "No entry for '$field' in $self->payload_fields_length"
+        ) unless exists $payload_fields_length{$field};
+        my $length = $payload_fields_length{$field} // 1;
+
+        my $raw_value = $self->$field;
+        my @raw_bytes;
+        foreach (1 .. $length) {
+            my $value = $raw_value & 0xFF;
+            push @raw_bytes, $value;
+            $raw_value >>= 8;
+        }
+
+        push @bytes, reverse @raw_bytes;
+    }
+
+    return @bytes;
+}
+
 sub _calc_checksum
 {
     my ($self) = @_;
     my @data = (
         $self->payload_length,
         $self->message_id,
-        $self->get_ordered_payload_values,
+        $self->version,
+        $self->get_ordered_payload_value_bytes,
     );
 
     my ($check1, $check2) = UAV::Pilot->checksum_fletcher8( @data );
+    $self->_set_checksum1( $check1 );
+    $self->_set_checksum2( $check2 );
     return 1;
 }
 
