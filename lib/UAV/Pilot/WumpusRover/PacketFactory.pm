@@ -6,6 +6,14 @@ use UAV::Pilot::Exceptions;
 use UAV::Pilot::WumpusRover::Packet;
 use UAV::Pilot::WumpusRover::Packet::Ack;
 use UAV::Pilot::WumpusRover::Packet::Heartbeat;
+# TODO these packet types
+#use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
+#use UAV::Pilot::WumpusRover::Packet::StartupMessage;
+#use UAV::Pilot::WumpusRover::Packet::RadioTrims;
+#use UAV::Pilot::WumpusRover::Packet::RadioMins;
+#use UAV::Pilot::WumpusRover::Packet::RadioMaxes;
+#use UAV::Pilot::WumpusRover::Packet::RadioOutputs;
+
 
 use constant PACKET_CLASS_PREFIX  => 'UAV::Pilot::WumpusRover::Packet::';
 use constant PREAMBLE             => 0x3444;
@@ -70,6 +78,7 @@ sub fresh_packet
 
     return $packet;
 }
+
 
 1;
 __END__
