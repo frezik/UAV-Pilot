@@ -30,16 +30,6 @@ has 'system_id' => (
 with 'UAV::Pilot::WumpusRover::Packet';
 
 
-sub _encode_payload_for_write
-{
-    my ($self) = @_;
-    my $payload = pack 'C C',
-        $self->system_type,
-        $self->system_id;
-    return $payload;
-}
-
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

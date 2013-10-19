@@ -6,7 +6,7 @@ use namespace::autoclean;
 
 use constant {
     payload_length => 16,
-    message_id     => 0x50,
+    message_id     => 0x51,
     payload_fields => [qw{
         ch1_min
         ch2_min
@@ -63,17 +63,6 @@ has 'ch8_min' => (
 );
 
 with 'UAV::Pilot::WumpusRover::Packet';
-
-
-sub _encode_payload_for_write
-{
-    my ($self) = @_;
-    my $payload = pack 'C2' x 8, map( {
-        my $field = 'ch' . $_ . '_min';
-        $self->$field;
-    } (1..8));
-    return $payload;
-}
 
 
 no Moose;

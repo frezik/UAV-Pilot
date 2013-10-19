@@ -35,7 +35,6 @@ requires 'payload_length';
 requires 'message_id';
 requires 'payload_fields';
 requires 'payload_fields_length';
-requires '_encode_payload_for_write';
 
 with 'UAV::Pilot::Logger';
 
@@ -153,6 +152,14 @@ sub _make_checksum_unclean
     my ($self) = @_;
     $self->_is_checksum_clean( 0 );
     return 1;
+}
+
+sub _encode_payload_for_write
+{
+    my ($self) = @_;
+    my @bytes = $self->get_ordered_payload_value_bytes;
+    my $packet = pack 'C*', @bytes;
+    return $packet;
 }
 
 

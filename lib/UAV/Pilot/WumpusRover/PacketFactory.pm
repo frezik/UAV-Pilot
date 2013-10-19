@@ -12,7 +12,7 @@ use UAV::Pilot::WumpusRover::Packet::StartupMessage;
 use UAV::Pilot::WumpusRover::Packet::RadioTrims;
 use UAV::Pilot::WumpusRover::Packet::RadioMins;
 use UAV::Pilot::WumpusRover::Packet::RadioMaxes;
-#use UAV::Pilot::WumpusRover::Packet::RadioOutputs;
+use UAV::Pilot::WumpusRover::Packet::RadioOutputs;
 
 
 use constant PACKET_CLASS_PREFIX  => 'UAV::Pilot::WumpusRover::Packet::';
@@ -25,6 +25,7 @@ use constant MESSAGE_ID_CLASS_MAP => {
     0x50 => 'RadioTrims',
     0x51 => 'RadioMins',
     0x52 => 'RadioMaxes',
+    0x53 => 'RadioOutputs',
 };
 
 
@@ -49,7 +50,6 @@ sub read_packet
 
     my ($expect_checksum1, $expect_checksum2) = UAV::Pilot->checksum_fletcher8(
         $payload_length, $message_id, $version, @payload );
-warn sprintf( 'Expect checksum: %02x, %02x', $expect_checksum1, $expect_checksum2 ) . "\n";
     UAV::Pilot::ArdupilotPacketException::BadChecksum->throw({
         got_checksum1      => $checksum1,
         got_checksum2      => $checksum2,

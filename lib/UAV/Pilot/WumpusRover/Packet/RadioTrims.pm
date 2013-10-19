@@ -65,17 +65,6 @@ has 'ch8_trim' => (
 with 'UAV::Pilot::WumpusRover::Packet';
 
 
-sub _encode_payload_for_write
-{
-    my ($self) = @_;
-    my $payload = pack 'C2' x 8, map( {
-        my $field = 'ch' . $_ . '_trim';
-        $self->$field;
-    } (1..8));
-    return $payload;
-}
-
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

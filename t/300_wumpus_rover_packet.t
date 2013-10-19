@@ -1,4 +1,4 @@
-use Test::More tests => 63;
+use Test::More tests => 73;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -179,6 +179,30 @@ my @TESTS = (
             ch6_max => 0x0FF0,
             ch7_max => 0x0000,
             ch8_max => 0x0110,
+        },
+    },
+    {
+        expect_class => 'RadioOutputs',
+        packet => make_packet( '3444', '10', '53', '00',
+            '0A', 'A0',
+            '0B', 'B0',
+            '0C', 'C0',
+            '0D', 'D0',
+            '0E', 'E0',
+            '0F', 'F0',
+            '00', '00',
+            '01', '10',
+            '6F', 'DE',
+        ),
+        fields => {
+            ch1_out => 0x0AA0,
+            ch2_out => 0x0BB0,
+            ch3_out => 0x0CC0,
+            ch4_out => 0x0DD0,
+            ch5_out => 0x0EE0,
+            ch6_out => 0x0FF0,
+            ch7_out => 0x0000,
+            ch8_out => 0x0110,
         },
     },
 );

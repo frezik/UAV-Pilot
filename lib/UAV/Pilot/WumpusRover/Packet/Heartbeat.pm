@@ -37,18 +37,6 @@ has 'command_index' => (
 with 'UAV::Pilot::WumpusRover::Packet';
 
 
-sub _encode_payload_for_write
-{
-    my ($self) = @_;
-    my $packet = pack 'C n n n ',
-        $self->flight_mode,
-        $self->timestamp,
-        $self->batt,
-        $self->command_index;
-    return $packet;
-}
-
-
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
