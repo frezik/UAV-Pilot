@@ -1,4 +1,4 @@
-use Test::More tests => 49;
+use Test::More tests => 63;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -89,7 +89,7 @@ ok( $fresh_packet->_is_checksum_clean, "Checksum clean after write" );
 
 
 my @TESTS = (
-    # Each entry has 1 test plus the number of keys in 'fields'
+    # Each entry has 2 tests plus the number of keys in 'fields'
     {
         expect_class => 'RequestStartupMessage',
         packet => make_packet( '3444', '02', '07', '00', '0A', 'A0',
@@ -157,6 +157,30 @@ my @TESTS = (
             ch8_min => 0x0110,
         },
     },
+    {
+        expect_class => 'RadioMaxes',
+        packet => make_packet( '3444', '10', '52', '00',
+            '0A', 'A0',
+            '0B', 'B0',
+            '0C', 'C0',
+            '0D', 'D0',
+            '0E', 'E0',
+            '0F', 'F0',
+            '00', '00',
+            '01', '10',
+            '6E', 'CC',
+        ),
+        fields => {
+            ch1_max => 0x0AA0,
+            ch2_max => 0x0BB0,
+            ch3_max => 0x0CC0,
+            ch4_max => 0x0DD0,
+            ch5_max => 0x0EE0,
+            ch6_max => 0x0FF0,
+            ch7_max => 0x0000,
+            ch8_max => 0x0110,
+        },
+    },
 );
 my $CLASS_PREFIX = 'UAV::Pilot::WumpusRover::Packet::';
 foreach (@TESTS) {
@@ -173,6 +197,11 @@ foreach (@TESTS) {
         cmp_ok( $packet->$field, '==', $fields{$field},
             "$short_class->$field matches" );
     }
+
+    my $got_packet = to_hex_string( write_packet( $packet ) );
+    my $expect_packet = to_hex_string( $packet_data );
+    cmp_ok( $got_packet, 'eq', $expect_packet,
+        "$short_class writes packet correctly" );
 }
 
 
