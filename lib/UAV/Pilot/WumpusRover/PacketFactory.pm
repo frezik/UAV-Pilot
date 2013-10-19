@@ -3,6 +3,8 @@ use v5.14;
 use warnings;
 use UAV::Pilot;
 use UAV::Pilot::Exceptions;
+use UAV::Pilot::WumpusRover::Packet;
+use UAV::Pilot::WumpusRover::Packet::Ack;
 
 use constant PACKET_CLASS_PREFIX  => 'UAV::Pilot::WumpusRover::Packet::';
 use constant PREAMBLE             => 0x3444;
@@ -39,12 +41,14 @@ sub read_packet
         expected_checksum2 => $expect_checksum2,
     }) if ($expect_checksum1 != $checksum1) || ($expect_checksum2 != $checksum2);
 
-    my $class = $self->MESSAGE_ID_CLASS_MAP->{$message_id};
+    my $class = $self->PACKET_CLASS_PREFIX
+        . $self->MESSAGE_ID_CLASS_MAP->{$message_id};
     my $new_packet = $class->new({
-        preamble => $preamble,
-        version  => $version,
-        checksum => [ $checksum1, $checksum2 ],
-        payload  => \@payload,
+        preamble  => $preamble,
+        version   => $version,
+        checksum1 => $checksum1,
+        checksum2 => $checksum2,
+        payload   => \@payload,
     });
     return $new_packet;
 }

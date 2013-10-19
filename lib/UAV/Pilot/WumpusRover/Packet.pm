@@ -1,7 +1,6 @@
 package UAV::Pilot::WumpusRover::Packet;
 use v5.14;
 use Moose::Role;
-use UAV::Pilot::WumpusRover::Packet::Ack;
 
 
 has 'preamble' => (

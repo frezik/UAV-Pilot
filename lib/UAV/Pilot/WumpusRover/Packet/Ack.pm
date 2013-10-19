@@ -3,16 +3,23 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 
-use constant payload_length => 3;
-use constant message_id     => 0x00;
-use constant payload_fields => [ 'message_received_id', 'checksum_received' ];
+
+use constant {
+    payload_length => 3,
+    message_id     => 0x00,
+    payload_fields => [qw{ message_received_id checksum_received }],
+};
 
 
 has 'message_received_id' => (
     is  => 'rw',
     isa => 'Int',
 );
-has 'checksum_received' => (
+has 'checksum_received1' => (
+    is  => 'rw',
+    isa => 'Int',
+);
+has 'checksum_received2' => (
     is  => 'rw',
     isa => 'Int',
 );
@@ -27,7 +34,8 @@ sub BUILDARGS
     my @payload = @$payload;
 
     $args->{message_received_id} = $payload[0];
-    $args->{checksum_received}   = pack 'C2', @payload[1,2];
+    $args->{checksum_received1}  = $payload[1];
+    $args->{checksum_received2}  = $payload[2];
 
     return $args;
 }

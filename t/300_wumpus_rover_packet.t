@@ -1,9 +1,10 @@
-use Test::More tests => 21;
+use Test::More tests => 24;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
 use UAV::Pilot::WumpusRover::Packet;
 use UAV::Pilot::Exceptions;
+use Test::Moose;
 
 
 my $bad_header = make_packet( '3445', '03', '00', '00', '010000', '030C' );
@@ -48,16 +49,20 @@ else {
 }
 
 
-my $good_packet = make_packet( '3444', '03', '00', '00', '010000', '030C' );
+my $good_packet = make_packet( '3444', '03', '00', '00', '010A0B', '1934' );
 my $packet = UAV::Pilot::WumpusRover::PacketFactory->read_packet( $good_packet );
 does_ok( $packet => 'UAV::Pilot::WumpusRover::Packet' );
 isa_ok( $packet => 'UAV::Pilot::WumpusRover::Packet::Ack' );
-cmp_ok( $packet->preamble,        '==', 0x3344, "Preamble set" );
-cmp_ok( $packet->payload_length,  '==', 0x03,   "Payload length set" );
-cmp_ok( $packet->message_id,      '==', 0x01,   "Message ID set" );
-cmp_ok( $packet->version,         '==', 0x00,   "Version set" );
-cmp_ok( $packet->message_id_recv, '==', 0x01,   "Message ID received" );
-cmp_ok( $packet->checksum,        '==', 0x040D, "Checksum" );
+cmp_ok( $packet->preamble,            '==', 0x3444, "Preamble set" );
+cmp_ok( $packet->payload_length,      '==', 0x03,   "Payload length set" );
+cmp_ok( $packet->message_id,          '==', 0x00,   "Message ID set" );
+cmp_ok( $packet->version,             '==', 0x00,   "Version set" );
+cmp_ok( $packet->message_received_id, '==', 0x01,   "Message ID received" );
+cmp_ok( $packet->checksum1,           '==', 0x19,   "Checksum1" );
+cmp_ok( $packet->checksum2,           '==', 0x34,   "Checksum2" );
+cmp_ok( $packet->checksum_received1,  '==', 0x0A,   "Checksum Received1" );
+cmp_ok( $packet->checksum_received2,  '==', 0x0B,   "Checksum Received2" );
+
 
 my $out = write_packet( $packet );
 cmp_ok( $out, 'eq', $good_packet, "Wrote packet data to filehandle" );
