@@ -80,6 +80,48 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 
+package UAV::Pilot::ArdupilotPacketException::BadHeader;
+use v5.14;
+use Moose;
+use namespace::autoclean;
+extends 'UAV::Pilot::Exception';
+
+has 'got_header' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+
+package UAV::Pilot::ArdupilotPacketException::BadChecksum;
+use v5.14;
+use Moose;
+use namespace::autoclean;
+extends 'UAV::Pilot::Exception';
+
+has 'got_checksum1' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'got_checksum2' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'expected_checksum1' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'expected_checksum2' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+
 1;
 __END__
 
@@ -102,5 +144,9 @@ C<UAV::Pilot::Exception>, which does the role C<Throwable>.
 =head2 UAV::Pilot::NavPacketException::BadHeader
 
 =head2 UAV::Pilot::VideoException
+
+=head2 UAV::Pilot::ArdupilotPacketException::BadHeader
+
+=head2 UAV::Pilot::ArdupilotPacketException::BadChecksum
 
 =cut

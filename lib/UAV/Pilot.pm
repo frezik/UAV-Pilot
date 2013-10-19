@@ -43,6 +43,20 @@ sub init_log
     return 1;
 }
 
+sub checksum_fletcher8
+{
+    my ($class, @bytes) = @_;
+    my $ck_a = 0;
+    my $ck_b = 0;
+
+    foreach (@bytes) {
+        $ck_a = ($ck_a + $_)    & 0xFF;
+        $ck_b = ($ck_b + $ck_a) & 0xFF;
+    }
+
+    return ($ck_a, $ck_b);
+}
+
 sub convert_32bit_LE
 {
     my ($class, @bytes) = @_;

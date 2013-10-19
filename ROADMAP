@@ -6,6 +6,7 @@ Version 0.7
     * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover
     * UAV::Pilot::WumpusRover::Driver
+    * UAV::Pilot::WumpusRover::PacketFactory
     * UAV::Pilot::WumpusRover::Packet
 
 

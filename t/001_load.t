@@ -1,4 +1,4 @@
-use Test::More tests => 36;
+use Test::More tests => 37;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -35,6 +35,7 @@ use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );
 use_ok( 'UAV::Pilot::ControlRover' );
 use_ok( 'UAV::Pilot::WumpusRover::Driver' );
 use_ok( 'UAV::Pilot::WumpusRover::Packet' );
+use_ok( 'UAV::Pilot::WumpusRover::PacketFactory' );
 
 SKIP: {
     skip "SDL not installed", 5 unless $is_sdl_installed;

@@ -1,11 +1,69 @@
 package UAV::Pilot::WumpusRover::Packet;
 use v5.14;
-use Moose;
-use namespace::autoclean;
+use Moose::Role;
+use UAV::Pilot::WumpusRover::Packet::Ack;
 
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
+has 'preamble' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0x3444,
+);
+has 'version' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0x00,
+);
+has 'checksum1' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'checksum2' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has '_is_checksum_clean' => (
+    is      => 'rw',
+    isa     => 'Bool',
+    default => 0,
+);
+requires 'payload_length';
+requires 'message_id';
+requires 'payload_fields';
+
+
+sub write
+{
+    my ($self, $fh) = @_;
+    return 1;
+}
+
+sub get_ordered_payload_values
+{
+    my ($self) = @_;
+    return map $self->$_, @{ $self->payload_fields };
+}
+
+sub _calc_checksum
+{
+    my ($self) = @_;
+    my @data = (
+        $self->payload_length,
+        $self->message_id,
+        $self->get_ordered_payload_values,
+    );
+
+    return UAV::Pilot->checksum_fletcher8( @data );
+}
+
+
+sub _make_checksum_unclean
+{
+    my ($self) = @_;
+    $self->_is_checksum_clean( 0 );
+    return 1;
+}
+
+
 1;
 __END__
-
