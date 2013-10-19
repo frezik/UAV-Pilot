@@ -7,7 +7,7 @@ use UAV::Pilot::WumpusRover::Packet;
 use UAV::Pilot::WumpusRover::Packet::Ack;
 use UAV::Pilot::WumpusRover::Packet::Heartbeat;
 # TODO these packet types
-#use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
+use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
 #use UAV::Pilot::WumpusRover::Packet::StartupMessage;
 #use UAV::Pilot::WumpusRover::Packet::RadioTrims;
 #use UAV::Pilot::WumpusRover::Packet::RadioMins;
@@ -19,6 +19,8 @@ use constant PACKET_CLASS_PREFIX  => 'UAV::Pilot::WumpusRover::Packet::';
 use constant PREAMBLE             => 0x3444;
 use constant MESSAGE_ID_CLASS_MAP => {
     0x00 => 'Ack',
+    0x01 => 'Heartbeat',
+    0x07 => 'RequestStartupMessage',
 };
 
 

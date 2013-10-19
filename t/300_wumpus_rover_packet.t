@@ -1,4 +1,4 @@
-use Test::More tests => 24;
+use Test::More tests => 27;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -86,6 +86,36 @@ my $got_packet = to_hex_string( write_packet( $fresh_packet ) );
 cmp_ok( $got_packet, 'eq', to_hex_string($expect_packet),
     "Wrote heartbeat packet" );
 ok( $fresh_packet->_is_checksum_clean, "Checksum clean after write" );
+
+
+my @TESTS = (
+    # Each entry has 1 test plus the number of keys in 'fields'
+    {
+        expect_class => 'RequestStartupMessage',
+        packet => make_packet( '3444', '02', '07', '00', '0A', 'A0',
+            'B3', 'DA' ), # TODO checksum fix
+        fields => {
+            system_type => 0x0A,
+            system_id   => 0xA0,
+        },
+    },
+);
+my $CLASS_PREFIX = 'UAV::Pilot::WumpusRover::Packet::';
+foreach (@TESTS) {
+    my $packet_data = $_->{packet};
+    my %fields = %{ $_->{fields} };
+    my $short_class  = $_->{expect_class};
+    my $expect_class = $CLASS_PREFIX . $short_class;
+
+    my $packet = UAV::Pilot::WumpusRover::PacketFactory->read_packet(
+        $packet_data );
+    isa_ok( $packet => $expect_class );
+
+    foreach my $field (keys %fields ) {
+        cmp_ok( $packet->$field, '==', $fields{$field},
+            "$short_class->$field matches" );
+    }
+}
 
 
 sub write_packet
