@@ -1,4 +1,4 @@
-use Test::More tests => 31;
+use Test::More tests => 40;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -99,7 +99,6 @@ my @TESTS = (
             system_id   => 0xA0,
         },
     },
-
     {
         expect_class => 'StartupMessage',
         packet => make_packet( '3444', '05', '08', '00', '0A', 'A0',
@@ -108,6 +107,30 @@ my @TESTS = (
             system_type      => 0x0A,
             system_id        => 0xA0,
             firmware_version => 0xB00BC0,
+        },
+    },
+    {
+        expect_class => 'RadioTrims',
+        packet => make_packet( '3444', '10', '50', '00',
+            '0A', 'A0',
+            '0B', 'B0',
+            '0C', 'C0',
+            '0D', 'D0',
+            '0E', 'E0',
+            '0F', 'F0',
+            '00', '00',
+            '01', '10',
+            '6C', 'A8',
+        ),
+        fields => {
+            ch1_trim => 0x0AA0,
+            ch2_trim => 0x0BB0,
+            ch3_trim => 0x0CC0,
+            ch4_trim => 0x0DD0,
+            ch5_trim => 0x0EE0,
+            ch6_trim => 0x0FF0,
+            ch7_trim => 0x0000,
+            ch8_trim => 0x0110,
         },
     },
 );
