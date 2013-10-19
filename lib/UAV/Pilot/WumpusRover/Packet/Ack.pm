@@ -36,6 +36,17 @@ has 'checksum_received2' => (
 with 'UAV::Pilot::WumpusRover::Packet';
 
 
+sub _encode_payload_for_write
+{
+    my ($self) = @_;
+    my $payload = pack 'C C C',
+        $self->message_received_id,
+        $self->checksum_received1,
+        $self->checksum_received2;
+    return $payload;
+}
+
+
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;

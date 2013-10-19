@@ -17,12 +17,14 @@ has 'version' => (
     default => 0x00,
 );
 has 'checksum1' => (
-    is  => 'ro',
-    isa => 'Int',
+    is     => 'ro',
+    isa    => 'Int',
+    writer => '_set_checksum1',
 );
 has 'checksum2' => (
-    is  => 'ro',
-    isa => 'Int',
+    is     => 'ro',
+    isa    => 'Int',
+    writer => '_set_checksum2',
 );
 has '_is_checksum_clean' => (
     is      => 'rw',
@@ -33,6 +35,7 @@ requires 'payload_length';
 requires 'message_id';
 requires 'payload_fields';
 requires 'payload_fields_length';
+requires '_encode_payload_for_write';
 
 with 'UAV::Pilot::Logger';
 
@@ -63,9 +66,27 @@ before 'BUILDARGS' => sub {
 
     return $args;
 };
+
+
 sub write
 {
     my ($self, $fh) = @_;
+    $self->_make_checksum_clean;
+
+    my $packet1 = pack 'n C C C',
+        $self->preamble,
+        $self->payload_length,
+        $self->message_id,
+        $self->version;
+    my $packet2 = $self->_encode_payload_for_write;
+    my $packet3 = pack 'C C',
+        $self->checksum1,
+        $self->checksum2;
+
+    $fh->print( $packet1 );
+    $fh->print( $packet2 );
+    $fh->print( $packet3 );
+
     return 1;
 }
 
@@ -84,7 +105,17 @@ sub _calc_checksum
         $self->get_ordered_payload_values,
     );
 
-    return UAV::Pilot->checksum_fletcher8( @data );
+    my ($check1, $check2) = UAV::Pilot->checksum_fletcher8( @data );
+    return 1;
+}
+
+sub _make_checksum_clean
+{
+    my ($self) = @_;
+    return 1 if $self->_is_checksum_clean;
+    $self->_calc_checksum;
+    $self->_is_checksum_clean( 1 );
+    return 1;
 }
 
 

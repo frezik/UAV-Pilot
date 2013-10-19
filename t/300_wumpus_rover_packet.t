@@ -64,8 +64,9 @@ cmp_ok( $packet->checksum_received1,  '==', 0x0A,   "Checksum Received1" );
 cmp_ok( $packet->checksum_received2,  '==', 0x0B,   "Checksum Received2" );
 
 
-my $out = write_packet( $packet );
-cmp_ok( $out, 'eq', $good_packet, "Wrote packet data to filehandle" );
+my $out = to_hex_string( write_packet( $packet ) );
+cmp_ok( $out, 'eq', to_hex_string($good_packet),
+    "Wrote packet data to filehandle" );
 
 
 my $fresh_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
@@ -80,8 +81,9 @@ $fresh_packet->command_index( 0 );
 ok(! $fresh_packet->_is_checksum_clean, "Checksum no longer correct" );
 
 my $expect_packet = make_packet( '3444', );
-my $got_packet = write_packet( $fresh_packet );
-cmp_ok( $expect_packet, 'eq', $got_packet, "Wrote heartbeat packet" );
+my $got_packet = to_hex_string( write_packet( $fresh_packet ) );
+cmp_ok( $got_packet, 'eq', to_hex_string($expect_packet),
+    "Wrote heartbeat packet" );
 ok( $fresh_packet->_is_checksum_clean, "Checksum clean after write" );
 
 
@@ -101,4 +103,11 @@ sub make_packet
 {
     my (@hex_str) = @_;
     pack 'H*', join( '', @hex_str );
+}
+
+sub to_hex_string
+{
+    my ($str) = @_;
+    my @str = unpack 'C*', $str;
+    return join '', '0x', map( { sprintf '%02x', $_ } @str );
 }
