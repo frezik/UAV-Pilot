@@ -10,7 +10,7 @@ use UAV::Pilot::WumpusRover::Packet::Heartbeat;
 use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
 use UAV::Pilot::WumpusRover::Packet::StartupMessage;
 use UAV::Pilot::WumpusRover::Packet::RadioTrims;
-#use UAV::Pilot::WumpusRover::Packet::RadioMins;
+use UAV::Pilot::WumpusRover::Packet::RadioMins;
 #use UAV::Pilot::WumpusRover::Packet::RadioMaxes;
 #use UAV::Pilot::WumpusRover::Packet::RadioOutputs;
 
@@ -23,6 +23,7 @@ use constant MESSAGE_ID_CLASS_MAP => {
     0x07 => 'RequestStartupMessage',
     0x08 => 'StartupMessage',
     0x50 => 'RadioTrims',
+    0x51 => 'RadioMins',
 };
 
 
