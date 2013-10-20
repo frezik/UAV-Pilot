@@ -110,9 +110,14 @@ sub get_ordered_payload_value_bytes
         my $raw_value = $self->$field;
         my @raw_bytes;
         foreach (1 .. $length) {
-            my $value = $raw_value & 0xFF;
-            push @raw_bytes, $value;
-            $raw_value >>= 8;
+            if( defined $raw_value) {
+                my $value = $raw_value & 0xFF;
+                push @raw_bytes, $value;
+                $raw_value >>= 8;
+            }
+            else {
+                push @raw_bytes, 0;
+            }
         }
 
         push @bytes, reverse @raw_bytes;
