@@ -10,6 +10,7 @@ Version 0.7
     * UAV::Pilot::WumpusRover::Packet
     * UAV::Pilot::Server
     * UAV::Pilot::WumpusRover::Server
+    * UAV::Pilot::WumpusRover::Backend
 
 
 Version 0.8
