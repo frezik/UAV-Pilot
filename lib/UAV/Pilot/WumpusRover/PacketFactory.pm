@@ -6,7 +6,6 @@ use UAV::Pilot::Exceptions;
 use UAV::Pilot::WumpusRover::Packet;
 use UAV::Pilot::WumpusRover::Packet::Ack;
 use UAV::Pilot::WumpusRover::Packet::Heartbeat;
-# TODO these packet types
 use UAV::Pilot::WumpusRover::Packet::RequestStartupMessage;
 use UAV::Pilot::WumpusRover::Packet::StartupMessage;
 use UAV::Pilot::WumpusRover::Packet::RadioTrims;

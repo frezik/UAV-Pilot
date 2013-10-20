@@ -8,6 +8,8 @@ Version 0.7
     * UAV::Pilot::WumpusRover::Driver
     * UAV::Pilot::WumpusRover::PacketFactory
     * UAV::Pilot::WumpusRover::Packet
+    * UAV::Pilot::Server
+    * UAV::Pilot::WumpusRover::Server
 
 
 Version 0.8

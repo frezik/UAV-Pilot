@@ -70,7 +70,7 @@ before 'BUILDARGS' => sub {
 sub write
 {
     my ($self, $fh) = @_;
-    $self->_make_checksum_clean;
+    $self->make_checksum_clean;
 
     my $packet1 = pack 'n C C C',
         $self->preamble,
@@ -137,7 +137,7 @@ sub _calc_checksum
     return 1;
 }
 
-sub _make_checksum_clean
+sub make_checksum_clean
 {
     my ($self) = @_;
     return 1 if $self->_is_checksum_clean;
