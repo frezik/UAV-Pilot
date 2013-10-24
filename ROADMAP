@@ -1,4 +1,4 @@
-Version 0.7
+Version 0.8
 -----------
 * Send multiconfig commands in order to set video display size and fps
 * Implement WumpusRover
@@ -13,7 +13,7 @@ Version 0.7
     * UAV::Pilot::WumpusRover::Backend
 
 
-Version 0.8
+Version 0.9
 -----------
 * UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
   to draw on

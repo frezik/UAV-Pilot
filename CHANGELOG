@@ -1,6 +1,10 @@
 Revision history for perl module UAV::Pilot
 
-0.6 2013-??-??
+0.7 2013-10-??
+
+- Cleanup a bunch of bad tests and dependencies from 0.6
+
+0.6 2013-10-15
 
 [EventHandler Interface]
 - UAV::Pilot::SDL::EventHandler moved to UAV::Pilot::EventHandler

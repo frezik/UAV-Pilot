@@ -176,7 +176,7 @@ cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_START, '==', 1,
 cmp_ok( $ardrone_mock->ARDRONE_USERBOX_CMD_SCREENSHOT, '==', 2,
     "userbox screenshot config command" );
 
-my $seq = $ardrone_mock->seq;
+$seq = $ardrone_mock->seq;
 $ardrone_mock->multi_cmds( sub {
     $ardrone_mock->at_config_ids( 1234, 5678, 9012 );
     $ardrone_mock->at_config( 'video:camif_fps', 30 );
