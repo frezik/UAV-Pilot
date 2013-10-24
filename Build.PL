@@ -30,6 +30,7 @@ my $build = Module::Build->new(
     requires          => {
         perl                      => '>= 5.12.0',
         'namespace::autoclean'    => 0,
+        'Alien::ffmpeg'           => 0,
         'AnyEvent'                => 0,
         'AnyEvent::ReadLine::Gnu' => 0,
         'DateTime'                => 0,
