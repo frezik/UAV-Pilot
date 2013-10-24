@@ -1,9 +1,9 @@
 use Test::More tests => 10;
 use v5.14;
 use UAV::Pilot;
-use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Driver::ARDrone::Video::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver::Mock;
+use UAV::Pilot::ARDrone::Video::Mock;
+use UAV::Pilot::ARDrone::Control;
 use UAV::Pilot::Video::H264Decoder;
 use UAV::Pilot::Video::Mock::RawHandler;
 use File::Temp ();
@@ -75,18 +75,18 @@ my $mock_video = MockH264Handler->new({
     real_vid => $video,
 });
 my $mock_video2 = MockH264Handler2->new;
-my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver::Mock->new({
     host => 'localhost',
 });
-my $driver_video = UAV::Pilot::Driver::ARDrone::Video::Mock->new({
+my $driver_video = UAV::Pilot::ARDrone::Video::Mock->new({
     file     => VIDEO_DUMP_FILE,
     handlers => [ $mock_video2, $mock_video ],
     condvar  => $cv,
     driver   => $ardrone,
 });
-isa_ok( $driver_video => 'UAV::Pilot::Driver::ARDrone::Video' );
+isa_ok( $driver_video => 'UAV::Pilot::ARDrone::Video' );
 
-my $dev = UAV::Pilot::Control::ARDrone->new({
+my $dev = UAV::Pilot::ARDrone::Control->new({
     driver => $ardrone,
     video  => $driver_video,
 });
