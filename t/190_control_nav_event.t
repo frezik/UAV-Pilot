@@ -1,14 +1,14 @@
 use Test::More tests => 2;
 use AnyEvent;
-use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver::Mock;
+use UAV::Pilot::ARDrone::Control;
 use UAV::Pilot::EasyEvent;
 
 
 package MockDriver;
 use Moose;
 
-extends 'UAV::Pilot::Driver::ARDrone::Mock';
+extends 'UAV::Pilot::ARDrone::Driver::Mock';
 
 has 'num_read_nav' => (
     is      => 'rw',
@@ -37,7 +37,7 @@ sub read_nav_packet
 package main;
 
 my $driver = MockDriver->new;
-my $control = UAV::Pilot::Control::ARDrone->new({
+my $control = UAV::Pilot::ARDrone::Control->new({
     driver => $driver,
 });
 
