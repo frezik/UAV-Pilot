@@ -2,11 +2,11 @@ use Test::More tests => 6;
 use v5.14;
 use warnings;
 use AnyEvent;
-use UAV::Pilot::Driver::ARDrone::Mock;
+use UAV::Pilot::ARDrone::Driver::Mock;
 use UAV::Pilot::EasyEvent;
 use UAV::Pilot::NavCollector;
 use UAV::Pilot::NavCollector::AckEvents;
-use UAV::Pilot::Driver::ARDrone::NavPacket;
+use UAV::Pilot::ARDrone::NavPacket;
 
 package MockNavCollector;
 use Moose;
@@ -56,17 +56,17 @@ my @packet_data_ack_off = (
     '0800',       # Checksum size
     'c1030000',   # Checksum data (will be wrong)
 );
-my $packet_ack_on = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+my $packet_ack_on = UAV::Pilot::ARDrone::NavPacket->new({
     packet => make_packet( join( '', @packet_data_ack_on )),
 });
-my $packet_ack_off = UAV::Pilot::Driver::ARDrone::NavPacket->new({
+my $packet_ack_off = UAV::Pilot::ARDrone::NavPacket->new({
     packet => make_packet( join( '', @packet_data_ack_off )),
 });
 ok( $packet_ack_on->state_control_received, "Ack received on packet" );
 ok(! $packet_ack_off->state_control_received, "Ack not received on packet" );
 
 
-my $mock_driver = UAV::Pilot::Driver::ARDrone::Mock->new;
+my $mock_driver = UAV::Pilot::ARDrone::Driver::Mock->new;
 
 my ($nav_status_on_test, $nav_status_off_test, $nav_status_toggle_test,
     $nav_collector_test) = (0, 0, 0, 0);
