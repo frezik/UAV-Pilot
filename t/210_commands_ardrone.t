@@ -1,19 +1,19 @@
 use Test::More tests => 58;
 use v5.14;
 use UAV::Pilot;
-use UAV::Pilot::Driver::ARDrone::Mock;
-use UAV::Pilot::Control::ARDrone;
+use UAV::Pilot::ARDrone::Driver::Mock;
+use UAV::Pilot::ARDrone::Control;
 use UAV::Pilot::Commands;
 
 my $LIB_DIR = 'share';
 
 
-my $ardrone = UAV::Pilot::Driver::ARDrone::Mock->new({
+my $ardrone = UAV::Pilot::ARDrone::Driver::Mock->new({
     host => 'localhost',
 });
 $ardrone->connect;
 my $repl = UAV::Pilot::Commands->new({
-    device => UAV::Pilot::Control::ARDrone->new({
+    device => UAV::Pilot::ARDrone::Control->new({
         driver => $ardrone,
     }),
 });
