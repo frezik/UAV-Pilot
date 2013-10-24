@@ -1,6 +1,6 @@
 Revision history for perl module UAV::Pilot
 
-0.7 2013-10-??
+0.7 2013-10-24
 
 - Cleanup a bunch of bad tests and dependencies from 0.6
 
