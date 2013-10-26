@@ -4,6 +4,8 @@ use Moose::Role;
 
 
 with 'UAV::Pilot::Control';
+requires 'throttle';
+requires 'turn';
 
 
 1;

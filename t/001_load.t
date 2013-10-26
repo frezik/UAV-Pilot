@@ -1,4 +1,4 @@
-use Test::More tests => 39;
+use Test::More tests => 42;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -16,6 +16,7 @@ use_ok( 'UAV::Pilot::ARDrone::Video' );
 use_ok( 'UAV::Pilot::ARDrone::Video::Mock' );
 use_ok( 'UAV::Pilot::Control' );
 use_ok( 'UAV::Pilot::ControlHelicopter' );
+use_ok( 'UAV::Pilot::ControlRover' );
 use_ok( 'UAV::Pilot::Server' );
 use_ok( 'UAV::Pilot::ARDrone::Control' );
 use_ok( 'UAV::Pilot::ARDrone::Control' );
@@ -38,6 +39,8 @@ use_ok( 'UAV::Pilot::WumpusRover::Driver' );
 use_ok( 'UAV::Pilot::WumpusRover::Packet' );
 use_ok( 'UAV::Pilot::WumpusRover::PacketFactory' );
 use_ok( 'UAV::Pilot::WumpusRover::Server' );
+use_ok( 'UAV::Pilot::WumpusRover::Control' );
+use_ok( 'UAV::Pilot::WumpusRover::Control::Mock' );
 
 SKIP: {
     skip "SDL not installed", 5 unless $is_sdl_installed;

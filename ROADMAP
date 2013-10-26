@@ -2,6 +2,8 @@ Version 0.8
 -----------
 * Send multiconfig commands in order to set video display size and fps
 * Implement WumpusRover
+* Use Devel::CheckLib to look for ffmpeg 
+    * Replace Alien::ffmpeg?
 * Document
     * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover
@@ -11,6 +13,7 @@ Version 0.8
     * UAV::Pilot::Server
     * UAV::Pilot::WumpusRover::Server
     * UAV::Pilot::WumpusRover::Backend
+    * UAV::Pilot::WumpusRover::control
 
 
 Version 0.9
