@@ -2,7 +2,9 @@ package UAV::Pilot::WumpusRover::Server;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use IO::Socket::INET ();
 use UAV::Pilot::WumpusRover::PacketFactory;
+use UAV::Pilot::WumpusRover::Server::Backend;
 
 use constant BUF_LENGTH => 1024;
 

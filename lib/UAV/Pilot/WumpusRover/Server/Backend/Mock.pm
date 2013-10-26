@@ -2,6 +2,7 @@ package UAV::Pilot::WumpusRover::Server::Backend::Mock;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use UAV::Pilot::WumpusRover::Server::Backend;
 
 with 'UAV::Pilot::WumpusRover::Server::Backend';
 

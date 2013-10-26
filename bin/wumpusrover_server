@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+use v5.14;
+use warnings;
+use AnyEvent;
+use UAV::Pilot::WumpusRover::Server;
+use UAV::Pilot::WumpusRover::Server::Backend::Mock;
+use Getopt::Long ();
+
+
+my $PORT = 49000;
+Getopt::Long::GetOptions(
+    'port=i' => \$PORT,
+);
+
+
+my $backend = UAV::Pilot::WumpusRover::Server::Backend::Mock->new;
+my $server = UAV::Pilot::WumpusRover::Server->new({
+    listen_port => $PORT,
+    backend     => $backend,
+});
+
+my $cv = AnyEvent->condvar;
+$server->init_listen_events( $cv );
+$cv->recv;
