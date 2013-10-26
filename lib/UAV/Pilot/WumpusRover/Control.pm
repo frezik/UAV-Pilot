@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use UAV::Pilot::WumpusRover::PacketFactory;
+use IO::Socket::INET;
 
 has 'host' => (
     is  => 'ro',
@@ -12,23 +13,23 @@ has 'port' => (
     is  => 'ro',
     isa => 'Int',
 );
-has '_turn' => (
-    is      => 'ro',
-    isa     => 'Int',
-    default => 0,
-    writer  => 'turn',
+has '_socket' => (
+    is  => 'rw',
+    isa => 'IO::Socket::INET',
 );
-has '_throttle' => (
-    is      => 'ro',
+has 'turn' => (
+    is      => 'rw',
     isa     => 'Int',
     default => 0,
-    writer  => 'throttle',
+);
+has 'throttle' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
 );
 
 with 'UAV::Pilot::ControlRover';
 
-
-after $_ => \&_send_move_packet for qw{ turn throttle };
 
 
 sub connect
@@ -52,14 +53,14 @@ sub convert_sdl_input
     return $in;
 }
 
-sub _send_move_packet
+sub send_move_packet
 {
     my ($self) = @_;
     my $packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
         'RadioOutputs' );
 
-    $packet->ch1_out( $self->_throttle );
-    $packet->ch2_out( $self->_turn );
+    $packet->ch1_out( $self->throttle );
+    $packet->ch2_out( $self->turn );
 
     return $self->_send_packet( $packet );
 }
@@ -67,15 +68,30 @@ sub _send_move_packet
 sub _send_packet
 {
     my ($self, $packet) = @_;
-    # TODO
+    $packet->write( $self->_socket );
     return 1;
 }
-
+# Cleanup packet in 'before' so the Mock version also does it
 before '_send_packet' => sub {
     my ($self, $packet) = @_;
     $packet->make_checksum_clean;
     return 1;
 };
+
+sub _init_socket
+{
+    my ($self) = @_;
+    my $socket = IO::Socket::INET->new(
+        Proto    => 'udp',
+        PeerHost => $self->host,
+        PeerPort => $self->port,
+    ) or UAV::Pilot::IOException->throw({
+        error => 'Could not open socket: ' . $!,
+    });
+
+    $self->_socket( $socket );
+    return 1;
+}
 
 
 no Moose;

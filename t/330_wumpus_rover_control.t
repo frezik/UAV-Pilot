@@ -21,12 +21,14 @@ isa_ok( $start_request_packet
     => 'UAV::Pilot::WumpusRover::Packet::RequestStartupMessage' );
 
 $control->throttle( 150 );
+$control->send_move_packet;
 my $throttle_packet = $control->last_packet_out;
 isa_ok( $throttle_packet => 'UAV::Pilot::WumpusRover::Packet::RadioOutputs' );
 cmp_ok( $throttle_packet->ch1_out, '==', 150, "Throttle setting sent" );
 cmp_ok( $throttle_packet->ch2_out, '==', 0, "Not turning" );
 
 $control->turn( -100 );
+$control->send_move_packet;
 my $turn_packet = $control->last_packet_out;
 isa_ok( $turn_packet => 'UAV::Pilot::WumpusRover::Packet::RadioOutputs' );
 cmp_ok( $turn_packet->ch1_out, '==', 150, "Still setting throttle" );
