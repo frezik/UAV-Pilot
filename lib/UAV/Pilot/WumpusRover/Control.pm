@@ -29,14 +29,19 @@ has 'throttle' => (
 );
 
 with 'UAV::Pilot::ControlRover';
+with 'UAV::Pilot::Logger';
 
 
 
 sub connect
 {
     my ($self) = @_;
+    my $logger = $self->_logger;
+
+    $logger->info( 'Connecting . . . ' );
     $self->_init_socket;
 
+    $logger->info( 'Sending Request Startup Message packet' );
     my $packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
         'RequestStartupMessage' );
     # TODO find out what Ardupilot wants for these params
@@ -44,6 +49,8 @@ sub connect
     $packet->system_id( 0x0 );
     
     $self->_send_packet( $packet );
+    $logger->info( 'Request Startup Message packet sent' );
+    $logger->info( 'Finished connecting' );
     return 1;
 }
 
@@ -81,6 +88,9 @@ before '_send_packet' => sub {
 sub _init_socket
 {
     my ($self) = @_;
+    my $logger = $self->_logger;
+
+    $logger->info( 'Open UDP socket to ' . $self->host . ':' . $self->port );
     my $socket = IO::Socket::INET->new(
         Proto    => 'udp',
         PeerHost => $self->host,
@@ -88,6 +98,7 @@ sub _init_socket
     ) or UAV::Pilot::IOException->throw({
         error => 'Could not open socket: ' . $!,
     });
+    $logger->info( 'Done opening socket' );
 
     $self->_socket( $socket );
     return 1;
