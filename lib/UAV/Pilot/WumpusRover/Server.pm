@@ -12,7 +12,7 @@ use constant BUF_LENGTH => 1024;
 has 'listen_port' => (
     is      => 'ro',
     isa     => 'Int',
-    default => 49000,
+    default => 49_000,
 );
 has 'backend' => (
     is  => 'ro',
@@ -37,10 +37,9 @@ sub init_listen_events
         Proto     => 'udp',
         LocalPort => $self->listen_port,
         Blocking  => 0,
-        Listen    => 5,
-    ) or UAV::Pilot::IOException->throw(
+    ) or UAV::Pilot::IOException->throw({
         error => 'Could not open socket: ' . $!,
-    );
+    });
     $self->_socket( $socket );
 
     my $event; $event = AnyEvent->io(
