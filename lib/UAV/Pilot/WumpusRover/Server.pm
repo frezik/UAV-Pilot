@@ -5,8 +5,11 @@ use namespace::autoclean;
 use IO::Socket::INET ();
 use UAV::Pilot::WumpusRover::PacketFactory;
 use UAV::Pilot::WumpusRover::Server::Backend;
+use Time::HiRes ();
+use Errno qw(:POSIX);
 
 use constant BUF_LENGTH => 1024;
+use constant SLEEP_LOOP_US => 1_000_000 / 100; # In microseconds
 
 
 has 'listen_port' => (
@@ -22,40 +25,23 @@ has '_socket' => (
     is  => 'rw',
     isa => 'Maybe[IO::Socket::INET]',
 );
-has '_condvar' => (
-    is  => 'rw',
-    isa => 'Maybe[AnyEvent::CondVar]',
-);
 with 'UAV::Pilot::Server';
 with 'UAV::Pilot::Logger';
 
 
-sub init_listen_events
+sub start_listen_loop
 {
-    my ($self, $cv) = @_;
-    $self->_logger->info( 'Starting listener on UDP port '
-        . $self->listen_port );
+    my ($self) = @_;
+    $self->_init_socket;
 
-    my $socket = IO::Socket::INET->new(
-        Proto     => 'udp',
-        LocalPort => $self->listen_port,
-        Blocking  => 0,
-    ) or UAV::Pilot::IOException->throw({
-        error => 'Could not open socket: ' . $!,
-    });
-    $self->_socket( $socket );
+    my $CONTINUE = 1;
+    while($CONTINUE) {
+        if(! $self->_read_packet ) {
+            # If we didn't read a packet, sleep for a while 
+            Time::HiRes::usleep( $self->SLEEP_LOOP_US );
+        }
+    }
 
-    my $event; $event = AnyEvent->io(
-        fh   => $socket,
-        poll => 'r',
-        cb   => sub {
-            $self->_read_packet;
-            $event;
-        },
-    );
-
-    $self->_condvar( $cv );
-    $self->_logger->info( 'Done starting listener' );
     return 1;
 }
 
@@ -75,6 +61,7 @@ sub _read_packet
 {
     my ($self) = @_;
     my $logger = $self->_logger;
+    my $return = 1;
     $logger->info( 'Received packet' );
 
     my $buf = undef;
@@ -113,17 +100,22 @@ sub _read_packet
         }
     }
     elsif(! defined $len) {
-        # Error
-        UAV::Pilot::IOException->throw({
-            error => $!,
-        });
+        # Possible error
+        if($!{EAGAIN} || $!{EWOULDBLOCK}) {
+            $logger->info( 'No data to read' );
+        }
+        else {
+            UAV::Pilot::IOException->throw({
+                error => $!,
+            });
+        }
     }
     else {
-        # Shouldn't happen with AnyEvent.  Probably.
+        $return = 0;
         $logger->info( "No data to read" );
     }
 
-    return 1;
+    return $return;
 }
 
 sub _build_ack_packet
@@ -142,6 +134,25 @@ sub _send_packet
 {
     my ($self, $packet) = @_;
     # TODO
+    return 1;
+}
+
+sub _init_socket
+{
+    my ($self) = @_;
+    $self->_logger->info( 'Starting listener on UDP port '
+        . $self->listen_port );
+
+    my $socket = IO::Socket::INET->new(
+        Proto     => 'udp',
+        LocalPort => $self->listen_port,
+        Blocking  => 0,
+    ) or UAV::Pilot::IOException->throw({
+        error => 'Could not open socket: ' . $!,
+    });
+    $self->_socket( $socket );
+
+    $self->_logger->info( 'Done starting listener' );
     return 1;
 }
 

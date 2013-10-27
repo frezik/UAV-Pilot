@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
-use AnyEvent;
 use UAV::Pilot::WumpusRover::Server;
 use UAV::Pilot::WumpusRover::Server::Backend::Mock;
 use Getopt::Long ();
@@ -19,6 +18,4 @@ my $server = UAV::Pilot::WumpusRover::Server->new({
     backend     => $backend,
 });
 
-my $cv = AnyEvent->condvar;
-$server->init_listen_events( $cv );
-$cv->recv;
+$server->start_listen_loop;
