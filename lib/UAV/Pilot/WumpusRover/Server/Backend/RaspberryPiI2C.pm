@@ -3,34 +3,57 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use UAV::Pilot::WumpusRover::Server::Backend;
+use UAV::Pilot::WumpusRover::PacketFactory;
 use HiPi::BCM2835::I2C qw( :all );
 
-use constant ADDR       => 0x28;
-use constant DEVICE     => '/dev/i2c-1';
-use constant BUSMODE    => 'i2c';
-use constant SLAVE_ADDR => 0x04;
 use constant REGISTER   => 0x00;
+
 
 with 'UAV::Pilot::WumpusRover::Server::Backend';
 with 'UAV::Pilot::Logger';
 
 has '_i2c' => (
-    is  => 'ro',
-    isa => 'HiPi::BCM2835::I2C',
+    is     => 'ro',
+    isa    => 'HiPi::BCM2835::I2C',
+    writer => '_set_i2c',
+);
+has 'slave_addr' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0x10,
+);
+has 'i2c_device' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => BB_I2C_PERI_1,
 );
 
 
-sub BUILDARGS
+sub BUILD
 {
-    my ($self, $args) = @_;
+    my ($self) = @_;
+    my $logger = $self->_logger;
+    $logger->info( 'Attempting to init i2c comm on slave addr ['
+        . $self->slave_addr . ']' );
 
     my $i2c = HiPi::BCM2835::I2C->new(
-        peripheral => BB_I2C_PERI_1,
-        address    => $self->SLAVE_ADDR,
+        peripheral => $self->i2c_device,
+        address    => $self->slave_addr,
     );
-    $args->{'_i2c'} = $i2c;
+    $self->_set_i2c( $i2c );
 
-    return $args;
+    $logger->info( 'Started i2c device, attempting to communicate' );
+    # TODO Implement StartupMessage (not RequestStartupMessage) and use 
+    # that here instead
+    my $ack = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet( 'Ack' );
+    $ack->message_received_id( 0x00 );
+    $ack->checksum_received1( 0x01 );
+    $ack->checksum_received2( 0x02 );
+    $ack->make_checksum_clean;
+    $self->_write_packet( $ack );
+
+    $logger->info( 'Init i2c comm done' );
+    return 1;
 }
 
 
@@ -57,9 +80,17 @@ sub _packet_radio_maxes
 sub _packet_radio_out
 {
     my ($self, $packet) = @_;
+    $self->_write_packet( $packet );
+    return 1;
+}
+
+
+sub _write_packet
+{
+    my ($self, $packet) = @_;
     my $byte_vec = $packet->make_byte_vector;
     my @bytes = unpack 'C*', $byte_vec;
-    $self->_i2c->i2c_write( $self->REGISTER, $_ ) for @bytes;
+    $self->_i2c->bus_write( @bytes );
     return 1;
 }
 
