@@ -2,7 +2,7 @@
 use v5.14;
 use warnings;
 use UAV::Pilot::WumpusRover::Server;
-use UAV::Pilot::WumpusRover::Server::Backend::Mock;
+use UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C;
 use Getopt::Long ();
 
 
@@ -12,7 +12,7 @@ Getopt::Long::GetOptions(
 );
 
 
-my $backend = UAV::Pilot::WumpusRover::Server::Backend::Mock->new;
+my $backend = UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C->new;
 my $server = UAV::Pilot::WumpusRover::Server->new({
     listen_port => $PORT,
     backend     => $backend,
