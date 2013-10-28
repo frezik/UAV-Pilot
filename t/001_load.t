@@ -59,5 +59,5 @@ SKIP: {
 
 SKIP: {
     skip "Raspberry Pi modules not installed", 1 unless $is_rpi_installed;
-    use_ok( 'UAV::Pilot::WumpusRover::Server::Backend::ArduinoTWI' );
+    use_ok( 'UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C' );
 }

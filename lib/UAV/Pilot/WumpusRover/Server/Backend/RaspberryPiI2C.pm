@@ -1,4 +1,4 @@
-package UAV::Pilot::WumpusRover::Server::Backend::ArdunioTWI;
+package UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C;
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -57,7 +57,9 @@ sub _packet_radio_maxes
 sub _packet_radio_out
 {
     my ($self, $packet) = @_;
-    $self->_i2c->i2c_write( $self->REGISTER, $packet->make_byte_vector );
+    my $byte_vec = $packet->make_byte_vector;
+    my @bytes = unpack 'C*', $byte_vec;
+    $self->_i2c->i2c_write( $self->REGISTER, $_ ) for @bytes;
     return 1;
 }
 
