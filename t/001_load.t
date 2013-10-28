@@ -1,8 +1,12 @@
-use Test::More tests => 42;
+use Test::More tests => 43;
 use v5.14;
 
 my $is_sdl_installed = do {
     eval "use SDL ()";
+    $@ ? 0 : 1;
+};
+my $is_rpi_installed = do {
+    eval "use HiPi ()";
     $@ ? 0 : 1;
 };
 
@@ -51,4 +55,9 @@ SKIP: {
     use_ok( 'UAV::Pilot::SDL::VideoOverlay' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay::Reticle' );
     use_ok( 'UAV::Pilot::SDL::Window' );
+}
+
+SKIP: {
+    skip "Raspberry Pi modules not installed", 1 unless $is_rpi_installed;
+    use_ok( 'UAV::Pilot::WumpusRover::Server::Backend::ArduinoTWI' );
 }

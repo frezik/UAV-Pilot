@@ -72,21 +72,24 @@ sub write
     my ($self, $fh) = @_;
     $self->make_checksum_clean;
 
-    my $packet1 = pack 'n C C C',
+    my $packet = $self->make_byte_vector;
+    $fh->print( $packet );
+
+    return 1;
+}
+
+sub make_byte_vector
+{
+    my ($self) = @_;
+    my $packet = pack 'n C*',
         $self->preamble,
         $self->payload_length,
         $self->message_id,
-        $self->version;
-    my $packet2 = $self->_encode_payload_for_write;
-    my $packet3 = pack 'C C',
+        $self->version,
+        $self->get_ordered_payload_value_bytes,
         $self->checksum1,
         $self->checksum2;
-
-    $fh->print( $packet1 );
-    $fh->print( $packet2 );
-    $fh->print( $packet3 );
-
-    return 1;
+    return $packet;
 }
 
 sub get_ordered_payload_values
@@ -157,14 +160,6 @@ sub _make_checksum_unclean
     my ($self) = @_;
     $self->_is_checksum_clean( 0 );
     return 1;
-}
-
-sub _encode_payload_for_write
-{
-    my ($self) = @_;
-    my @bytes = $self->get_ordered_payload_value_bytes;
-    my $packet = pack 'C*', @bytes;
-    return $packet;
 }
 
 
