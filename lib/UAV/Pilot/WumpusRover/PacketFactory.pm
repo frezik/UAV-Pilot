@@ -44,8 +44,8 @@ sub read_packet
 
     my $last_payload_i = 4 + $payload_length;
     my @payload        = @packet[5..$last_payload_i];
-    my $checksum1      = $packet[-2];
-    my $checksum2      = $packet[-1];
+    my $checksum1      = $packet[$last_payload_i + 1];
+    my $checksum2      = $packet[$last_payload_i + 2];
 
     my ($expect_checksum1, $expect_checksum2) = UAV::Pilot->checksum_fletcher8(
         $payload_length, $message_id, $version, @payload );

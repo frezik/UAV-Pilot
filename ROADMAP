@@ -6,9 +6,7 @@ Version 0.8
     * Replace Alien::ffmpeg?
 * Fix WumpusRover packet parsing for when the data we have is longer than a 
   single packet
-    * Easy, sloppy way: don't read the checksum with negative array indexes, 
-      and throw away the rest
-    * Harder, better way: only process as much data as we need
+    * Only process as much data as we need
 * Document
     * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover

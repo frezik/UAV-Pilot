@@ -1,4 +1,4 @@
-use Test::More tests => 73;
+use Test::More tests => 75;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -228,6 +228,15 @@ foreach (@TESTS) {
     cmp_ok( $got_packet, 'eq', $expect_packet,
         "$short_class writes packet correctly" );
 }
+
+my $too_long_packet = make_packet( '3444', '07', '01', '00', '01123401C20000',
+    '12', '10', '0000' );
+my $long_packet = UAV::Pilot::WumpusRover::PacketFactory->read_packet(
+    $too_long_packet );
+cmp_ok( $long_packet->checksum1, '==', 0x12,
+    'Checksum1 correct for long packet' );
+cmp_ok( $long_packet->checksum2, '==', 0x10,
+    'Checksum2 correct for long packet' );
 
 
 sub write_packet
