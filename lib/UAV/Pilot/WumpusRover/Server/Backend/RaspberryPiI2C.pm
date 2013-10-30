@@ -22,6 +22,11 @@ has 'slave_addr' => (
     isa     => 'Int',
     default => 0x10,
 );
+has 'register' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0x1F,
+);
 has 'i2c_device' => (
     is      => 'ro',
     isa     => 'Int',
@@ -34,7 +39,7 @@ sub BUILD
     my ($self) = @_;
     my $logger = $self->_logger;
     $logger->info( 'Attempting to init i2c comm on slave addr ['
-        . $self->slave_addr . ']' );
+        . $self->slave_addr . '] for register [' . $self->register . ']' );
 
     my $i2c = HiPi::BCM2835::I2C->new(
         peripheral => $self->i2c_device,
@@ -80,6 +85,7 @@ sub _packet_radio_maxes
 sub _packet_radio_out
 {
     my ($self, $packet) = @_;
+    $self->_logger->info( 'Writing packet: ' . ref($packet) );
     $self->_write_packet( $packet );
     return 1;
 }
@@ -90,7 +96,7 @@ sub _write_packet
     my ($self, $packet) = @_;
     my $byte_vec = $packet->make_byte_vector;
     my @bytes = unpack 'C*', $byte_vec;
-    $self->_i2c->bus_write( @bytes );
+    $self->_i2c->bus_write( $self->register, @bytes );
     return 1;
 }
 
