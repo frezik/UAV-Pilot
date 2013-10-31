@@ -2,6 +2,14 @@ Version 0.8
 -----------
 * Send multiconfig commands in order to set video display size and fps
 * Implement WumpusRover
+* WumpusRover Server
+    * ACK packets
+    * Don't do anything until we get a Startup Request packet
+    * Don't die on bad i2c writes
+* WumpusRover Client
+    * Wait for ACK packets w/EasyEvent
+    * wumpus library under share/
+    * Modify uav_joystick to optionally use this
 * Use Devel::CheckLib to look for ffmpeg 
     * Replace Alien::ffmpeg?
 * Fix WumpusRover packet parsing for when the data we have is longer than a 
