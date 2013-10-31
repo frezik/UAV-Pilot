@@ -45,7 +45,7 @@ my $cv = AnyEvent->condvar;
 my $event = UAV::Pilot::EasyEvent->new({
     condvar => $cv,
 });
-$control->setup_read_nav_event( $event );;
+$control->setup_read_nav_event( $event );
 
 
 my $toggle = 0;
