@@ -9,21 +9,14 @@ has 'port' => (
     isa     => 'Int',
     default => 45000,
 );
-# Create channel fields and setters, numbered 1 through 8
-foreach (1..8) {
-    my $field = 'ch' . $_;
-    my $set_method = 'set_ch' . $_;
-    has $field => (
-        is     => 'ro',
-        isa    => 'Int',
-        writer => $set_method,
-    );
-
-    after $set_method => sub {
-        my ($self) = @_;
-        $self->_send_radio_output_packet;
-    };
-}
+has 'host' => (
+    is  => 'ro',
+    isa => 'Str',
+);
+has '_socket' => (
+    is  => 'rw',
+    isa => 'IO::Socket::INET',
+);
 
 with 'UAV::Pilot::Driver';
 with 'UAV::Pilot::Logger';
@@ -32,13 +25,16 @@ with 'UAV::Pilot::Logger';
 sub connect
 {
     my ($self) = @_;
+    my $logger = $self->_logger;
+
+    $logger->info( 'Connecting . . . ' );
     $self->_init_connection;
 
     my $startup_request = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
         'RequestStartupMessage' );
+    # TODO find out what Ardupilot wants for these params
     $startup_request->system_type( 0x00 );
-    $startup_request->system_id( 0x01 );
-    $startup_request->make_checksum_clean;
+    $startup_request->system_id( 0x00 );
     $self->_send_packet( $startup_request );
 
     return 1;
@@ -48,31 +44,47 @@ sub connect
 sub _init_connection
 {
     my ($self) = @_;
-    # TODO
+    my $logger = $self->_logger;
+
+    $logger->info( 'Open UDP socket to ' . $self->host . ':' . $self->port );
+    my $socket = IO::Socket::INET->new(
+        Proto    => 'udp',
+        PeerHost => $self->host,
+        PeerPort => $self->port,
+    ) or UAV::Pilot::IOException->throw({
+        error => 'Could not open socket: ' . $!,
+    });
+    $logger->info( 'Done opening socket' );
+
+    $self->_socket( $socket );
     return 1;
 }
 
 sub _send_packet
 {
-    my ($self) = @_;
-    # TODO
+    my ($self, $packet) = @_;
+    $packet->write( $self->_socket );
     return 1;
 }
+# Cleanup packet in 'before' so the Mock version also does it
+before '_send_packet' => sub {
+    my ($self, $packet) = @_;
+    $packet->make_checksum_clean;
+    return 1;
+};
 
-sub _send_radio_output_packet
+sub send_radio_output_packet
 {
-    my ($self) = @_;
+    my ($self, @channels) = @_;
     my $radio_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
         'RadioOutputs' );
 
     foreach my $i (1..8) {
-        my $field = 'ch' . $i;
+        my $value = $channels[$i-1] // 0;
         my $packet_field = 'ch' . $i . '_out';
-        next unless defined $self->$field;
-        $radio_packet->$packet_field( $self->$field );
+        $radio_packet->$packet_field( $value );
     }
 
-    $radio_packet->make_checksum_clean;
     $self->_send_packet( $radio_packet );
     return 1;
 }
