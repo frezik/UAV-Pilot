@@ -3,6 +3,9 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use UAV::Pilot::WumpusRover::PacketFactory;
+use Tie::IxHash;
+
+use constant MAX_PACKET_QUEUE_LENGTH => 20;
 
 has 'port' => (
     is      => 'ro',
@@ -16,6 +19,21 @@ has 'host' => (
 has '_socket' => (
     is  => 'rw',
     isa => 'IO::Socket::INET',
+);
+has '_ack_callback' => (
+    is      => 'rw',
+    isa     => 'CodeRef',
+    default => sub { sub {} },
+    writer  => 'set_ack_callback',
+);
+has '_packet_queue' => (
+    is      => 'ro',
+    isa     => 'HashRef',
+    default => sub {
+        my %tie = ();
+        tie %tie, 'Tie::IxHash';
+        \%tie;
+    },
 );
 
 with 'UAV::Pilot::Driver';
@@ -41,6 +59,23 @@ sub connect
 }
 
 
+sub send_radio_output_packet
+{
+    my ($self, @channels) = @_;
+    my $radio_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
+        'RadioOutputs' );
+
+    foreach my $i (1..8) {
+        my $value = $channels[$i-1] // 0;
+        my $packet_field = 'ch' . $i . '_out';
+        $radio_packet->$packet_field( $value );
+    }
+
+    $self->_send_packet( $radio_packet );
+    return 1;
+}
+
+
 sub _init_connection
 {
     my ($self) = @_;
@@ -60,33 +95,63 @@ sub _init_connection
     return 1;
 }
 
+sub _packet_queue_size
+{
+    my ($self) = @_;
+    return scalar keys %{ $self->_packet_queue };
+}
+
 sub _send_packet
 {
     my ($self, $packet) = @_;
+    $packet->make_checksum_clean;
     $packet->write( $self->_socket );
     return 1;
 }
-# Cleanup packet in 'before' so the Mock version also does it
-before '_send_packet' => sub {
-    my ($self, $packet) = @_;
-    $packet->make_checksum_clean;
-    return 1;
-};
 
-sub send_radio_output_packet
+sub _process_ack
 {
-    my ($self, @channels) = @_;
-    my $radio_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
-        'RadioOutputs' );
+    my ($self, $ack) = @_;
 
-    foreach my $i (1..8) {
-        my $value = $channels[$i-1] // 0;
-        my $packet_field = 'ch' . $i . '_out';
-        $radio_packet->$packet_field( $value );
+    my $key = $ack->make_ack_packet_queue_key;
+    $self->_logger->info( "Processing ack packet with key [$key]" );
+
+    my $orig_value = delete $self->_packet_queue->{$key};
+    $self->_logger->warn( "Received Ack packet for key $key, but couldn't"
+        . " find a matching packet" )
+        unless defined $orig_value;
+
+    return 1;
+}
+
+sub _add_to_packet_queue
+{
+    my ($self, $packet) = @_;
+
+    my $key = $packet->make_packet_queue_map_key;
+    $self->_logger->info( "Adding packet to queue for key $key" );
+
+    $self->_reduce_queue_length_to_max;
+    $self->_packet_queue->{$key} = $packet;
+
+    return 1;
+}
+
+sub _reduce_queue_length_to_max
+{
+    my ($self) = @_;
+
+    my @keys = keys $self->_packet_queue;
+    my $packets_removed = 0;
+    while( scalar(@keys) >= $self->MAX_PACKET_QUEUE_LENGTH ) {
+        my $next_key = shift @keys;
+        $self->_logger->warn( "Queue too large, removing packet $next_key" );
+
+        delete $self->_packet_queue->{$next_key};
+        $packets_removed++;
     }
 
-    $self->_send_packet( $radio_packet );
-    return 1;
+    return $packets_removed;
 }
 
 
