@@ -23,6 +23,7 @@ sub _init_connection
 after '_send_packet' => sub {
     my ($self, $packet) = @_;
     $packet->make_checksum_clean;
+    $self->_add_to_packet_queue( $packet );
 
     my $ack = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet( 'Ack' );
     $ack->message_received_id( $packet->message_id );

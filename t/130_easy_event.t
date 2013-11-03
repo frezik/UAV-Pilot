@@ -1,7 +1,9 @@
-use Test::More tests => 7;
+use Test::More tests => 8;
 use v5.14;
 use UAV::Pilot::EasyEvent;
 use AnyEvent;
+
+use constant EXPECT_ARG => 42;
 
 
 my $cv = AnyEvent->condvar;
@@ -59,6 +61,7 @@ my $timer; $timer = AnyEvent->timer(
         $i = 0;
         $did_one_off = 0;
         $event->send_event( 'foo_happens' );
+        $event->send_event( 'foo_happens_with_argument', EXPECT_ARG );
         $cv->send( "End" );
     },
 );
@@ -75,6 +78,10 @@ $event->add_event( 'foo_happens' => sub {
 $event->add_event( 'foo_happens' => sub {
     my $expect_i = $did_one_off ? 3 : 1;
     cmp_ok( $i, '==', $expect_i, "Even more foo happened" );
+});
+$event->add_event( 'foo_happens_with_argument' => sub {
+    my ($arg1) = @_;
+    cmp_ok( $arg1, '==', EXPECT_ARG, "Foo happened with an argument" );
 });
 
 $event->init_event_loop;

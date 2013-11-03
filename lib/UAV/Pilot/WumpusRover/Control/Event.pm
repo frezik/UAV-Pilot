@@ -32,7 +32,8 @@ sub init_event_loop
     );
 
     $self->driver->set_ack_callback( sub {
-        # TODO
+        my ($orig_packet, $ack_packet) = @_;
+        $event->send_event( 'ack_recv', $orig_packet, $ack_packet );
     });
 
     return 1;

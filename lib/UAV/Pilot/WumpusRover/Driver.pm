@@ -106,6 +106,7 @@ sub _send_packet
     my ($self, $packet) = @_;
     $packet->make_checksum_clean;
     $packet->write( $self->_socket );
+    $self->_add_to_packet_queue( $packet );
     return 1;
 }
 
@@ -116,10 +117,14 @@ sub _process_ack
     my $key = $ack->make_ack_packet_queue_key;
     $self->_logger->info( "Processing ack packet with key [$key]" );
 
-    my $orig_value = delete $self->_packet_queue->{$key};
-    $self->_logger->warn( "Received Ack packet for key $key, but couldn't"
-        . " find a matching packet" )
-        unless defined $orig_value;
+    my $orig_packet = delete $self->_packet_queue->{$key};
+    if( defined $orig_packet ) {
+        $self->_ack_callback->( $orig_packet, $ack )
+    }
+    else {
+        $self->_logger->warn( "Received Ack packet for key $key, but couldn't"
+            . " find a matching packet" );
+    }
 
     return 1;
 }
