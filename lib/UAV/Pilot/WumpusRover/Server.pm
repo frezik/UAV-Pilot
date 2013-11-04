@@ -48,10 +48,27 @@ sub start_listen_loop
 sub process_packet
 {
     my ($self, $packet) = @_;
+    my $backend = $self->backend;
 
-    if( $self->backend->process_packet( $packet ) ) {
-        my $ack = $self->_build_ack_packet( $packet );
-        $self->_send_packet( $ack );
+    my $process = sub {
+        if( $backend->process_packet($packet) ) {
+            my $ack = $self->_build_ack_packet( $packet );
+            $self->_send_packet( $ack );           
+        }
+    };
+
+    if(! $backend->started) {
+        if( $packet->isa(
+            'UAV::Pilot::WumpusRover::Packet::RequestStartupMessage' )) {
+            $process->();
+        }
+        else {
+            $self->_logger->warn( "Recieved packet, but we need a"
+                . " RequestStartupMessage first");
+        }
+    }
+    else {
+        $process->();
     }
 
     return 1;

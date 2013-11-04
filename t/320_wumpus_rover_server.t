@@ -1,4 +1,4 @@
-use Test::More tests => 20;
+use Test::More tests => 21;
 use strict;
 use warnings;
 use UAV::Pilot::WumpusRover::PacketFactory;
@@ -18,6 +18,16 @@ does_ok( $server => 'UAV::Pilot::Server' );
 
 
 ok(! $backend->started, "Not started yet" );
+my $too_soon = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
+    'RadioTrims' );
+$too_soon->ch1_trim( 50 );
+$too_soon->ch2_trim( 100 );
+$too_soon->make_checksum_clean;
+$server->process_packet( $too_soon );
+
+my $undef_packet = $server->last_packet_out;
+ok(! defined $undef_packet, "No Ack packet, because we didn't start yet" );
+
 my $startup_request = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
     'RequestStartupMessage' );
 $startup_request->system_type( 1 );
