@@ -26,19 +26,6 @@ with 'UAV::Pilot::Logger';
 
 
 
-sub connect
-{
-    my ($self) = @_;
-    $self->driver->connect;
-    my $logger = $self->_logger;
-
-
-    $logger->info( 'Sending Request Startup Message packet' );
-    $logger->info( 'Request Startup Message packet sent' );
-    $logger->info( 'Finished connecting' );
-    return 1;
-}
-
 sub convert_sdl_input
 {
     my ($self, $in) = @_;
