@@ -1,4 +1,4 @@
-use v5.12;
+use v5.14;
 use warnings;
 use Module::Build;
 
@@ -28,7 +28,7 @@ my $build = Module::Build->new(
         'ExtUtils::CBuilder' => 0, # For FFmpeg; make optional with that
     },
     requires          => {
-        perl                                => '>= 5.12.0',
+        perl                                => '>= 5.14.0',
         'namespace::autoclean'              => 0,
         'Alien::ffmpeg'                     => 0,
         'AnyEvent'                          => 0,
