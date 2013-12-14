@@ -1,5 +1,6 @@
 Version 0.8
 -----------
+* Implement unicast on AR.Drone nav data
 * Send multiconfig commands in order to set video display size and fps
 * WumpusRover Server
     * Don't die on bad i2c writes
