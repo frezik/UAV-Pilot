@@ -1,4 +1,4 @@
-use Test::More tests => 43;
+use Test::More tests => 42;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -47,10 +47,9 @@ use_ok( 'UAV::Pilot::WumpusRover::Control' );
 use_ok( 'UAV::Pilot::WumpusRover::Control::Event' );
 
 SKIP: {
-    skip "SDL not installed", 5 unless $is_sdl_installed;
+    skip "SDL not installed", 6 unless $is_sdl_installed;
     use_ok( 'UAV::Pilot::ARDrone::SDLNavOutput' );
     use_ok( 'UAV::Pilot::SDL::Joystick' );
-    use_ok( 'UAV::Pilot::SDL::EventHandler' );
     use_ok( 'UAV::Pilot::SDL::Video' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay::Reticle' );

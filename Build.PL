@@ -43,9 +43,9 @@ my $build = Module::Build->new(
         'Math::Trig'                        => 0,
         'Moose'                             => 0,
         'MooseX::Event'                     => 0,
-        'MooseX::Types::Tied::Hash::IxHash' => 0,
         'String::CRC32'                     => 0,
         'Test::More'                        => 0,
+        'Tie::IxHash'                       => 0,
         'Throwable'                         => 0,
         'YAML'                              => 0,
         # For FFmpeg; make optional with that
