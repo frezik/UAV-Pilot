@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use IO::Socket;
+use IO::Socket::INET;
 use IO::Socket::Multicast;
 use UAV::Pilot::Exceptions;
 use UAV::Pilot::NavCollector;
@@ -215,6 +216,14 @@ use constant {
     ARDRONE_CONFIG_VIDEO_MIN_FPS => 1,
 
     ARDRONE_CONFIG_VIDEO_VBC_MODE_DYNAMIC => 1,
+
+
+    NAVDATA_INIT_MULTICAST => 'foo',
+    NAVDATA_INIT_UNICAST   => pack( 'c*', 0x01, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    ),
+
 };
 
 
@@ -247,6 +256,11 @@ has 'nav_collectors' => (
     handles => {
         add_nav_collector => 'push',
     },
+);
+has 'do_multicast_navdata' => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
 );
 
 has '_socket' => (
@@ -565,28 +579,11 @@ sub _init_drone
 sub _init_nav_data
 {
     my ($self) = @_;
-    my $host = $self->host;
-    my $multicast_addr = $self->ARDRONE_MULTICAST_ADDR;
-    my $port           = $self->ARDRONE_PORT_NAV_DATA;
-    my $socket_type    = $self->ARDRONE_PORT_NAV_DATA_TYPE;
-    my $iface          = $self->iface;
-    my $logger         = $self->_logger;
+    my $logger = $self->_logger;
 
-    $logger->info( "Init nav data connection; iface [$iface], host [$host], "
-        . " multicast address [$multicast_addr], port [$port]" );
-
-    # Init navigation data socket with the UAV
-    my $nav_sock = IO::Socket::Multicast->new(
-        Proto     => $socket_type,
-        PeerPort  => $port,
-        PeerAddr  => $host,
-        LocalAddr => $multicast_addr,
-        LocalPort => $port,
-        ReuseAddr => 1,
-    ) or die "Could not open socket: $!\n";
-    $nav_sock->mcast_add( $multicast_addr, $iface )
-        or die "Could not subscribe to '$multicast_addr': $!\n";
-    $nav_sock->send( 'foo' );
+    my $nav_sock = $self->do_multicast_navdata
+        ? $self->_init_nav_sock_multicast
+        : $self->_init_nav_sock_unicast;
 
     $logger->info( "Nav data connected, setting parameters" );
 
@@ -618,6 +615,57 @@ sub _init_nav_data
 
     $logger->info( "Nav data init finished" );
     return 1;
+}
+
+sub _init_nav_sock_multicast
+{
+    my ($self) = @_;
+    my $host = $self->host;
+    my $multicast_addr = $self->ARDRONE_MULTICAST_ADDR;
+    my $port           = $self->ARDRONE_PORT_NAV_DATA;
+    my $socket_type    = $self->ARDRONE_PORT_NAV_DATA_TYPE;
+    my $iface          = $self->iface;
+    my $logger         = $self->_logger;
+
+    $logger->info( "Init nav data connection; iface [$iface], host [$host], "
+        . " multicast address [$multicast_addr], port [$port]" );
+
+    my $nav_sock = IO::Socket::Multicast->new(
+        Proto     => $socket_type,
+        PeerPort  => $port,
+        PeerAddr  => $host,
+        LocalAddr => $multicast_addr,
+        LocalPort => $port,
+        ReuseAddr => 1,
+    ) or die "Could not open socket: $!\n";
+    $nav_sock->mcast_add( $multicast_addr, $iface )
+        or die "Could not subscribe to '$multicast_addr': $!\n";
+    $nav_sock->send( $self->NAVDATA_INIT_MULTICAST );
+
+    return $nav_sock;
+}
+
+sub _init_nav_sock_unicast
+{
+    my ($self) = @_;
+    my $host = $self->host;
+    my $port        = $self->ARDRONE_PORT_NAV_DATA;
+    my $socket_type = $self->ARDRONE_PORT_NAV_DATA_TYPE;
+    my $logger      = $self->_logger;
+
+    $logger->info( "Init nav data connection; host [$host]"
+        . ", unicast, port [$port]" );
+
+    my $nav_sock = IO::Socket::INET->new(
+        Proto     => $socket_type,
+        PeerPort  => $port,
+        PeerAddr  => $host,
+        LocalPort => $port,
+        ReuseAddr => 1,
+    ) or die "Could not open socket: $!\n";
+    $nav_sock->send( $self->NAVDATA_INIT_UNICAST );
+
+    return $nav_sock;
 }
 
 
@@ -663,6 +711,11 @@ program or library controlling this UAV, look at L<UAV::Pilot::Control::ARDrone>
 =head2 port
 
 =head2 seq
+
+=head2 do_multicast_navdata
+
+If true, navdata will use a multicast IP connection.  Mac OSX seems to be 
+tricky to use with multicast.  Default is false.
 
 =head1 METHODS
 
