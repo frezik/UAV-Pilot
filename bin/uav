@@ -13,11 +13,13 @@ my $MULTILINE_PROMPT = "\t";
 my @LIB_PATHS        = ();
 my @LIBS             = ();
 my $IFACE            = undef;
+my $DO_MULTICAST     = 0;
 GetOptions(
     'host=s'      => \$IP,
     'i|iface=s'   => \$IFACE,
     'l|load=s'    => \@LIBS,
     'L|library=s' => \@LIB_PATHS,
+    'm|multicast' => \$DO_MULTICAST,
 );
 
 
@@ -83,7 +85,8 @@ sub load_libraries
     my $driver_args = {
         host => $IP,
     };
-    $driver_args->{iface} = $IFACE if defined $IFACE;
+    $driver_args->{iface}                = $IFACE if defined $IFACE;
+    $driver_args->{do_multicast_navdata} = 1      if $DO_MULTICAST;
 
     my $ardrone = UAV::Pilot::ARDrone::Driver->new( $driver_args );
     $ardrone->connect;
@@ -158,5 +161,17 @@ directories specified by the C<--library> option (or the default library path).
 
 Specify interface name to be used with the drone.  By default, iface is set to wlan0.
 Mac useses different interface names and can be found using the ifconfig command.
+More recent Linux setups with predictable interface names also use different 
+naming convention (unless your distro configures things using the old names).
+
+This is only needed with the multicast option.
+
+=head2 -m or --multicast
+
+Use multicast addresses for UAV connections that support it.  In particular, 
+the Parrot AR.Drone's nav data.
+
+Multicast seems to be tricky to use on Mac OSX.  Default is to use traditional 
+unicast.
 
 =cut
