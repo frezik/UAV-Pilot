@@ -129,7 +129,7 @@ __END__
 
 =head1 DESCRIPTION
 
-Launches a shell for controlling a UAV.  Perl statements may be typed at the prompt, ending 
+Launches a shell for controlling a UAV.  Perl statements may be typed at the prompt, ending
 with a semi-colon.  With the Parrot AR.Drone, try:
 
     uav> takeoff;
@@ -141,7 +141,7 @@ with a semi-colon.  With the Parrot AR.Drone, try:
 
 =head2 --host
 
-Host IP to connect to.  Out of the box, the Parrot AR.Drone will be its own wireless 
+Host IP to connect to.  Out of the box, the Parrot AR.Drone will be its own wireless
 access point on IP 192.168.1.1 (which is the default here).
 
 =head2 -L or --library
@@ -151,7 +151,12 @@ dist shared dir returned by L<File::ShareDir> for L<UAV::Pilot>.
 
 =head2 -l or --load
 
-Library to load.  May be specified multiple times.  It will need to be under one of the 
+Library to load.  May be specified multiple times.  It will need to be under one of the
 directories specified by the C<--library> option (or the default library path).
+
+=head2 -i or --iface
+
+Specify interface name to be used with the drone.  By default, iface is set to wlan0.
+Mac useses different interface names and can be found using the ifconfig command.
 
 =cut

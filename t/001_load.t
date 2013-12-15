@@ -44,7 +44,7 @@ use_ok( 'UAV::Pilot::WumpusRover::Packet' );
 use_ok( 'UAV::Pilot::WumpusRover::PacketFactory' );
 use_ok( 'UAV::Pilot::WumpusRover::Server' );
 use_ok( 'UAV::Pilot::WumpusRover::Control' );
-use_ok( 'UAV::Pilot::WumpusRover::Control::Mock' );
+use_ok( 'UAV::Pilot::WumpusRover::Control::Event' );
 
 SKIP: {
     skip "SDL not installed", 5 unless $is_sdl_installed;

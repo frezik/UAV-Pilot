@@ -93,7 +93,7 @@ sub send_event
         # changed and the index will be off.
         my $cb         = $callbacks->[$i]{callback};
         my $is_one_off = $callbacks->[$i]{is_one_off};
-        $cb->();
+        $cb->(@args);
 
         if( $is_one_off ) {
             splice @callbacks, $i, 1;

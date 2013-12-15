@@ -3,7 +3,8 @@ use v5.14;
 use Moose::Role;
 
 
-use constant _USE_DEFAULT_BUILDARGS => 1;
+use constant _USE_DEFAULT_BUILDARGS          => 1;
+use constant _PACKET_QUEUE_MAP_KEY_SEPERATOR => '|';
 
 
 has 'preamble' => (
@@ -152,6 +153,19 @@ sub make_checksum_clean
     $self->_calc_checksum;
     $self->_is_checksum_clean( 1 );
     return 1;
+}
+
+sub make_packet_queue_map_key
+{
+    my ($self) = @_;
+    # NOTE: any changes here must be reflected in
+    # Packet::Ack::make_ack_packet_queue_key()
+    my $key = join( $self->_PACKET_QUEUE_MAP_KEY_SEPERATOR,
+        $self->message_id,
+        $self->checksum1,
+        $self->checksum2,
+    );
+    return $key;
 }
 
 
