@@ -21,9 +21,9 @@ Install with the standard Module::Build method:
 
 
 
-NOTES
-=====
+SPECIAL THANKS
+==============
 
-Font 'Typeone' is by Nirmal Biswas:
+Nirmal Biswas for font 'Typeone': http://www.dafont.com/nirmal-biswas.d3277
 
-    http://www.dafont.com/nirmal-biswas.d3277
+Curtis Brandt for helping get things working on Macs
