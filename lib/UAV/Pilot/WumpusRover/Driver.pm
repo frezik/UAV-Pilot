@@ -53,6 +53,7 @@ sub connect
     # TODO find out what Ardupilot wants for these params
     $startup_request->system_type( 0x00 );
     $startup_request->system_id( 0x00 );
+    $logger->info( 'Sending RequestStartupMessage packet' );
     $self->_send_packet( $startup_request );
 
     return 1;
