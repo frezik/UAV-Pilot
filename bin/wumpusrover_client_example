@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
+use UAV::Pilot::WumpusRover::Driver;
 use UAV::Pilot::WumpusRover::Control;
 use Getopt::Long ();
 use Time::HiRes 'usleep';
@@ -9,21 +10,25 @@ use constant SLEEP_TIME_US => 1_000_000 / 30;
 
 
 my $PORT = 49_000;
-my $HOST = '10.0.0.9';
+my $HOST = '10.0.0.16';
 Getopt::Long::GetOptions(
     'port=i' => \$PORT,
     'host=s' => \$HOST,
 );
 
 
-my $control = UAV::Pilot::WumpusRover::Control->new({
+my $driver = UAV::Pilot::WumpusRover::Driver->new({
     host => $HOST,
     port => $PORT,
 });
-$control->connect;
+$driver->connect;
+
+my $control = UAV::Pilot::WumpusRover::Control->new({
+    driver => $driver,
+});
 
 $control->throttle( 100 );
-$control->turn( 100 );
+$control->turn( 10 );
 
 while( 1 ) {
     $control->send_move_packet;
