@@ -63,8 +63,8 @@ sub process_packet
             $process->();
         }
         else {
-            $self->_logger->warn( "Recieved packet, but we need a"
-                . " RequestStartupMessage first");
+            $self->_logger->warn( 'Recieved packet of type "' . ref( $packet )
+                . '", but we need a RequestStartupMessage first' );
         }
     }
     else {
@@ -108,8 +108,10 @@ sub _read_packet
                     . $@->got_checksum1 . ', ' . $@->got_checksum2 );
             }
             else {
-                $self->_logger->warn( 'Got exception: ' . ref($@) );
-                $@->rethrow;
+                my $is_ref = ref $@;
+                $self->_logger->warn( 'Got exception while processing packet: '
+                    . $is_ref ? $is_ref : $@ );
+                $@->rethrow if $is_ref;
             }
         }
         elsif( $@ ) {

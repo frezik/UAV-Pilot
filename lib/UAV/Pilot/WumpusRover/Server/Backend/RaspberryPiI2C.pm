@@ -4,10 +4,9 @@ use Moose;
 use namespace::autoclean;
 use UAV::Pilot::WumpusRover::Server::Backend;
 use UAV::Pilot::WumpusRover::PacketFactory;
+use HiPi::Device::I2C ();
 use HiPi::BCM2835::I2C qw( :all );
-
-use constant REGISTER   => 0x00;
-
+use Time::HiRes ();
 
 with 'UAV::Pilot::WumpusRover::Server::Backend';
 with 'UAV::Pilot::Logger';
@@ -20,17 +19,27 @@ has '_i2c' => (
 has 'slave_addr' => (
     is      => 'ro',
     isa     => 'Int',
-    default => 0x10,
+    default => 0x09,
 );
-has 'register' => (
+has 'throttle_register' => (
     is      => 'ro',
     isa     => 'Int',
-    default => 0x1F,
+    default => 0x01,
+);
+has 'turn_register' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0x02,
 );
 has 'i2c_device' => (
     is      => 'ro',
     isa     => 'Int',
     default => BB_I2C_PERI_1,
+);
+has '_last_time_packet_sent' => (
+    is      => 'rw',
+    isa     => 'Num',
+    default => 0.0,
 );
 
 
@@ -39,23 +48,13 @@ sub BUILD
     my ($self) = @_;
     my $logger = $self->_logger;
     $logger->info( 'Attempting to init i2c comm on slave addr ['
-        . $self->slave_addr . '] for register [' . $self->register . ']' );
+        . $self->slave_addr . ']' );
 
     my $i2c = HiPi::BCM2835::I2C->new(
         peripheral => $self->i2c_device,
         address    => $self->slave_addr,
     );
     $self->_set_i2c( $i2c );
-
-    $logger->info( 'Started i2c device, attempting to communicate' );
-    # TODO Implement StartupMessage (not RequestStartupMessage) and use 
-    # that here instead
-    my $ack = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet( 'Ack' );
-    $ack->message_received_id( 0x00 );
-    $ack->checksum_received1( 0x01 );
-    $ack->checksum_received2( 0x02 );
-    $ack->make_checksum_clean;
-    $self->_write_packet( $ack );
 
     $logger->info( 'Init i2c comm done' );
     return 1;
@@ -64,7 +63,9 @@ sub BUILD
 
 sub _packet_request_startup
 {
-    # Ignore
+    my ($self, $packet) = @_;
+    $self->_set_started( 1 );
+    return 1;
 }
 
 sub _packet_radio_trims
@@ -86,17 +87,31 @@ sub _packet_radio_out
 {
     my ($self, $packet) = @_;
     $self->_logger->info( 'Writing packet: ' . ref($packet) );
-    $self->_write_packet( $packet );
+
+    my $throttle = $packet->ch1_out;
+    my $turn     = $packet->ch2_out;
+    my @throttle_bytes = unpack 'cc', $throttle;
+    my @turn_bytes     = unpack 'cc', $turn;
+
+    $self->_write_packet( $self->throttle_register, @throttle_bytes );
+    $self->_write_packet( $self->turn_register,     @turn_bytes     );
     return 1;
 }
 
 
 sub _write_packet
 {
-    my ($self, $packet) = @_;
-    my $byte_vec = $packet->make_byte_vector;
-    my @bytes = unpack 'C*', $byte_vec;
-    $self->_i2c->bus_write( $self->register, @bytes );
+    my ($self, $register, @bytes) = @_;
+    my $logger = $self->_logger;
+
+    eval {
+        $logger->info( "Writing [@bytes] to register [$register]" );
+        $self->_i2c->bus_write( $register, @bytes );
+    };
+    if( $@ ) {
+        $logger->warn( 'Could not write i2c data: ' . $@ );
+    }
+
     return 1;
 }
 
@@ -106,3 +121,9 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
+
+=cut

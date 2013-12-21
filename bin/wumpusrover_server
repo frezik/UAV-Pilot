@@ -18,4 +18,5 @@ my $server = UAV::Pilot::WumpusRover::Server->new({
     backend     => $backend,
 });
 
+warn "Ready!\n";
 $server->start_listen_loop;

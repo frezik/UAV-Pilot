@@ -14,6 +14,13 @@ requires $_ for values %{ +PACKET_METHOD_MAP };
 
 with 'UAV::Pilot::Logger';
 
+has 'started' => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+    writer  => '_set_started',
+);
+
 
 sub process_packet
 {
