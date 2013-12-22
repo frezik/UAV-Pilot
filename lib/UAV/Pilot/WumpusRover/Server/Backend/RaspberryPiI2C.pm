@@ -90,8 +90,8 @@ sub _packet_radio_out
 
     my $throttle = $packet->ch1_out;
     my $turn     = $packet->ch2_out;
-    my @throttle_bytes = unpack 'cc', $throttle;
-    my @turn_bytes     = unpack 'cc', $turn;
+    my @throttle_bytes = ( ($throttle >> 8), ($throttle & 0xff) );
+    my @turn_bytes     = ( ($turn     >> 8), ($turn     & 0xff) );
 
     $self->_write_packet( $self->throttle_register, @throttle_bytes );
     $self->_write_packet( $self->turn_register,     @turn_bytes     );
