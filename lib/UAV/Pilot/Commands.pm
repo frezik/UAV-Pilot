@@ -6,10 +6,7 @@ use File::Spec;
 
 use constant MOD_EXTENSION => '.uav';
 
-has 'device' => (
-    is   => 'ro',
-    does => 'UAV::Pilot::Control',
-);
+
 has 'lib_dirs' => (
     is      => 'ro',
     isa     => 'ArrayRef[Str]',
@@ -24,7 +21,7 @@ has 'condvar' => (
     isa => 'AnyEvent::CondVar',
 );
 
-our ($dev, $s);
+our $s;
 
 #
 # Sole command that can run without loading other libraries
@@ -46,8 +43,7 @@ sub run_cmd
     }
     return 1 unless defined $cmd;
 
-    $s   = $self;
-    $dev = $self->device;
+    $s = $self;
     eval $cmd;
     die $@ if $@;
 
@@ -98,7 +94,7 @@ sub _compile_mod
 
     $pack = ref($self) unless defined $pack;
     if( my $call = $pack->can( 'uav_module_init' ) ) {
-        $call->( $pack, $args );
+        $call->( $pack, $self, $args );
 
         # Clear uav_module_init.  Would prefer a solution without eval( STRING ), 
         # though a symbol table manipulation method may be considered just as evil.

@@ -3,6 +3,7 @@ use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::ARDrone::Video;
 use UAV::Pilot::Events;
 
+our ($dev);
 
 {
     my @NO_ARG_STRAIGHT_COMMANDS = qw(
@@ -157,8 +158,9 @@ sub record_usb ()
 
     sub uav_module_init
     {
-        my ($class, $args) = @_;
-        $cv = $$args{condvar};
+        my ($class, $cmd, $args) = @_;
+        $cv  = $$args{condvar};
+        $dev = $$args{controller};
         return 1;
     }
 

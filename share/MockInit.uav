@@ -1,6 +1,6 @@
 sub uav_module_init
 {
-    my ($pack, $args) = @_;
+    my ($pack, $cmd, $args) = @_;
     $UAV::Pilot::mock_init_set = $$args{setting};
     return 1;
 }
