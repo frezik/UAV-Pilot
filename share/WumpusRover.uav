@@ -2,7 +2,35 @@ use UAV::Pilot::Exceptions;
 
 
 {
-    my ($cv, $dev);
+    my $dev         = undef;
+    my $cv          = undef;
+    my $events      = undef;
+    my $easy_events = undef;
+
+    # TODO
+    # Make this into a role so ARDrone and WumpusRover can share the code
+    my $init_events = sub {
+        return 1 if defined $events;
+        die "Can't init UAV::Pilot::Events without a condvar\n" unless defined $cv;
+
+        $events = UAV::Pilot::Events->new({
+            condvar => $cv,
+        });
+        $easy_events = UAV::Pilot::EasyEvent->new({
+            condvar => $cv,
+        });
+        $events->init_event_loop;
+        $easy_events->init_event_loop;
+
+        # If we can load SDL, then init it here
+        eval "use UAV::Pilot::SDL::Events";
+        if(! $@ ) {
+            my $sdl_events = UAV::Pilot::SDL::Events->new;
+            $events->register( $sdl_events );
+        }
+
+        return 1;
+    };
 
     sub uav_module_init
     {
@@ -32,25 +60,50 @@ use UAV::Pilot::Exceptions;
         $dev->turn( 0 );
         return 1;
     }
+
+    # TODO
+    # Make this into a role so ARDrone and WumpusRover can share the code
+    sub start_joystick ()
+    {
+        $init_events->();
+        eval "use UAV::Pilot::SDL::Joystick";
+        die "Problem loading UAV::Pilot::SDL::Joystick: $@\n" if $@;
+
+        my $joystick = UAV::Pilot::SDL::Joystick->new({
+            condvar    => $cv,
+            controller => $dev,
+        });
+        $events->register( $joystick );
+
+        say 'Ready for joystick input on ['
+            . SDL::Joystick::name( $joystick->joystick->index )
+            . ']';
+
+        return 1;
+    }
 }
 
-sub take_picture ($)
-{
-    my ($file) = @_;
-}
+# TODO
+# Implement video
+#sub start_video ()
+#{
+#}
 
-sub start_joystick ()
-{
-}
+# TODO
+# Implement video
+#sub dump_video_to_file ($)
+#{
+#    my ($file) = @_;
+#}
 
-sub start_video ()
-{
-}
+# TODO
+# Implement taking picture
+#sub take_picture ($)
+#{
+#    my ($file) = @_;
+#}
 
-sub dump_video_to_file ($)
-{
-    my ($file) = @_;
-}
+
 
 # TODO
 # Implement telemetry on server
