@@ -4,6 +4,8 @@ Version 0.8
 * WumpusRover Client
     * wumpus library under share/
     * Modify uav_joystick to optionally use this
+* WumpusRover Server
+    * Use Radio min/max packets to scale values coming from client
 * Use Devel::CheckLib to look for ffmpeg 
     * Replace Alien::ffmpeg?
 * Fix WumpusRover packet parsing for when the data we have is longer than a 

@@ -1,0 +1,38 @@
+use UAV::Pilot::Exceptions;
+
+
+{
+    my ($cv, $dev);
+
+    sub uav_module_init
+    {
+        my ($class, $cmd, $args) = @_;
+        $cv  = $args->{condvar};
+        $dev = $args->{controller};
+        return 1;
+    }
+
+    sub throttle ($)
+    {
+        my ($value) = @_;
+        $dev->throttle( $value );
+        return 1;
+    }
+
+    sub turn ($)
+    {
+        my ($value) = @_;
+        $dev->turn( $value );
+        return 1;
+    }
+
+    sub stop ()
+    {
+        $dev->throttle( 0 );
+        $dev->turn( 0 );
+        return 1;
+    }
+}
+
+
+1;
