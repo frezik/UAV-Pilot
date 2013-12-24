@@ -64,7 +64,7 @@ $first_queue_packet = $wumpus
     ->_packet_queue
     ->{$first_queue_packet_key};
 diag( "First queue packet key [$first_queue_packet_key], generated key: [" . $first_queue_packet->make_packet_queue_map_key . ']' );
-my $cur_packet_queue_len = $wumpus->_packet_queue_size;
+$cur_packet_queue_len = $wumpus->_packet_queue_size;
 my $ack_old_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
     'Ack' );
 $ack_old_packet->checksum_received1( $first_queue_packet->checksum1 );
