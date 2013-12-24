@@ -3,6 +3,9 @@ Version 0.8
 * Send multiconfig commands in order to set video display size and fps
 * WumpusRover Client
     * wumpus library under share/
+    * Implement share/WumpusRover in bin/uav
+    * Implement all empty functions in share/WumpusRover
+    * Send min/max radio settings packets
     * Modify uav_joystick to optionally use this
 * WumpusRover Server
     * Use Radio min/max packets to scale values coming from client
