@@ -6,7 +6,7 @@ use UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C;
 use Getopt::Long ();
 
 
-my $PORT = 49000;
+my $PORT = UAV::Pilot::WumpusRover::DEFAULT_PORT;
 Getopt::Long::GetOptions(
     'port=i' => \$PORT,
 );

@@ -1,4 +1,4 @@
-use Test::More tests => 42;
+use Test::More tests => 43;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -39,6 +39,7 @@ use_ok( 'UAV::Pilot::Video::RawHandler' );
 use_ok( 'UAV::Pilot::Video::H264Decoder' );
 use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );
 use_ok( 'UAV::Pilot::ControlRover' );
+use_ok( 'UAV::Pilot::WumpusRover' );
 use_ok( 'UAV::Pilot::WumpusRover::Driver' );
 use_ok( 'UAV::Pilot::WumpusRover::Packet' );
 use_ok( 'UAV::Pilot::WumpusRover::PacketFactory' );

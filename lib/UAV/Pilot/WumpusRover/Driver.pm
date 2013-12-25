@@ -2,16 +2,17 @@ package UAV::Pilot::WumpusRover::Driver;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use UAV::Pilot::WumpusRover;
 use UAV::Pilot::WumpusRover::PacketFactory;
 use Tie::IxHash;
 
 use constant MAX_PACKET_QUEUE_LENGTH => 20;
-use constant DEFAULT_PORT => 49000;
+
 
 has 'port' => (
     is      => 'ro',
     isa     => 'Int',
-    default => DEFAULT_PORT,
+    default => UAV::Pilot::WumpusRover::DEFAULT_PORT,
 );
 has 'host' => (
     is  => 'ro',
