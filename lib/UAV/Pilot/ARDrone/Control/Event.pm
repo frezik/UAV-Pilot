@@ -40,10 +40,8 @@ with 'UAV::Pilot::SDL::NavFeeder';
 
 sub init_event_loop
 {
-    my ($self) = @_;
+    my ($self, $cv, $event) = @_;
     $self->hover;
-
-    my $cv = AnyEvent->condvar;
 
     my $control_timer; $control_timer = AnyEvent->timer(
         after    => 0.1,
@@ -74,7 +72,7 @@ sub init_event_loop
         },
     );
 
-    return $cv;
+    return 1;
 }
 
 sub hover

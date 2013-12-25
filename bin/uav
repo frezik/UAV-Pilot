@@ -72,10 +72,14 @@ sub make_ardrone_controller
     });
     $driver->connect;
 
+    my $cv = $cmd->condvar;
     my $control = UAV::Pilot::ARDrone::Control::Event->new({
         driver => $driver,
     });
-    $control->init_event_loop( $cmd->condvar );
+    my $event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+    $control->init_event_loop( $cv, $event );
 
     return $control;
 }

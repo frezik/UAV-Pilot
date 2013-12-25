@@ -3,6 +3,11 @@ Revision history for perl module UAV::Pilot
 0.8 ????
 
 - Unicast implemented for Parrot AR.Drone navdata
+- WumpusRover implemented
+- Decouple interface in bin/uav and share/*.uav libaries to support more than 
+  just the AR.Drone
+- Change ARDrone::Control::Event interface to take an existing condvar rather 
+  than creating and returning a new one
 
 0.7 2013-10-24
 

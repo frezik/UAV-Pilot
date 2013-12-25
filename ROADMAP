@@ -1,14 +1,11 @@
 Version 0.8
 -----------
-* ARDrone::Control::Event - Don't create condvar for init_event_loop,
-    have one passed in
 * In bin/wumpusrover_server, default to port specified in WumpusRover::Driver
 * WumpusRover Client
     * wumpus library under share/
     * Send min/max radio settings packets
     * Test share/WumpusRover in bin/uav
 * Modify uav_joystick (and other bin/uav_*) to use share/ libraries
-* In bin/uav, different libraries will need to be loaded with a different host
 * WumpusRover Server
     * Use Radio min/max packets to scale values coming from client
 * Use Devel::CheckLib to look for ffmpeg 
@@ -32,6 +29,7 @@ Version 0.8
 
 Version 0.9
 -----------
+* In bin/uav, different libraries will need to be loaded with a different host
 * UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
   to draw on
 * SDL2 w/Streaming pixels for video?  Or OpenGL?
