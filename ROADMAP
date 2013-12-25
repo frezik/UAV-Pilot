@@ -2,6 +2,7 @@ Version 0.8
 -----------
 * ARDrone::Control::Event - Don't create condvar for init_event_loop,
     have one passed in
+* In bin/wumpusrover_server, default to port specified in WumpusRover::Driver
 * WumpusRover Client
     * wumpus library under share/
     * Send min/max radio settings packets
