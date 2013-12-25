@@ -25,6 +25,71 @@ has '_socket' => (
     is  => 'rw',
     isa => 'Maybe[IO::Socket::INET]',
 );
+has 'ch1_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch1_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch2_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch2_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch3_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch3_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch4_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch4_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch5_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch5_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch6_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch6_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch7_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch7_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch8_max' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+has 'ch8_min' => (
+    is  => 'ro',
+    isa => 'Int',
+);
+
 with 'UAV::Pilot::Server';
 with 'UAV::Pilot::Logger';
 
@@ -51,7 +116,7 @@ sub process_packet
     my $backend = $self->backend;
 
     my $process = sub {
-        if( $backend->process_packet($packet) ) {
+        if( $backend->process_packet($packet, $self) ) {
             my $ack = $self->_build_ack_packet( $packet );
             $self->_send_packet( $ack );           
         }
@@ -173,6 +238,12 @@ sub _init_socket
 
     $self->_logger->info( 'Done starting listener' );
     return 1;
+}
+
+sub _map_value
+{
+    my ($self, $in_min, $in_max, $out_min, $out_max, $input) = @_;
+    return $input;
 }
 
 
