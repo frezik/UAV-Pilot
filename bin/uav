@@ -69,6 +69,7 @@ sub make_ardrone_controller
         (defined $IFACE        ? (iface => $IFACE)                       : ()),
         (defined $DO_MULTICAST ? (do_multicast_navdata => $DO_MULTICAST) : ()),
     });
+    $driver->connect;
 
     my $control = UAV::Pilot::ARDrone::Control::Event->new({
         driver => $driver,
@@ -87,6 +88,7 @@ sub make_wumpusrover_controller
     my $driver = UAV::Pilot::WumpusRover::Driver->new({
         host => $IP,
     });
+    $driver->connect;
 
     my $control = UAV::Pilot::WumpusRover::Control::Event->new({
         driver => $driver,

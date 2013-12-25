@@ -3,7 +3,7 @@ use UAV::Pilot::Video::FileDump;
 use UAV::Pilot::ARDrone::Video;
 use UAV::Pilot::Events;
 
-our ($dev);
+our $dev = undef;
 
 {
     my @NO_ARG_STRAIGHT_COMMANDS = qw(
