@@ -21,21 +21,26 @@ has '_packet_queue' => (
 sub init_event_loop
 {
     my ($self, $cv, $event) = @_;
+    my $logger = $self->_logger;
 
+    $logger->info( "Starting packet send event" );
     my $event_timer; $event_timer = AnyEvent->timer(
         after    => 0.01,
         interval => $self->CONTROL_UPDATE_TIME,
         cb       => sub {
+            $logger->info( "Event firing off packet send event" );
             $self->send_move_packet;
             $event_timer;
         },
     );
 
+    $logger->info( "Starting ack callback event" );
     $self->driver->set_ack_callback( sub {
         my ($orig_packet, $ack_packet) = @_;
         $event->send_event( 'ack_recv', $orig_packet, $ack_packet );
     });
 
+    $logger->info( "Done setting events" );
     return 1;
 }
 

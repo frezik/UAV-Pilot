@@ -1,12 +1,11 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
+use AnyEvent;
+use UAV::Pilot::EasyEvent;
 use UAV::Pilot::WumpusRover::Driver;
-use UAV::Pilot::WumpusRover::Control;
+use UAV::Pilot::WumpusRover::Control::Event;
 use Getopt::Long ();
-use Time::HiRes 'usleep';
-
-use constant SLEEP_TIME_US => 1_000_000 / 30;
 
 
 my $PORT = 49_000;
@@ -23,14 +22,17 @@ my $driver = UAV::Pilot::WumpusRover::Driver->new({
 });
 $driver->connect;
 
-my $control = UAV::Pilot::WumpusRover::Control->new({
+my $cv = AnyEvent->condvar;
+my $event = UAV::Pilot::EasyEvent->new({
+    condvar => $cv,
+});
+
+my $control = UAV::Pilot::WumpusRover::Control::Event->new({
     driver => $driver,
 });
+$control->init_event_loop( $cv, $event );
 
 $control->throttle( 100 );
 $control->turn( 10 );
 
-while( 1 ) {
-    $control->send_move_packet;
-    usleep( SLEEP_TIME_US );
-}
+$cv->recv;

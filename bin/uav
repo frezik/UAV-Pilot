@@ -2,6 +2,7 @@
 use v5.14;
 use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
+use UAV::Pilot::EasyEvent;
 use UAV::Pilot::Commands;
 use Getopt::Long qw( :config no_ignore_case );
 

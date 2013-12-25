@@ -6,11 +6,12 @@ use UAV::Pilot::WumpusRover::PacketFactory;
 use Tie::IxHash;
 
 use constant MAX_PACKET_QUEUE_LENGTH => 20;
+use constant DEFAULT_PORT => 49000;
 
 has 'port' => (
     is      => 'ro',
     isa     => 'Int',
-    default => 45000,
+    default => DEFAULT_PORT,
 );
 has 'host' => (
     is  => 'ro',
