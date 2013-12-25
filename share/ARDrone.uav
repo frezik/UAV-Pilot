@@ -160,7 +160,7 @@ sub record_usb ()
     {
         my ($class, $cmd, $args) = @_;
         $cv  = $$args{condvar};
-        $dev = $$args{controller};
+        $dev = $cmd->controller_callback_ardrone->( $cmd );
         return 1;
     }
 

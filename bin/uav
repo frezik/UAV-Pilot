@@ -3,8 +3,6 @@ use v5.14;
 use AnyEvent::ReadLine::Gnu;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
-use UAV::Pilot::ARDrone::Driver;
-use UAV::Pilot::ARDrone::Control::Event;
 use Getopt::Long qw( :config no_ignore_case );
 
 my $IP               = '192.168.1.1';
@@ -60,6 +58,49 @@ sub load_libraries
     return 1;
 }
 
+sub make_ardrone_controller
+{
+    my ($cmd) = @_;
+    eval "use UAV::Pilot::ARDrone::Driver";         die $@ if $@;
+    eval "use UAV::Pilot::ARDrone::Control::Event"; die $@ if $@;
+
+    my $driver = UAV::Pilot::ARDrone::Driver->new({
+        host => $IP,
+        (defined $IFACE        ? (iface => $IFACE)                       : ()),
+        (defined $DO_MULTICAST ? (do_multicast_navdata => $DO_MULTICAST) : ()),
+    });
+
+    my $control = UAV::Pilot::ARDrone::Control::Event->new({
+        driver => $driver,
+    });
+    $control->init_event_loop( $cmd->condvar );
+
+    return $control;
+}
+
+sub make_wumpusrover_controller
+{
+    my ($cmd) = @_;
+    eval "use UAV::Pilot::WumpusRover::Driver";         die $@ if $@;
+    eval "use UAV::Pilot::WumpusRover::Control::Event"; die $@ if $@;
+
+    my $driver = UAV::Pilot::WumpusRover::Driver->new({
+        host => $IP,
+    });
+
+    my $control = UAV::Pilot::WumpusRover::Control::Event->new({
+        driver => $driver,
+    });
+    
+    my $cv = $cmd->condvar;
+    my $event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+    $control->init_event_loop( $cv, $event );
+
+    return $control;
+}
+
 {
     my @cmd = ();
 
@@ -82,22 +123,11 @@ sub load_libraries
 {
     my $continue = 1;
 
-    my $driver_args = {
-        host => $IP,
-    };
-    $driver_args->{iface}                = $IFACE if defined $IFACE;
-    $driver_args->{do_multicast_navdata} = 1      if $DO_MULTICAST;
-
-    my $ardrone = UAV::Pilot::ARDrone::Driver->new( $driver_args );
-    $ardrone->connect;
-
-    my $dev = UAV::Pilot::ARDrone::Control::Event->new({
-        driver => $ardrone,
-    });
-    my $cv = $dev->init_event_loop;
+    my $cv = AnyEvent->condvar;
     my $repl = UAV::Pilot::Commands->new({
-        device  => $dev,
         condvar => $cv,
+        controller_callback_ardrone     => \&make_ardrone_controller,
+        controller_callback_wumpusrover => \&make_wumpusrover_controller,
     });
     load_libraries( $repl, \@LIB_PATHS, \@LIBS, $cv );
 

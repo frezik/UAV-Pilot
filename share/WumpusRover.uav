@@ -36,7 +36,7 @@ use UAV::Pilot::Exceptions;
     {
         my ($class, $cmd, $args) = @_;
         $cv  = $args->{condvar};
-        $dev = $args->{controller};
+        $dev = $cmd->controller_callback_wumpusrover->( $cmd );
         return 1;
     }
 

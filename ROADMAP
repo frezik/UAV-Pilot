@@ -1,12 +1,12 @@
 Version 0.8
 -----------
-* Send multiconfig commands in order to set video display size and fps
+* ARDrone::Control::Event - Don't create condvar for init_event_loop,
+    have one passed in
 * WumpusRover Client
     * wumpus library under share/
-    * Implement share/WumpusRover in bin/uav
-    * Implement all empty functions in share/WumpusRover
     * Send min/max radio settings packets
-    * Modify uav_joystick to optionally use this
+    * Test share/WumpusRover in bin/uav
+* Modify uav_joystick (and other bin/uav_*) to use share/ libraries
 * WumpusRover Server
     * Use Radio min/max packets to scale values coming from client
 * Use Devel::CheckLib to look for ffmpeg 
@@ -43,3 +43,7 @@ Version 0.9
 * bin/uav uses a Factory object to create the Driver and Control objects
 * bin/uav loads a config file for loading modules by default
 * Build script checks for ffmpeg being installed
+
+Version ???
+-----------
+* Send multiconfig commands in order to set video display size and fps

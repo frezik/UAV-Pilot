@@ -15,7 +15,9 @@ $ardrone->connect;
 my $controller = UAV::Pilot::ARDrone::Control->new({
     driver => $ardrone,
 });
-my $repl = UAV::Pilot::Commands->new;
+my $repl = UAV::Pilot::Commands->new({
+    controller_callback_ardrone => sub { $controller },
+});
 
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
@@ -26,9 +28,7 @@ eval {
 ok( $@, "No commands loaded into namespace yet" );
 
 $repl->add_lib_dir( UAV::Pilot->default_module_dir );
-$repl->load_lib( 'ARDrone', {
-    controller => $controller,
-});
+$repl->load_lib( 'ARDrone' );
 pass( "ARDrone basic flight library loaded" );
 
 

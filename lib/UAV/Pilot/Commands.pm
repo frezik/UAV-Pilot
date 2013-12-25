@@ -20,6 +20,14 @@ has 'condvar' => (
     is  => 'ro',
     isa => 'AnyEvent::CondVar',
 );
+has 'controller_callback_ardrone' => (
+    is  => 'ro',
+    isa => 'CodeRef',
+);
+has 'controller_callback_wumpusrover' => (
+    is  => 'ro',
+    isa => 'CodeRef',
+);
 
 our $s;
 
@@ -56,6 +64,7 @@ sub load_lib
     my ($self, $mod_name, $args) = @_;
     my @search_dirs = @{ $self->lib_dirs };
     my $mod_file = $mod_name . $self->MOD_EXTENSION;
+    my $host = delete $$args{host};
 
     my $found = 0;
     foreach my $dir (@search_dirs) {

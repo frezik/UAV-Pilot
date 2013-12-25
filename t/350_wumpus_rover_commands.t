@@ -17,7 +17,11 @@ my $control = UAV::Pilot::WumpusRover::Control->new({
     driver => $driver,
 });
 
-my $repl = UAV::Pilot::Commands->new;
+my $repl = UAV::Pilot::Commands->new({
+    controller_callback_wumpusrover => sub { $control },
+});
+
+
 $repl->add_lib_dir( UAV::Pilot->default_module_dir );
 $repl->load_lib( 'WumpusRover', {
     controller => $control,
