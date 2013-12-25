@@ -8,6 +8,7 @@ Version 0.8
     * Send min/max radio settings packets
     * Test share/WumpusRover in bin/uav
 * Modify uav_joystick (and other bin/uav_*) to use share/ libraries
+* In bin/uav, different libraries will need to be loaded with a different host
 * WumpusRover Server
     * Use Radio min/max packets to scale values coming from client
 * Use Devel::CheckLib to look for ffmpeg 
