@@ -41,6 +41,86 @@ has '_last_time_packet_sent' => (
     isa     => 'Num',
     default => 0.0,
 );
+has 'ch1_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 2000, # Could be 2300, depending on ESC
+);
+has 'ch1_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 1000, # Could be 700, depending on ESC
+);
+has 'ch2_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 180,
+);
+has 'ch2_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch3_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch3_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch4_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch4_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch5_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch5_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch6_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch6_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch7_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch7_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'ch8_max_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+);
+has 'ch8_min_out' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
 
 
 sub BUILD

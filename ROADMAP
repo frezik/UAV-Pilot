@@ -5,8 +5,6 @@ Version 0.8
     * Send min/max radio settings packets
     * Test share/WumpusRover in bin/uav
 * Modify uav_joystick (and other bin/uav_*) to use share/ libraries
-* WumpusRover Server
-    * Use Radio min/max packets to scale values coming from client
 * Use Devel::CheckLib to look for ffmpeg 
     * Replace Alien::ffmpeg?
 * Fix WumpusRover packet parsing for when the data we have is longer than a 
@@ -20,10 +18,10 @@ Version 0.8
     * UAV::Pilot::WumpusRover::PacketFactory
     * UAV::Pilot::WumpusRover::Packet
     * UAV::Pilot::Server
-    * UAV::Pilot::WumpusRover::Server
+    * UAV::Pilot::WumpusRover::Server (why we map values at this level)
     * UAV::Pilot::WumpusRover::Server::Backend
     * UAV::Pilot::WumpusRover::Control
-    * UAV::Pilot::WumpusRover::Server::Backend::ArduinoTWI
+    * UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
     * UAV::Pilot::WumpusRover
 
 
