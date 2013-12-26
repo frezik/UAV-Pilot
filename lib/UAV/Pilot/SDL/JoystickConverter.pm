@@ -3,10 +3,10 @@ use v5.14;
 use Moose::Role;
 
 
-use constant MAX_AXIS_INT => 32768;
-use constant MIN_AXIS_INT => -32787;
+use constant JOYSTICK_MAX_AXIS_INT => 32768;
+use constant JOYSTICK_MIN_AXIS_INT => -32787;
 
-requires 'convert_sdl_input';
+requires 'process_sdl_input';
 
 
 1;
@@ -24,9 +24,9 @@ the numbers needed for their specific driver.
 
 =head1 CONSTANTS
 
-=head2 MAX_AXIS_INT
+=head2 JOYSTICK_MAX_AXIS_INT
 
-=head2 MIN_AXIS_INT
+=head2 JOYSTICK_MIN_AXIS_INT
 
 =head1 REQUIRED METHODS
 

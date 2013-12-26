@@ -25,11 +25,23 @@ with 'UAV::Pilot::ControlRover';
 with 'UAV::Pilot::Logger';
 
 
-
-sub convert_sdl_input
+sub process_sdl_input
 {
-    my ($self, $in) = @_;
-    return $in;
+    my ($self, $args) = @_;
+    my $turn     = $args->{roll};
+    my $throttle = $args->{throttle};
+
+    # TODO Send output min/max settings in packet for initial setup, rather 
+    # than hardcoding here
+    $turn = $self->_map_values( $self->JOYSTICK_MIN_AXIS_INT,
+        $self->JOYSTICK_MAX_AXIS_INT, 0, 180, $turn );
+    $throttle = $self->_map_values( $self->JOYSTICK_MIN_AXIS_INT,
+        $self->JOYSTICK_MAX_AXIS_INT, 0, 100, $throttle );
+
+    $self->turn( $turn );
+    $self->throttle( $throttle );
+
+    return 1;
 }
 
 sub send_move_packet
@@ -40,6 +52,14 @@ sub send_move_packet
         $self->turn,
     );
     return $self->driver->send_radio_output_packet( @channels );
+}
+
+sub _map_values
+{
+    my ($self, $in_min, $in_max, $out_min, $out_max, $in) = @_;
+    my $output = ($in - $in_min) / ($in_max - $in_min)
+        * ($out_max - $out_min) + $out_min;
+    return $output
 }
 
 

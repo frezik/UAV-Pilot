@@ -23,6 +23,7 @@ Version 0.8
     * UAV::Pilot::WumpusRover::Control
     * UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
     * UAV::Pilot::WumpusRover
+    * UAV::Pilot::SDL::JoystickConverter (change to process_sdl_input)
 
 
 Version 0.9

@@ -380,12 +380,12 @@ foreach my $test (@TESTS) {
     );
 }
 
-cmp_ok( $dev->convert_sdl_input( 0 ),      '==', 0.0,  "Convert SDL input 0" );
-cmp_ok( $dev->convert_sdl_input( 32768 ),  '==', 1.0,  "Convert SDL input 2**15" );
-cmp_ok( $dev->convert_sdl_input( -32767 ), '==', -0.999969482421875,
+cmp_ok( $dev->_convert_sdl_input( 0 ),      '==', 0.0,  "Convert SDL input 0" );
+cmp_ok( $dev->_convert_sdl_input( 32768 ),  '==', 1.0,  "Convert SDL input 2**15" );
+cmp_ok( $dev->_convert_sdl_input( -32767 ), '==', -0.999969482421875,
     "Convert SDL input -(2**15 + 1)" );
-cmp_ok( $dev->convert_sdl_input( 16384 ),  '==', 0.5,  "Convert SDL input 16384" );
-cmp_ok( $dev->convert_sdl_input( -32768 ), '==', -1.0, "Convert overflow input" );
+cmp_ok( $dev->_convert_sdl_input( 16384 ),  '==', 0.5,  "Convert SDL input 16384" );
+cmp_ok( $dev->_convert_sdl_input( -32768 ), '==', -1.0, "Convert overflow input" );
 
 
 $ardrone->saved_commands; # Flush commands

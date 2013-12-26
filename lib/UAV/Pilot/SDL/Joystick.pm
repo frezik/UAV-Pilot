@@ -152,16 +152,19 @@ sub process_events
     SDL::Joystick::update();
     my $joystick = $self->joystick;
     my $dev = $self->controller;
-
-    my $roll = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->roll_axis ) * $self->roll_correction );
-    my $pitch = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->pitch_axis ) * $self->pitch_correction );
-    my $yaw = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->yaw_axis ) * $self->yaw_correction );
-    my $throttle = $dev->convert_sdl_input( $joystick->get_axis(
-        $self->throttle_axis ) * $self->throttle_correction );
     my $takeoff_btn = $joystick->get_button( $self->takeoff_btn );
+
+    $dev->process_sdl_input({
+        roll => $joystick->get_axis( $self->roll_axis )
+            * $self->roll_correction,
+        pitch => $joystick->get_axis( $self->pitch_axis )
+            * $self->pitch_correction,
+        yaw => $joystick->get_axis( $self->yaw_axis )
+            * $self->yaw_correction,
+        throttle => $joystick->get_axis( $self->throttle_axis )
+            * $self->throttle_correction,
+        takeoff_btn => $takeoff_btn,
+    });
 
     # Only takeoff/land after we let off the button
     if( $self->_prev_takeoff_btn_status && ($takeoff_btn == 0) ) {
@@ -177,11 +180,6 @@ sub process_events
     $self->_prev_takeoff_btn_status( $takeoff_btn );
 
     $self->_process_action_buttons( $joystick, $dev );
-
-    $dev->roll( $roll );
-    $dev->pitch( $pitch );
-    $dev->yaw( $yaw );
-    $dev->vert_speed( $throttle );
 
     return 1;
 }
@@ -212,6 +210,9 @@ sub _process_args
     my $conf_args = YAML::LoadFile( $conf_path );
 
     # Get the takeoff_land button special case
+    # TODO fetch these with key 'btn_action_map_$TYPE', where 
+    # '$TYPE' is the name of the UAV (e.g. WumpusRover or ARDrone)
+    # TODO handle toggle buttons
     foreach my $key (keys %{ $conf_args->{btn_action_map} }) {
         my $value = $conf_args->{btn_action_map}{$key};
         if( $value eq 'takeoff_land' ) {

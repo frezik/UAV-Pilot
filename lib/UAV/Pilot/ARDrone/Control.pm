@@ -346,13 +346,14 @@ sub hover
     }
 }
 
-sub convert_sdl_input
+sub process_sdl_input
 {
-    my ($self, $num) = @_;
-    my $float = $num / $self->MAX_AXIS_INT;
-    $float = 1.0 if $float > 1.0;
-    $float = -1.0 if $float < -1.0;
-    return $float;
+    my ($self, $args) = @_;
+    $self->roll( $self->_convert_sdl_input( $args->{roll} ) );
+    $self->pitch( $self->_convert_sdl_input( $args->{pitch} ) );
+    $self->yaw( $self->_convert_sdl_input( $args->{yaw} ) );
+    $self->vert_speed( $self->_convert_sdl_input( $args->{throttle} ) );
+    return 1;
 }
 
 sub start_userbox_nav_data
@@ -483,6 +484,14 @@ sub _generate_session_id
     return $hex_id;
 }
 
+sub _convert_sdl_input
+{
+    my ($self, $num) = @_;
+    my $float = $num / $self->JOYSTICK_MAX_AXIS_INT;
+    $float = 1.0 if $float > 1.0;
+    $float = -1.0 if $float < -1.0;
+    return $float;
+}
 
 
 no Moose;
