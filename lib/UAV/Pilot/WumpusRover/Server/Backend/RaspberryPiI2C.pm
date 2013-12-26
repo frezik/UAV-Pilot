@@ -8,8 +8,6 @@ use HiPi::Device::I2C ();
 use HiPi::BCM2835::I2C qw( :all );
 use Time::HiRes ();
 
-with 'UAV::Pilot::WumpusRover::Server::Backend';
-with 'UAV::Pilot::Logger';
 
 has '_i2c' => (
     is     => 'ro',
@@ -121,6 +119,9 @@ has 'ch8_min_out' => (
     isa     => 'Int',
     default => 0,
 );
+
+with 'UAV::Pilot::WumpusRover::Server::Backend';
+with 'UAV::Pilot::Logger';
 
 
 sub BUILD
