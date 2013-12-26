@@ -17,8 +17,8 @@ isa_ok( $server => 'UAV::Pilot::WumpusRover::Server' );
 does_ok( $server => 'UAV::Pilot::Server' );
 
 
-my $mapped_value = $server->_map_value( 0, 100, -100, 100, 50 );
-cmp_ok( $mapped_value, '==', 0, "Mapping input and output values" );
+my $mapped_value = $server->_map_value( 0, 100, 0, 10, 50 );
+cmp_ok( $mapped_value, '==', 5, "Mapping input and output values" );
 
 
 ok(! $backend->started, "Not started yet" );
@@ -66,27 +66,27 @@ cmp_ok( $backend->ch2_trim, '==', 100, "Channel2 trim set on backend" );
 my $radio_max = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
     'RadioMaxes' );
 $radio_max->ch1_max( 100 );
-$radio_max->ch2_max( 90 );
+$radio_max->ch2_max( 180 );
 $radio_max->make_checksum_clean;
 $server->process_packet( $radio_max );
 my $max_ack = $server->last_packet_out;
 cmp_ok( $max_ack->message_received_id, '==', $radio_max->message_id,
     "Radio Max packet ACK" );
-cmp_ok( $server->ch1_max, '==', 100, "Channel1 max set on backend" );
-cmp_ok( $server->ch2_max, '==', 90, "Channel2 max set on backend" );
+cmp_ok( $server->ch1_max, '==', 100, "Channel1 max set on server" );
+cmp_ok( $server->ch2_max, '==', 180, "Channel2 max set on server" );
 
 
 my $radio_min = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
     'RadioMins' );
-$radio_min->ch1_min( -100 );
-$radio_min->ch2_min( -90 );
+$radio_min->ch1_min( 0 );
+$radio_min->ch2_min( 0 );
 $radio_min->make_checksum_clean;
 $server->process_packet( $radio_min );
 my $min_ack = $server->last_packet_out;
 cmp_ok( $min_ack->message_received_id, '==', $radio_min->message_id,
     "Radio Min packet ACK" );
-cmp_ok( $server->ch1_min, '==', -100, "Channel1 min set on backend" );
-cmp_ok( $server->ch2_min, '==', -90, "Channel2 min set on backend" );
+cmp_ok( $server->ch1_min, '==', 0, "Channel1 min set on server" );
+cmp_ok( $server->ch2_min, '==', 0, "Channel2 min set on server" );
 
 
 my $radio_out = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
@@ -98,29 +98,29 @@ $server->process_packet( $radio_out );
 my $out_ack = $server->last_packet_out;
 cmp_ok( $out_ack->message_received_id, '==', $radio_out->message_id,
     "Radio Out packet ACK" );
-cmp_ok( $backend->ch1_out, '==', 50, "Channel1 out set on backend" );
+cmp_ok( $backend->ch1_out, '==', 0, "Channel1 out set on backend" );
 cmp_ok( $backend->ch2_out, '==', 0, "Channel2 out set on backend" );
 
 $radio_out = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
     'RadioOutputs' );
 $radio_out->ch1_out( 100 );
-$radio_out->ch2_out( -90 );
-$radio_out->make_checksum_clean;
-$server->process_packet( $radio_out );
-my $out_ack = $server->last_packet_out;
-cmp_ok( $out_ack->message_received_id, '==', $radio_out->message_id,
-    "Radio Out packet ACK" );
-cmp_ok( $backend->ch1_out, '==', 100, "Channel1 out set on backend" );
-cmp_ok( $backend->ch2_out, '==', -90, "Channel2 out set on backend" );
-
-$radio_out = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
-    'RadioOutputs' );
-$radio_out->ch1_out( -100 );
 $radio_out->ch2_out( 90 );
 $radio_out->make_checksum_clean;
 $server->process_packet( $radio_out );
-my $out_ack = $server->last_packet_out;
+$out_ack = $server->last_packet_out;
 cmp_ok( $out_ack->message_received_id, '==', $radio_out->message_id,
     "Radio Out packet ACK" );
-cmp_ok( $backend->ch1_out, '==',  0, "Channel1 out set on backend" );
-cmp_ok( $backend->ch2_out, '==', 90, "Channel2 out set on backend" );
+cmp_ok( $backend->ch1_out, '==', 100, "Channel1 out set on backend" );
+cmp_ok( $backend->ch2_out, '==', 50, "Channel2 out set on backend" );
+
+$radio_out = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
+    'RadioOutputs' );
+$radio_out->ch1_out( 50 );
+$radio_out->ch2_out( 180 );
+$radio_out->make_checksum_clean;
+$server->process_packet( $radio_out );
+$out_ack = $server->last_packet_out;
+cmp_ok( $out_ack->message_received_id, '==', $radio_out->message_id,
+    "Radio Out packet ACK" );
+cmp_ok( $backend->ch1_out, '==',  50, "Channel1 out set on backend" );
+cmp_ok( $backend->ch2_out, '==', 100, "Channel2 out set on backend" );

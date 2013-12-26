@@ -73,16 +73,6 @@ sub _packet_radio_trims
     # Ignore
 }
 
-sub _packet_radio_mins
-{
-    # Ignore
-}
-
-sub _packet_radio_maxes
-{
-    # Ignore
-}
-
 sub _packet_radio_out
 {
     my ($self, $packet) = @_;

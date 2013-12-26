@@ -25,69 +25,102 @@ has '_socket' => (
     is  => 'rw',
     isa => 'Maybe[IO::Socket::INET]',
 );
+# TODO document all writer functions for channel max/min input settings
 has 'ch1_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch1_max',
 );
 has 'ch1_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch1_min',
 );
 has 'ch2_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 90,
+    writer  => '_set_ch2_max',
 );
 has 'ch2_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -90,
+    writer  => '_set_ch2_min',
 );
 has 'ch3_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch3_max',
 );
 has 'ch3_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch3_min',
 );
 has 'ch4_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch4_max',
 );
 has 'ch4_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch4_min',
 );
 has 'ch5_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch5_max',
 );
 has 'ch5_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch5_min',
 );
 has 'ch6_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch6_max',
 );
 has 'ch6_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch6_min',
 );
 has 'ch7_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch7_max',
 );
 has 'ch7_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch7_min',
 );
 has 'ch8_max' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => 100,
+    writer  => '_set_ch8_max',
 );
 has 'ch8_min' => (
-    is  => 'ro',
-    isa => 'Int',
+    is      => 'ro',
+    isa     => 'Int',
+    default => -100,
+    writer  => '_set_ch8_min',
 );
 
 with 'UAV::Pilot::Server';
@@ -240,10 +273,15 @@ sub _init_socket
     return 1;
 }
 
+# TODO document this
 sub _map_value
 {
     my ($self, $in_min, $in_max, $out_min, $out_max, $input) = @_;
-    return $input;
+    return 0 if $in_max - $in_min == 0; # Avoid divide-by-zero error
+    my $output = ($input - $in_min) / ($in_max - $in_min)
+        * ($out_max - $out_min) + $out_min;
+
+    return $output;
 }
 
 
