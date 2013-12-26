@@ -8,8 +8,6 @@ use HiPi::Device::I2C ();
 use HiPi::BCM2835::I2C qw( :all );
 use Time::HiRes ();
 
-with 'UAV::Pilot::WumpusRover::Server::Backend';
-with 'UAV::Pilot::Logger';
 
 has '_i2c' => (
     is     => 'ro',
@@ -122,6 +120,9 @@ has 'ch8_min_out' => (
     default => 0,
 );
 
+with 'UAV::Pilot::WumpusRover::Server::Backend';
+with 'UAV::Pilot::Logger';
+
 
 sub BUILD
 {
@@ -155,11 +156,11 @@ sub _packet_radio_trims
 
 sub _packet_radio_out
 {
-    my ($self, $packet) = @_;
+    my ($self, $packet, $server) = @_;
     $self->_logger->info( 'Writing packet: ' . ref($packet) );
 
-    my $throttle = $packet->ch1_out;
-    my $turn     = $packet->ch2_out;
+    my $throttle = $self->_map_ch1_value( $server, $packet->ch1_out );
+    my $turn     = $self->_map_ch2_value( $server, $packet->ch2_out );
     my @throttle_bytes = ( ($throttle >> 8), ($throttle & 0xff) );
     my @turn_bytes     = ( ($turn     >> 8), ($turn     & 0xff) );
 

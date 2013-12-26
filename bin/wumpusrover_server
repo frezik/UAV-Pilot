@@ -1,6 +1,7 @@
 #!/usr/bin/perl
 use v5.14;
 use warnings;
+use UAV::Pilot::WumpusRover;
 use UAV::Pilot::WumpusRover::Server;
 use UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C;
 use Getopt::Long ();
