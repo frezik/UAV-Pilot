@@ -1,15 +1,6 @@
 Version 0.8
 -----------
-* WumpusRover Client
-    * wumpus library under share/
-    * Send min/max radio settings packets
-    * Test share/WumpusRover in bin/uav
-* Modify uav_joystick (and other bin/uav_*) to use share/ libraries
-* Use Devel::CheckLib to look for ffmpeg 
-    * Replace Alien::ffmpeg?
-* Fix WumpusRover packet parsing for when the data we have is longer than a 
-  single packet
-    * Only process as much data as we need
+* Decouple Joystick interface so it works for both ARDrone and WumpusRover
 * Document
     * UAV::Pilot::Command (changes in driver/control handling)
     * UAV::Pilot::ControlHelicopter
@@ -28,6 +19,14 @@ Version 0.8
 
 Version 0.9
 -----------
+* WumpusRover Client
+    * Send min/max radio settings packets
+* Fix WumpusRover packet parsing for when the data we have is longer than a 
+  single packet
+    * Only process as much data as we need
+* Use Devel::CheckLib to look for ffmpeg 
+    * Replace Alien::ffmpeg?
+* Modify uav_joystick (and other bin/uav_*) to use share/ libraries
 * For bin/uav;
     * Different libraries will need to be loaded with a different host
     * Use a factory pattern for init'ing the drivers and controllers
