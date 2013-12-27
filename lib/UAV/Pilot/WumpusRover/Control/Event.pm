@@ -61,14 +61,14 @@ sub _process_sdl_input
     return 0 if $args->{joystick_num} != $self->joystick_num;
 
     my $turn = $self->_map_values(
-        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
         UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
+        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
         0, 180,
         $args->{roll},
     );
     my $throttle = $self->_map_values(
-        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
         UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
+        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
         0, 100,
         $args->{throttle},
     );
