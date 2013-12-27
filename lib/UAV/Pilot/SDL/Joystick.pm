@@ -2,14 +2,20 @@ package UAV::Pilot::SDL::Joystick;
 use v5.14;
 use Moose;
 use namespace::autoclean;
-use SDL;
-use SDL::Joystick;
 use File::HomeDir;
 use YAML ();
 
+######
+# NOTE: Need to be able to safely load this module without having SDL installed
+######
+# Move these lines into one-time-init sub
+use SDL;
+use SDL::Joystick;
 SDL::init_sub_system( SDL_INIT_JOYSTICK );
 
-use constant MAX_AXIS_INT      => 32767;
+use constant MAX_AXIS_INT      => 32768;
+use constant MIN_AXIS_INT      => -32767;
+use constant EVENT_NAME        => 'uav_pilot_sdl_joystick';
 use constant TIMER_INTERVAL    => 1 / 60;
 use constant DEFAULT_CONF_FILE => 'sdl_joystick.yml';
 use constant DEFAULT_CONF      => {

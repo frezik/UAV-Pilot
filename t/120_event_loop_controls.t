@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 8;
 use v5.14;
 use AnyEvent;
 use UAV::Pilot::ARDrone::Driver::Mock;
@@ -13,6 +13,15 @@ $ardrone->connect;
 my $dev = UAV::Pilot::ARDrone::Control::Event->new({
     driver => $ardrone,
 });
+
+
+cmp_ok( $dev->_convert_sdl_input( 0 ),      '==', 0.0,  "Convert SDL input 0" );
+cmp_ok( $dev->_convert_sdl_input( 32768 ),  '==', 1.0,  "Convert SDL input 2**15" );
+cmp_ok( $dev->_convert_sdl_input( -32767 ), '==', -0.999969482421875,
+    "Convert SDL input -(2**15 + 1)" );
+cmp_ok( $dev->_convert_sdl_input( 16384 ),  '==', 0.5,  "Convert SDL input 16384" );
+cmp_ok( $dev->_convert_sdl_input( -32768 ), '==', -1.0, "Convert overflow input" );
+
 
 my $cv = AnyEvent->condvar;
 my $event = UAV::Pilot::EasyEvent->new({

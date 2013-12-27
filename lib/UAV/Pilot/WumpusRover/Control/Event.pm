@@ -2,6 +2,7 @@ package UAV::Pilot::WumpusRover::Control::Event;
 use v5.14;
 use Moose;
 use namespace::autoclean;
+use UAV::Pilot::SDL::Joystick;
 
 use constant CONTROL_UPDATE_TIME => 1 / 60;
 
@@ -15,6 +16,11 @@ has '_packet_queue' => (
     handles => {
         _add_to_packet_queue => 'push',
     },
+);
+has 'joystick_num' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
 );
 
 
@@ -40,7 +46,36 @@ sub init_event_loop
         $event->send_event( 'ack_recv', $orig_packet, $ack_packet );
     });
 
+    $event->add_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, sub {
+        my (@args) = @_;
+        return $self->_process_sdl_input( @args );
+    });
+
     $logger->info( "Done setting events" );
+    return 1;
+}
+
+sub _process_sdl_input
+{
+    my ($self, $args) = @_;
+    return 0 if $args->{joystick_num} != $self->joystick_num;
+
+    my $turn = $self->_map_values(
+        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
+        UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
+        0, 180,
+        $args->{roll},
+    );
+    my $throttle = $self->_map_values(
+        UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
+        UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
+        0, 100,
+        $args->{throttle},
+    );
+
+    $self->turn( $turn );
+    $self->throttle( $throttle );
+
     return 1;
 }
 

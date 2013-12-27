@@ -1,4 +1,4 @@
-use Test::More tests => 43;
+use Test::More tests => 42;
 use v5.14;
 
 my $is_sdl_installed = do {
@@ -32,7 +32,7 @@ use_ok( 'UAV::Pilot::Events' );
 use_ok( 'UAV::Pilot::NavCollector' );
 use_ok( 'UAV::Pilot::NavCollector::AckEvents' );
 use_ok( 'UAV::Pilot::SDL::NavFeeder' ); # OK to do this one without SDL installed
-use_ok( 'UAV::Pilot::SDL::JoystickConverter' ); # This is OK, too
+use_ok( 'UAV::Pilot::SDL::Joystick' ); # Needs to be OK to do this one, too
 use_ok( 'UAV::Pilot::Video::H264Handler' );
 use_ok( 'UAV::Pilot::Video::FileDump' );
 use_ok( 'UAV::Pilot::Video::RawHandler' );
@@ -50,7 +50,6 @@ use_ok( 'UAV::Pilot::WumpusRover::Control::Event' );
 SKIP: {
     skip "SDL not installed", 6 unless $is_sdl_installed;
     use_ok( 'UAV::Pilot::ARDrone::SDLNavOutput' );
-    use_ok( 'UAV::Pilot::SDL::Joystick' );
     use_ok( 'UAV::Pilot::SDL::Video' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay' );
     use_ok( 'UAV::Pilot::SDL::VideoOverlay::Reticle' );

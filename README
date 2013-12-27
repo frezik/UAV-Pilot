@@ -7,6 +7,15 @@ If your ARDrone crashes into your neighbor's house, invades Iranian airspace, or
 find Sarah Conner, don't blame me.
 
 
+RECOMMENDED MODULES
+===================
+
+SDL is highly recommended on clients for displaying navigation data, video 
+streams, and joystick input.
+
+The RaspberryPi HiPi modules are only needed for the WumpusRover server.
+
+
 INSTALLATION
 ============
 

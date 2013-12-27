@@ -3,6 +3,7 @@ use v5.14;
 use Moose;
 use namespace::autoclean;
 use AnyEvent;
+use UAV::Pilot::SDL::Joystick;
 
 extends 'UAV::Pilot::ARDrone::Control';
 
@@ -32,6 +33,22 @@ has 'cur_vert_speed' => (
     isa     => 'Num',
     default => 0,
     writer  => 'vert_speed',
+);
+has 'joystick_num' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'joystick_takeoff_btn' => (
+    is      => 'ro',
+    isa     => 'Int',
+    default => 0,
+);
+has 'joystick_takeoff_btn_last_state' => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+    writer  => '_set_joystick_takeoff_btn_last_state',
 );
 
 with 'UAV::Pilot::SDL::NavFeeder';
@@ -72,6 +89,10 @@ sub init_event_loop
         },
     );
 
+    $event->add_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, sub {
+        my (@args) = @_;
+        return $self->_process_sdl_input( @args );
+    });
     return 1;
 }
 
@@ -85,6 +106,43 @@ sub hover
         vert_speed
     };
     return 1;
+}
+
+sub _process_sdl_input
+{
+    my ($self, $args) = @_;
+    return 0 if $args->{joystick_num} != $self->joystick_num;
+    my $takeoff_btn_cur_state = $args->{buttons}->[$self->joystick_takeoff_btn];
+
+    $self->roll(       $self->_convert_sdl_input( $args->{roll}     ) );
+    $self->pitch(      $self->_convert_sdl_input( $args->{pitch}    ) );
+    $self->yaw(        $self->_convert_sdl_input( $args->{yaw}      ) );
+    $self->vert_speed( $self->_convert_sdl_input( $args->{throttle} ) );
+
+    # Toggle takeoff btn
+    if(
+        (! $takeoff_btn_cur_state) &&
+        ($self->joystick_takeoff_btn_last_state)
+    ) {
+        if( $self->in_air ) {
+            $self->land;
+        }
+        else {
+            $self->takeoff;
+        }
+    }
+    $self->_set_joystick_takeoff_btn_last_state( $takeoff_btn_cur_state );
+
+    return 1;
+}
+
+sub _convert_sdl_input
+{
+    my ($self, $num) = @_;
+    my $float = $num / UAV::Pilot::SDL::Joystick->MAX_AXIS_INT;
+    $float = 1.0 if $float > 1.0;
+    $float = -1.0 if $float < -1.0;
+    return $float;
 }
 
 

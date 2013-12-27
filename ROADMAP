@@ -1,8 +1,9 @@
 Version 0.8
 -----------
 * Decouple Joystick interface so it works for both ARDrone and WumpusRover
-* In the WumpusRover Arduino code, add hardware creation instructions
+* Map ARDrone takeoff Joystick button using config file
 * Document
+    * In the WumpusRover Arduino code, add hardware creation instructions
     * UAV::Pilot::Command (changes in driver/control handling)
     * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover

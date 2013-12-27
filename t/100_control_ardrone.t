@@ -1,4 +1,4 @@
-use Test::More tests => 67;
+use Test::More tests => 61;
 use v5.14;
 use UAV::Pilot::ARDrone::Driver::Mock;
 use UAV::Pilot::ARDrone::Control;
@@ -14,7 +14,6 @@ my $dev = UAV::Pilot::ARDrone::Control->new({
 });
 isa_ok( $dev => 'UAV::Pilot::ARDrone::Control' );
 does_ok( $dev => 'UAV::Pilot::Control' );
-does_ok( $dev => 'UAV::Pilot::SDL::JoystickConverter' );
 does_ok( $dev => 'UAV::Pilot::ControlHelicopter' );
 
 $ardrone->saved_commands; # Flush saved commands from connect() call
@@ -379,13 +378,6 @@ foreach my $test (@TESTS) {
         $test_name,
     );
 }
-
-cmp_ok( $dev->_convert_sdl_input( 0 ),      '==', 0.0,  "Convert SDL input 0" );
-cmp_ok( $dev->_convert_sdl_input( 32768 ),  '==', 1.0,  "Convert SDL input 2**15" );
-cmp_ok( $dev->_convert_sdl_input( -32767 ), '==', -0.999969482421875,
-    "Convert SDL input -(2**15 + 1)" );
-cmp_ok( $dev->_convert_sdl_input( 16384 ),  '==', 0.5,  "Convert SDL input 16384" );
-cmp_ok( $dev->_convert_sdl_input( -32768 ), '==', -1.0, "Convert overflow input" );
 
 
 $ardrone->saved_commands; # Flush commands
