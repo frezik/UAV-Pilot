@@ -7,6 +7,7 @@ Revision history for perl module UAV::Pilot
 - Decoupled interface in bin/uav and share/*.uav libaries to support more than 
   just the AR.Drone
 - Decoupled SDL Joystick interface from AR.Drone
+- UAV::Pilot::SDL::JoystickConverter deleted as unnecessary
 - Change ARDrone::Control::Event interface to take an existing condvar rather 
   than creating and returning a new one
 - Fixed a crash where the AR.Drone's navdata was sending NaN floats

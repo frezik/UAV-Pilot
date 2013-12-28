@@ -3,7 +3,6 @@ Version 0.8
 * Add wumpusrover_server startup script
 * Document
     * In the WumpusRover Arduino code, add hardware creation instructions
-    * UAV::Pilot::ControlRover
     * UAV::Pilot::WumpusRover::Driver
     * UAV::Pilot::WumpusRover::PacketFactory
     * UAV::Pilot::WumpusRover::Packet
@@ -11,9 +10,6 @@ Version 0.8
     * UAV::Pilot::WumpusRover::Server::Backend
     * UAV::Pilot::WumpusRover::Control
     * UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
-    * UAV::Pilot::WumpusRover
-    * UAV::Pilot::SDL::Joystick (EasyEvent changes)
-    * UAV::Pilot::SDL::JoystickConverter (change to process_sdl_input)
 
 
 Version 0.9

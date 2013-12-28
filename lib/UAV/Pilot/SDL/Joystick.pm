@@ -289,6 +289,18 @@ __END__
     });
     $sdl_events->register( $joy );
 
+    # Capture joystick movements in EasyEvent
+    $events->add_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, sub {
+        my ($args) = @_;
+        my $joystick_num = $args->{joystick_num};
+        my $roll         = $args->{roll};
+        my $pitch        = $args->{pitch};
+        my $yaw          = $args->{yaw};
+        my $throttle     = $args->{throttle};
+        my @buttons      = @{ $args->{buttons} };
+        ...
+    });
+
 =head1 DESCRIPTION
 
 Handles joystick control for SDL joysticks.  This does the role 
@@ -301,6 +313,10 @@ the process other than C<kill -9>.
 Joystick configuration will be loaded from a C<YAML> config file.  You can find the 
 path with C<<UAV::Pilot->default_config_dir()>>.  If the file does not exist, it will 
 be created automatically.
+
+Joystick movements are sent over EasyEvent.  The event name is specified in 
+the C<EVENT_NAME> constant in this package.  See the SYNOPSIS for the 
+argument list.
 
 =head1 CONFIGURATION FILE
 
