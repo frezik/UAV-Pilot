@@ -64,7 +64,7 @@ sub _process_sdl_input
     my $turn = sprintf( '%.0f', $self->_map_values(
         UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
         UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
-        0, 180,
+        -90, 90,
         $args->{roll},
     ) );
     my $throttle = sprintf( '%.0f', $self->_map_values(

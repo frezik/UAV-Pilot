@@ -9,6 +9,7 @@ Revision history for perl module UAV::Pilot
 - Decoupled SDL Joystick interface from AR.Drone
 - Change ARDrone::Control::Event interface to take an existing condvar rather 
   than creating and returning a new one
+- Fixed a crash where the AR.Drone's navdata was sending NaN floats
 
 0.7 2013-10-24
 

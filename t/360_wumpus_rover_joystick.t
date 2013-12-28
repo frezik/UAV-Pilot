@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 4;
 use v5.14;
 use AnyEvent;
 use UAV::Pilot::WumpusRover::Driver::Mock;
@@ -30,7 +30,7 @@ $event->send_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, {
     throttle     => UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
     buttons      => [ 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ],
 });
-cmp_ok( $dev->turn,     '==', 180, "Set turn from joystick" );
+cmp_ok( $dev->turn,     '==', 90, "Set turn from joystick" );
 cmp_ok( $dev->throttle, '==', 100, "Set throttle from joystick" );
 
 $event->send_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, {
@@ -42,3 +42,13 @@ $event->send_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, {
     buttons      => [ 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, ],
 });
 cmp_ok( $dev->throttle, '==', 100, "Only picks up events from joystick 0" );
+
+$event->send_event( UAV::Pilot::SDL::Joystick->EVENT_NAME, {
+    joystick_num => 0,
+    roll         => UAV::Pilot::SDL::Joystick->MIN_AXIS_INT,
+    pitch        => 0,
+    yaw          => 0,
+    throttle     => UAV::Pilot::SDL::Joystick->MAX_AXIS_INT,
+    buttons      => [ 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, ],
+});
+cmp_ok( $dev->turn, '==', -90, "Set turn from joystick" );

@@ -1,8 +1,5 @@
 Version 0.8
 -----------
-* WumpusRover maps joystick values correctly (currently, center-stick is right,
-  and left-stick is straight)
-* Fix NaN problem when using AR.Drone with joystick
 * Document
     * In the WumpusRover Arduino code, add hardware creation instructions
     * UAV::Pilot::Command (changes in driver/control handling)
