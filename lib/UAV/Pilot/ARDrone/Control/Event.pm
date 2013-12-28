@@ -158,14 +158,21 @@ __END__
 
 =head1 SYNOPSIS
 
+    my $cv = AnyEvent->condvar;
+    my $event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+    
     my $driver = UAV::Pilot::Driver::ARDrone->new( ... );
     $driver->connect;
     my $dev = UAV::Pilot::Control::ARDrone::Event->new({
-        driver => $driver,
+        driver               => $driver,
+        joystick_num         => 0,
+        joystick_takeoff_btn => 3,
     });
-    
-    my $cv = $uav->init_event_loop;
-    $cv->pitch( -0.8 );
+    $uav->init_event_loop( $cv, $event );
+
+    $dev->pitch( -0.8 );
     $cv->recv; # Will now pitch forward until you kill the process
 
 =head1 DESCRIPTION
@@ -178,8 +185,12 @@ an event loop, this module handles the timing for you.
 
 =head2 init_event_loop
 
-Sets up the event loop and returns the AnyEvent::CondVar.  You will need to call C<recv()> 
-on that condvar to start the event loop running.
+    init_event_loop( $cv, $event )
+
+Sets up the event loop.  Takes C<$cv> (an C<AnyEvent::Condvar>) and C<$event> 
+(a C<UAV::Pilot::EasyEvent).
+
+Will listen for joystick events.
 
 =head2 hover
 

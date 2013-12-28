@@ -197,4 +197,14 @@ __END__
 
   UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
 
+=head1 DESCRIPTION
+
+Does the C<UAV::Pilot::WumpusRover::Server::Backend> role.  Communicates using 
+the Raspberry Pi's I2C interface, using a protocol compatible with the 
+WumpusRover Arduino code.
+
+The Arduino code and hardware description are available at:
+
+https://github.com/frezik/wumpus-rover
+
 =cut

@@ -86,3 +86,44 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+    UAV::Pilot::WumpusRoverControl::Event
+
+=head1 SYNOPSIS
+
+    my $cv = AnyEvent->condvar;
+    my $event = UAV::Pilot::EasyEvent->new({
+        condvar => $cv,
+    });
+    
+    my $driver = UAV::Pilot::WumpusRover::Driver->new({
+        host => $hostname,
+    });
+    $driver->connect;
+    
+    my $control = UAV::Pilot::WumpusRover::Control::Event->new({
+        driver       => $driver,
+        joystick_num => 0,
+    });
+    $control->init_event_loop( $cv, $event );
+
+    $cv->recv;
+
+=head1 DESCRIPTION
+
+An event-driven version of the WumpusRover Control.
+
+=head1 METHODS
+
+=head2 init_event_loop
+
+    init_event_loop( $cv, $event );
+
+Sets up the event loop.  Takes C<$cv> (an C<AnyEvent::Condvar>) and C<$event> 
+(a C<UAV::Pilot::EasyEvent).
+
+Will listen for joystick events.
+
+=cut
