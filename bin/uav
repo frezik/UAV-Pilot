@@ -61,7 +61,7 @@ sub load_libraries
 
 sub make_ardrone_controller
 {
-    my ($cmd) = @_;
+    my ($cmd, $cv, $easy_events) = @_;
     eval "use UAV::Pilot::ARDrone::Driver";         die $@ if $@;
     eval "use UAV::Pilot::ARDrone::Control::Event"; die $@ if $@;
 
@@ -72,21 +72,17 @@ sub make_ardrone_controller
     });
     $driver->connect;
 
-    my $cv = $cmd->condvar;
     my $control = UAV::Pilot::ARDrone::Control::Event->new({
         driver => $driver,
     });
-    my $event = UAV::Pilot::EasyEvent->new({
-        condvar => $cv,
-    });
-    $control->init_event_loop( $cv, $event );
+    $control->init_event_loop( $cv, $easy_events );
 
     return $control;
 }
 
 sub make_wumpusrover_controller
 {
-    my ($cmd) = @_;
+    my ($cmd, $cv, $easy_events) = @_;
     eval "use UAV::Pilot::WumpusRover::Driver";         die $@ if $@;
     eval "use UAV::Pilot::WumpusRover::Control::Event"; die $@ if $@;
 
@@ -98,12 +94,7 @@ sub make_wumpusrover_controller
     my $control = UAV::Pilot::WumpusRover::Control::Event->new({
         driver => $driver,
     });
-    
-    my $cv = $cmd->condvar;
-    my $event = UAV::Pilot::EasyEvent->new({
-        condvar => $cv,
-    });
-    $control->init_event_loop( $cv, $event );
+    $control->init_event_loop( $cv, $easy_events );
 
     return $control;
 }

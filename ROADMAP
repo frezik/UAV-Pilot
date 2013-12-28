@@ -1,7 +1,8 @@
 Version 0.8
 -----------
-* Decouple Joystick interface so it works for both ARDrone and WumpusRover
-* Map ARDrone takeoff Joystick button using config file
+* WumpusRover maps joystick values correctly (currently, center-stick is right,
+  and left-stick is straight)
+* Fix NaN problem when using AR.Drone with joystick
 * Document
     * In the WumpusRover Arduino code, add hardware creation instructions
     * UAV::Pilot::Command (changes in driver/control handling)
@@ -16,13 +17,20 @@ Version 0.8
     * UAV::Pilot::WumpusRover::Control
     * UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C
     * UAV::Pilot::WumpusRover
+    * UAV::Pilot::SDL::Joystick (EasyEvent changes)
     * UAV::Pilot::SDL::JoystickConverter (change to process_sdl_input)
 
 
 Version 0.9
 -----------
+* Joystick
+    * Support more than one joystick
+    * Map toggle buttons using config
+* WumpusRover Server
+    * Send video stream
 * WumpusRover Client
     * Send min/max radio settings packets
+    * Process video stream
 * Fix WumpusRover packet parsing for when the data we have is longer than a 
   single packet
     * Only process as much data as we need

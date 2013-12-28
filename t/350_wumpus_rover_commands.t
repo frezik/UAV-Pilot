@@ -4,6 +4,7 @@ use warnings;
 use UAV::Pilot::WumpusRover::Control;
 use UAV::Pilot::WumpusRover::Driver::Mock;
 use UAV::Pilot::Commands;
+use AnyEvent;
 
 my $LIB_DIR = 'share';
 
@@ -20,11 +21,13 @@ my $control = UAV::Pilot::WumpusRover::Control->new({
 my $repl = UAV::Pilot::Commands->new({
     controller_callback_wumpusrover => sub { $control },
 });
+my $cv = AnyEvent->condvar;
 
 
 $repl->add_lib_dir( UAV::Pilot->default_module_dir );
 $repl->load_lib( 'WumpusRover', {
     controller => $control,
+    condvar    => $cv,
 });
 pass( "WumpusRover library loaded" );
 

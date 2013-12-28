@@ -1,4 +1,6 @@
 use UAV::Pilot::Exceptions;
+use UAV::Pilot::Events;
+use UAV::Pilot::EasyEvent;
 
 
 {
@@ -16,11 +18,8 @@ use UAV::Pilot::Exceptions;
         $events = UAV::Pilot::Events->new({
             condvar => $cv,
         });
-        $easy_events = UAV::Pilot::EasyEvent->new({
-            condvar => $cv,
-        });
+
         $events->init_event_loop;
-        $easy_events->init_event_loop;
 
         # If we can load SDL, then init it here
         eval "use UAV::Pilot::SDL::Events";
@@ -29,14 +28,22 @@ use UAV::Pilot::Exceptions;
             $events->register( $sdl_events );
         }
 
+        $dev->init_event_loop( $cv, $easy_events );
         return 1;
     };
 
     sub uav_module_init
     {
         my ($class, $cmd, $args) = @_;
-        $cv  = $args->{condvar};
-        $dev = $cmd->controller_callback_wumpusrover->( $cmd );
+        $cv = $args->{condvar};
+
+        $easy_events = UAV::Pilot::EasyEvent->new({
+            condvar => $cv,
+        });
+        $easy_events->init_event_loop;
+
+        $dev = $cmd->controller_callback_wumpusrover->(
+            $cmd, $cv, $easy_events );
         return 1;
     }
 
@@ -70,8 +77,8 @@ use UAV::Pilot::Exceptions;
         die "Problem loading UAV::Pilot::SDL::Joystick: $@\n" if $@;
 
         my $joystick = UAV::Pilot::SDL::Joystick->new({
-            condvar    => $cv,
-            controller => $dev,
+            condvar => $cv,
+            events  => $easy_events,
         });
         $events->register( $joystick );
 
