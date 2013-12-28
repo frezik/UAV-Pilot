@@ -25,7 +25,6 @@ has '_socket' => (
     is  => 'rw',
     isa => 'Maybe[IO::Socket::INET]',
 );
-# TODO document all writer functions for channel max/min input settings
 has 'ch1_max' => (
     is      => 'ro',
     isa     => 'Int',
@@ -273,7 +272,6 @@ sub _init_socket
     return 1;
 }
 
-# TODO document this
 sub _map_value
 {
     my ($self, $in_min, $in_max, $out_min, $out_max, $input) = @_;
@@ -290,3 +288,75 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+    UAV::Pilot::WumpusRover::Server
+
+=head1 SYNOPSIS
+
+    my $backend = UAV::Pilot::WumpusRover::Server::Backend::RaspberryPiI2C->new;
+    my $server = UAV::Pilot::WumpusRover::Server->new({
+        backend => $backend,
+    });
+    $server->start_listen_loop;
+
+=head1 DESCRIPTION
+
+A server for running the WumpusRover.  Listens on specified UDP port, 
+defaulting to C<<UAV::Pilot::WumpusRover->DEFAULT_PORT>>.
+
+=head1 METHODS
+
+=head2 start_listen_loop
+
+Starts listening on the UDP port.  Loops indefinitely.
+
+=head2 process_packet
+
+    process_packet( $packet )
+
+Does the right thing with C<$packet> (a C<UAV::Pilot::WumpusRover::Packet> 
+object).
+
+=head2 ch*_min() and ch*_max()
+
+The channel min/max values that you can set.  Channels are numbered 1 through 8.
+
+Note that these are the min/max values that are input to the server.  The 
+values output by the backend is set by the backend.
+
+=head1 PROTECTED METHODS
+
+=head2 _set_ch*_min( $value ) and _set_ch*_max( $value )
+
+Sets the raw min/max value for the associated channel number.  Channels are 
+numbered 1 through 8.
+
+=head2 _map_value
+
+    _map_value(
+        $in_min, $in_max,
+        $out_min, $out_max,
+        $input,
+    )
+
+Given the input min/max settings, maps the input number to an equivalent 
+output between the output min/max.  For instance:
+
+    $self->_map_value(
+        0, 10,
+        0, 30,
+        5,
+    );
+
+Would return 15.
+
+Note that this returns 0 if C<$in_max - $in_min == 0>, which avoids a 
+divide-by-zero error.  This isn't correct behavior and will be fixed Soon(tm). 
+The output min/max settings don't have this problem.
+
+The primary use of this method is for backends to map the channel values held 
+by the Server object into the output needed by the backend connection.
+
+=cut
