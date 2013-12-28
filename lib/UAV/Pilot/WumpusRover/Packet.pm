@@ -179,3 +179,86 @@ sub _make_checksum_unclean
 
 1;
 __END__
+
+=head1 NAME
+
+  UAV::Pilot::WumpusRover::Packet
+
+=head1 DESCRIPTION
+
+Role for WumpusRover packets.  These are based on the ArduPilot protocol 
+packets, as described here:
+
+L<http://code.google.com/p/ardupilot-mega/wiki/Protocol>
+
+No attempts have yet been made to test this against an existing ArduPilot 
+implmentation, but it should be close.
+
+Do not create Packets directly.  Instead, use
+C<UAV::Pilot::WumpusRover::PacketFactory>.
+
+Does the C<UAV::Pilot::Logger> role.
+
+=head1 METHODS
+
+=head2 write
+
+    write( $fh )
+
+Writes the packet to the given filehandle.
+
+=head2 make_checksum_clean
+
+Recalculates the checksum based on current field values.
+
+=head2 make_byte_vector
+
+Returns the packet fields in a single scalar full of bytes.
+
+=head2 get_ordered_payload_vales
+
+Returns the packet field values in the order they appear in C<payload_fields()>.
+
+=head2 get_ordered_payload_value_bytes
+
+Returns a byte array of all the packet fields in the order they appear in 
+C<payload_fields()>.
+
+=head1 make_packet_queue_map_key
+
+Creates a unique key for this packet.
+
+=head1 ATTRIBUTES
+
+=head2 preamble
+
+Fixed bytes that start every packet
+
+=head2 version
+
+Protocol version
+
+=head2 checksum1
+
+First checksum byte
+
+=head2 checksum2
+
+Second checksum byte
+
+=head1 REQUIRED METHODS/ATTRIBUTES
+
+=head2 message_id
+
+ID for this type of message
+
+=head2 payload_fields
+
+Arrayref.  A list of field names in the order they appear in the packet.
+
+=head2 payload_length
+
+Hashref.  Keys match to an entry in C<payload_fields>.  Values are the length 
+in bytes of that field.
+
+=cut

@@ -94,3 +94,40 @@ sub fresh_packet
 1;
 __END__
 
+=head1 NAME
+
+  UAV::Pilot::WumpusRover::PacketFactory
+
+=head1 SYNOPSIS
+
+    # Where $packet_in is a bunch of bytes read from the network:
+    my $packet = UAV::Pilot::WumpusRover::PacketFactory->read_packet(
+        $packet_in );
+
+    # Create a fresh packet that we might later send over the network:
+    my $new_packet = UAV::Pilot::WumpusRover::PacketFactory->fresh_packet(
+        'Ack' );
+
+=head1 DESCRIPTION
+
+Creates new packets, either for reading a bunch of bytes off the network, or 
+for fresh ones that we'll send back over the network.
+
+=head1 METHODS
+
+=head2 read_packet
+
+    read_packet( $bytes )
+
+Takes a bunch of bytes and returns a C<UAV::Pilot::WumpusRover::Packet> object 
+based on that data.
+
+=head2 fresh_packet
+
+    fresh_packet( $type )
+
+Creates a new packet based on C<$type> and returns it.  The C<$type> parameter 
+should be one of the classes under C<UAV::Pilot::WumpusRover::Packet::>, such 
+as C<Ack> or C<RadioOutputs>.
+
+=cut

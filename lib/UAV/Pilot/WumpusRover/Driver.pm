@@ -168,3 +168,28 @@ __PACKAGE__->meta->make_immutable;
 1;
 __END__
 
+
+=head1 NAME
+
+  UAV::Pilot::WumpusRover::Driver
+
+=head1 SYNOPSIS
+
+    use UAV::Pilot::WumpusRover::Driver;
+    
+    my $driver = UAV::Pilot::WumpusRover::Driver->new({
+        host => '10.0.0.10',
+    });
+    $driver->connect;
+
+    $driver->send_radio_output_packet( 90, 100 );
+
+=head1 DESCRIPTION
+
+Driver for the WumpusRover.  Does the C<UAV::Pilot::Driver> role.
+
+This is not intended to be used directly.  See 
+C<UAV::Pilot::WumpusRover::Control::Event> for the best way to control the 
+WumpusRover from client code.
+
+=cut
