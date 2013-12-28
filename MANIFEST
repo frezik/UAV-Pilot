@@ -6,6 +6,8 @@ bin/uav_joystick
 bin/uav_network_settings
 bin/uav_video_display
 bin/uav_video_dump
+bin/wumpusrover_client_example
+bin/wumpusrover_server
 Build.PL
 CHANGELOG
 lib/UAV/Pilot.pm
@@ -31,7 +33,6 @@ lib/UAV/Pilot/NavCollector.pm
 lib/UAV/Pilot/NavCollector/AckEvents.pm
 lib/UAV/Pilot/SDL/Events.pm
 lib/UAV/Pilot/SDL/Joystick.pm
-lib/UAV/Pilot/SDL/JoystickConverter.pm
 lib/UAV/Pilot/SDL/NavFeeder.pm
 lib/UAV/Pilot/SDL/Video.pm
 lib/UAV/Pilot/SDL/Video.xs
@@ -47,6 +48,9 @@ lib/UAV/Pilot/Video/H264Decoder.xs
 lib/UAV/Pilot/Video/H264Handler.pm
 lib/UAV/Pilot/Video/Mock/RawHandler.pm
 lib/UAV/Pilot/Video/RawHandler.pm
+lib/UAV/Pilot/WumpusRover.pm
+lib/UAV/Pilot/WumpusRover/Control.pm
+lib/UAV/Pilot/WumpusRover/Control/Event.pm
 lib/UAV/Pilot/WumpusRover/Driver.pm
 lib/UAV/Pilot/WumpusRover/Driver/Mock.pm
 lib/UAV/Pilot/WumpusRover/Packet.pm
@@ -62,6 +66,7 @@ lib/UAV/Pilot/WumpusRover/PacketFactory.pm
 lib/UAV/Pilot/WumpusRover/Server.pm
 lib/UAV/Pilot/WumpusRover/Server/Backend.pm
 lib/UAV/Pilot/WumpusRover/Server/Backend/Mock.pm
+lib/UAV/Pilot/WumpusRover/Server/Backend/RaspberryPiI2C.pm
 lib/UAV/Pilot/WumpusRover/Server/Mock.pm
 LICENSE
 MANIFEST			This list of files
@@ -75,6 +80,7 @@ share/ARDrone.uav
 share/Mock.uav
 share/MockInit.uav
 share/typeone.ttf
+share/WumpusRover.uav
 t/001_load.t
 t/010_driver_mock.t
 t/020_nav_packet.t
@@ -83,6 +89,7 @@ t/110_event_loop.t
 t/120_event_loop_controls.t
 t/130_easy_event.t
 t/140_events.t
+t/145_joystick_events.t
 t/150_video_pave.t
 t/155_video_pave_bad.t
 t/160_video_decode.t
@@ -94,6 +101,10 @@ t/210_commands_ardrone.t
 t/300_wumpus_rover_packet.t
 t/310_wumpus_rover_driver.t
 t/320_wumpus_rover_server.t
+t/330_wumpus_rover_control.t
+t/340_wumpus_rover_control_event.t
+t/350_wumpus_rover_commands.t
+t/360_wumpus_rover_joystick.t
 t_data/ardrone_video_stream_dump.bin
 t_data/ardrone_video_stream_dump_bad_pave.bin
 typemap
