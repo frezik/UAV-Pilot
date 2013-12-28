@@ -10,3 +10,17 @@ requires 'takeoff';
 1;
 __END__
 
+=head1 NAME
+
+  UAV::Pilot::ControlHelicopter
+
+=head1 DESCRIPTION
+
+Role for any type of helicopter UAV.  This may include traditional monoprops, 
+or more modern multipods.
+
+Does the C<UAV::Pilot::Control> role.
+
+Requires the method C<takeoff()>.
+
+=cut

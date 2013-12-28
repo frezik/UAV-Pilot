@@ -130,6 +130,8 @@ __END__
     my $device; # Some UAV::Pilot::Control instance, defined elsewhere
     my $cmds = UAV::Pilot::Commands->new({
         device => $device,
+        controller_callback_ardrone     => \&make_ardrone_controller,
+        controller_callback_wumpusrover => \&make_wumpusrover_controller,
     });
     
     $cmds->load_lib( 'ARDrone' );
@@ -146,10 +148,21 @@ REPL shells.
 =head2 new
 
     new({
-        device => $device
+        condvar                         => $cv,
+        controller_callback_ardrone     => sub { ... },
+        controller_callback_wumpusrover => sub { .. },
     })
 
-Constructor.  Takes a L<UAV::Pilot::Control> instance.
+Constructor.  The C<condvar> parameter is an C<AnyEvent::Condvar>.
+
+The C<controller_callback_*> parameters take a sub ref.  The subroutines take 
+a the parameters C<($cmd, $cv, $easy_event)>, where C<$cmd> is this 
+C<UAV::Pilot::Commands> instance, C<$cv> is the condvar passed above, and 
+C<$easy_event> is an C<UAV::Pilot::EasyEvent> instance.  It should return a 
+C<UAV::Pilot::Control> object of the associated type (generally one of the 
+C<*::Event> types with C<init_event_loop()> called).
+
+Note that this API is likely to change to a factory pattern in the near future.
 
 =head2 load_lib
 

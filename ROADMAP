@@ -3,13 +3,10 @@ Version 0.8
 * Add wumpusrover_server startup script
 * Document
     * In the WumpusRover Arduino code, add hardware creation instructions
-    * UAV::Pilot::Command (changes in driver/control handling)
-    * UAV::Pilot::ControlHelicopter
     * UAV::Pilot::ControlRover
     * UAV::Pilot::WumpusRover::Driver
     * UAV::Pilot::WumpusRover::PacketFactory
     * UAV::Pilot::WumpusRover::Packet
-    * UAV::Pilot::Server
     * UAV::Pilot::WumpusRover::Server (why we map values at this level)
     * UAV::Pilot::WumpusRover::Server::Backend
     * UAV::Pilot::WumpusRover::Control
