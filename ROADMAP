@@ -1,5 +1,6 @@
 Version 0.8
 -----------
+* Add wumpusrover_server startup script
 * Document
     * In the WumpusRover Arduino code, add hardware creation instructions
     * UAV::Pilot::Command (changes in driver/control handling)
