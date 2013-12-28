@@ -2,16 +2,19 @@
 # 
 # HOW TO USE THIS
 # 
-# On your Raspberry Pi, do:
+# On your Raspberry Pi (running Raspbian), do:
 # 
-# 0) Make sure "screen" is installed ("apt-get install screen")
-# 1) Raspberry Pi at /etc/wumpusrover/start_wumpusrover_server.sh
-# 2) Run "chmod +x /etc/wumpusrover/start_wumpusrover_server.sh"
-# 3) As root, open /etc/rc.local in an editor, and add this to the end:
+# 1) In "/etc/modprobe.d/raspi-blacklist.conf", remove "i2c_bcm2708"
+# 2) Run "modprobe i2c_dev" and "modprobe i2c_bcm2708".  Add these 
+#    two modules to the list in "/etc/modules"
+# 3) Make sure "screen" is installed ("apt-get install screen")
+# 4) Raspberry Pi at /etc/wumpusrover/start_wumpusrover_server.sh
+# 5) Run "chmod +x /etc/wumpusrover/start_wumpusrover_server.sh"
+# 6) As root, open /etc/rc.local in an editor, and add this to the end:
 #
 #     /etc/wumpusrover/start_wumpusrover_server.sh
 #
-# 4) Run '/etc/wumpusrover/start_wumpusrover_server.sh' manually (as root) to 
+# 7) Run '/etc/wumpusrover/start_wumpusrover_server.sh' manually (as root) to 
 #    make sure everything is OK
 #
 # You can see the process running by attaching to screen as root with:
