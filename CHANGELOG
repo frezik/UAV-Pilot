@@ -1,6 +1,6 @@
 Revision history for perl module UAV::Pilot
 
-0.8 ????
+0.8 2013-12-28
 
 - Unicast implemented for Parrot AR.Drone navdata
 - WumpusRover implemented
