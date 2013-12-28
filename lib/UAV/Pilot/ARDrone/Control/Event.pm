@@ -142,10 +142,6 @@ sub _convert_sdl_input
     my $float = $num / UAV::Pilot::SDL::Joystick->MAX_AXIS_INT;
     $float = 1.0 if $float > 1.0;
     $float = -1.0 if $float < -1.0;
-
-    $self->_logger->warn( "Converted SDL input to NaN with input '$num'" )
-        if "$num" eq 'nan' || "$num" eq '-nan';
-
     return $float;
 }
 

@@ -64,6 +64,8 @@ use constant { # Bits for the drone state field
 };
 use constant EXPECT_HEADER_MAGIC_NUM => 0x55667788;
 
+with 'UAV::Pilot::Logger';
+
 has 'header' => (
     is  => 'ro',
     isa => 'Int',
@@ -412,6 +414,15 @@ sub _parse_option_demo
     # Bytes 40 - 47 are for deprecated parameters
     $args{camera_detection_type}      = $self->_convert_endian_32bit( @data[48..51] );
     # Bytes 52 - 63 are for deprecated parameters
+
+    # Check for NaN on floats, converting to zero and issuing a warning
+    foreach my $field (qw{ pitch roll yaw velocity_x velocity_y velocity_z }) {
+        if( $args{$field} =~ /\A -? nan \z/ix ) {
+            $self->_logger->warn( "Field '$field' was set to NaN"
+                . ', converting to zero' );
+            $args{$field} = 0;
+        }
+    }
 
     return \%args;
 }
