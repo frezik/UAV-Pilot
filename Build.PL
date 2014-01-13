@@ -54,7 +54,6 @@ my $build = Module::Build->new(
     recommends => {
         'SDL'          => '>= 2.5',
         'Getopt::Long' => 0,
-        'HiPi'         => 0,
     },
     share_dir => 'share',
 
