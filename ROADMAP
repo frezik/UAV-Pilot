@@ -4,8 +4,6 @@ Version 0.9
 * Joystick
     * Support more than one joystick
     * Map toggle buttons using config
-* WumpusRover Server
-    * Send video stream
 * WumpusRover Client
     * Send min/max radio settings packets
     * Process video stream
