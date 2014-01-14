@@ -349,9 +349,9 @@ __END__
 =head1 SYNOPSIS
 
     my $cv      = AnyEvent->condvar;
-    my $handler = ...; # An object that does UAV::Pilot::Driver::ARDrone::VideoHandler
-    my $ardrone = ...; # An instance of UAV::Pilot::Driver::ARDrone
-    my $video = UAV::Pilot::Driver::ARDrone::Video->new({
+    my $handler = ...; # An object that does UAV::Pilot::Video::H264Handler
+    my $ardrone = ...; # An instance of UAV::Pilot::ARDrone::Driver
+    my $video = UAV::Pilot::ARDrone::Video->new({
         handlers => [ $handler ],
         condvar  => $cv,
         driver   => $ardrone,
