@@ -378,7 +378,7 @@ Note that this I<will not> work with the AR.Drone v1.
     })
 
 Constructor.  The C<handlers> param is an array of objects that do the role 
-C<UAV::Pilot::Driver::ARDrone::VideoHandler>.  Param C<condvar> is an AnyEvent::CondVar.
+C<UAV::Pilot::Video::H264Handler>.  Param C<condvar> is an AnyEvent::CondVar.
 Param C<driver> is an instance of C<UAV::Pilot::Driver::ARDrone>.
 
 =head2 init_event_loop

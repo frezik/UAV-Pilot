@@ -39,9 +39,9 @@ my $control_video = UAV::Pilot::Video::FileDump->new({
 
 my $cv = AnyEvent->condvar;
 my %video_args = (
-        handler => $control_video,
-        condvar => $cv,
-        driver  => $ardrone,
+        handlers => [ $control_video ],
+        condvar  => $cv,
+        driver   => $ardrone,
 );
 
 my $driver_video = $FILE_IN
