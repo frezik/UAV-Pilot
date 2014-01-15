@@ -63,11 +63,6 @@ lib/UAV/Pilot/WumpusRover/Packet/RadioTrims.pm
 lib/UAV/Pilot/WumpusRover/Packet/RequestStartupMessage.pm
 lib/UAV/Pilot/WumpusRover/Packet/StartupMessage.pm
 lib/UAV/Pilot/WumpusRover/PacketFactory.pm
-lib/UAV/Pilot/WumpusRover/Server.pm
-lib/UAV/Pilot/WumpusRover/Server/Backend.pm
-lib/UAV/Pilot/WumpusRover/Server/Backend/Mock.pm
-lib/UAV/Pilot/WumpusRover/Server/Backend/RaspberryPiI2C.pm
-lib/UAV/Pilot/WumpusRover/Server/Mock.pm
 LICENSE
 MANIFEST			This list of files
 META.json
@@ -100,7 +95,6 @@ t/200_commands.t
 t/210_commands_ardrone.t
 t/300_wumpus_rover_packet.t
 t/310_wumpus_rover_driver.t
-t/320_wumpus_rover_server.t
 t/330_wumpus_rover_control.t
 t/340_wumpus_rover_control_event.t
 t/350_wumpus_rover_commands.t
