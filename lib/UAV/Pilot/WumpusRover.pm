@@ -4,7 +4,8 @@ use warnings;
 use Moose;
 use namespace::autoclean;
 
-use constant DEFAULT_PORT => 49_000;
+use constant DEFAULT_PORT       => 49_000;
+use constant DEFAULT_VIDEO_PORT => 49_001;
 
 
 no Moose;

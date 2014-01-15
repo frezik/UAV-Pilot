@@ -55,6 +55,21 @@ no Moose;
 __PACKAGE__->meta->make_immutable;
 
 
+package UAV::Pilot::CommandNotFoundException;
+use v5.14;
+use Moose;
+use namespace::autoclean;
+extends 'UAV::Pilot::IOException';
+
+has 'cmd' => (
+    is  => 'ro',
+    isa => 'Str',
+);
+
+no Moose;
+__PACKAGE__->meta->make_immutable;
+
+
 package UAV::Pilot::NavPacketException::BadHeader;
 use v5.14;
 use Moose;
@@ -140,6 +155,8 @@ C<UAV::Pilot::Exception>, which does the role C<Throwable>.
 =head2 UAV::Pilot::NumberOutOfRangeException
 
 =head2 UAV::Pilot::IOException
+
+=head2 UAV::Pilot::CommandNotFoundException
 
 =head2 UAV::Pilot::NavPacketException::BadHeader
 

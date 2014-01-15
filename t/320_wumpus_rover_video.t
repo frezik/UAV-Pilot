@@ -9,12 +9,13 @@ use AnyEvent;
 use Test::Moose;
 
 use constant VIDEO_DUMP_FILE         => 't_data/wumpus_video_stream_dump.gdp';
-use constant MAX_WAIT_TIME           => 5;
+use constant MAX_WAIT_TIME           => 15;
 use constant EXPECT_FRAMES_PROCESSED => 25;
-use constant EXPECT_SIZE             => 98_304;
+use constant EXPECT_SIZE             => 100_447;
 
 my $GSTREAMER = $ENV{GST_LAUNCH_PATH} // `which gst-launch-1.0`;
 if( $GSTREAMER ) {
+    chomp $GSTREAMER;
     plan tests => 4;
 }
 else {
@@ -38,11 +39,11 @@ my $wumpus = UAV::Pilot::WumpusRover::Driver::Mock->new({
     host => 'localhost',
 });
 my $driver_video = UAV::Pilot::WumpusRover::Video::Mock->new({
-    file       => VIDEO_DUMP_FILE,
-    handlers   => [ $control_video ],
-    condvar    => $cv,
-    driver     => $wumpus,
-    gstreammer => 
+    file      => VIDEO_DUMP_FILE,
+    handlers  => [ $control_video ],
+    condvar   => $cv,
+    driver    => $wumpus,
+    gstreamer => $GSTREAMER,
 });
 isa_ok( $driver_video => 'UAV::Pilot::WumpusRover::Video' );
 

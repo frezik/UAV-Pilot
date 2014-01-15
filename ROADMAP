@@ -29,6 +29,8 @@ Version 0.9
 * bin/uav uses a Factory object to create the Driver and Control objects
 * bin/uav loads a config file for loading modules by default
 * Build script checks for ffmpeg being installed
+* Document:
+    * UAV::Pilot::WumpusRover::Video
 
 Version ???
 -----------

@@ -43,6 +43,7 @@ my $build = Module::Build->new(
         'Math::Trig'                        => 0,
         'Moose'                             => 0,
         'MooseX::Event'                     => 0,
+        'Net::RTP'                          => 0,
         'String::CRC32'                     => 0,
         'Test::More'                        => 0,
         'Tie::IxHash'                       => 0,

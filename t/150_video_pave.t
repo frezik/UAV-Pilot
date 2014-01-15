@@ -10,7 +10,7 @@ use AnyEvent;
 use Test::Moose;
 
 use constant VIDEO_DUMP_FILE         => 't_data/ardrone_video_stream_dump.bin';
-use constant MAX_WAIT_TIME           => 5;
+use constant MAX_WAIT_TIME           => 15;
 use constant EXPECT_FRAMES_PROCESSED => 25;
 
 # The smaller size is output by the module code, while the large size is output by the 
