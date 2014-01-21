@@ -4,6 +4,7 @@ use warnings;
 use IO::Socket::INET;
 use UAV::Pilot;
 use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::Driver::Mock;
 use UAV::Pilot::ARDrone::Video;
 use UAV::Pilot::ARDrone::Video::Mock;
 use UAV::Pilot::Video::FileDump;
@@ -21,7 +22,10 @@ Getopt::Long::GetOptions(
 $SIG{'INT'} = 'cleanup';
 
 
-my $ardrone = UAV::Pilot::ARDrone::Driver->new({
+my $driver_class = $FILE_IN
+    ? 'UAV::Pilot::ARDrone::Driver::Mock'
+    : 'UAV::Pilot::ARDrone::Driver';
+my $ardrone = $driver_class->new({
     host => $HOST,
 });
 

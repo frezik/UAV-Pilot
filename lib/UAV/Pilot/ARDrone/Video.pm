@@ -257,6 +257,9 @@ sub _read_remaining_pave_header
     $packet{stream_id_suffix_name} = $self->STREAM_ID_SUFFIX->{$packet{stream_id_suffix}};
     $packet{signature_int_hex}     = sprintf '0x%x', $packet{signature_int};
     #warn "Frame " . $self->frames_processed . " dump: " . Dumper( \%packet );
+    $self->_logger->info( "Frame num: " . $self->frames_processed
+        . ", size: $packet{payload_size}" );
+
 
     $self->_add_frames_processed( 1 );
     $self->_last_pave_header( \%packet );

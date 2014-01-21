@@ -5,6 +5,7 @@ use AnyEvent;
 use UAV::Pilot;
 use UAV::Pilot::EasyEvent;
 use UAV::Pilot::ARDrone::Driver;
+use UAV::Pilot::ARDrone::Driver::Mock;
 use UAV::Pilot::ARDrone::NavPacket;
 use UAV::Pilot::ARDrone::Video;
 use UAV::Pilot::ARDrone::Video::Mock;
@@ -132,7 +133,10 @@ sub set_comm_watchdog
         condvar => $cv,
     });
 
-    my $ardrone = UAV::Pilot::ARDrone::Driver->new({
+    my $ardrone_class = $FILE_IN
+        ? 'UAV::Pilot::ARDrone::Driver::Mock'
+        : 'UAV::Pilot::ARDrone::Driver';
+    my $ardrone = $ardrone_class->new({
         host => $IP,
     });
     $ardrone->connect;
@@ -148,7 +152,7 @@ sub set_comm_watchdog
         session_id => $CONFIG_SESSION_ID,
     });
     set_driver_config( $dev, $ardrone, $easy_event );
-    $dev->setup_read_nav_event( $easy_event );
+    $dev->setup_read_nav_event( $easy_event ) unless $FILE_IN;
 
     my $sdl_events = UAV::Pilot::SDL::Events->new;
     $events->register( $sdl_events );
@@ -157,9 +161,9 @@ sub set_comm_watchdog
 
     my $vid_display = UAV::Pilot::SDL::Video->new;
     my @displays = ($vid_display);
-    my @h264_handlers = UAV::Pilot::Video::H264Decoder->new({
+    my @h264_handlers = (UAV::Pilot::Video::H264Decoder->new({
         displays => \@displays,
-    });
+    }));
     $vid_display->add_to_window( $window );
 
     my $fh = undef;
