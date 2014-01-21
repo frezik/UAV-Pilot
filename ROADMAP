@@ -28,7 +28,7 @@ Version 0.9
   Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
 * bin/uav uses a Factory object to create the Driver and Control objects
 * bin/uav loads a config file for loading modules by default
-* Build script checks for ffmpeg being installed
+* Build script checks for ffmpeg using ExtUtils::PkgConfig
 * Document:
     * UAV::Pilot::WumpusRover::Video
 
