@@ -8,6 +8,7 @@ use UAV::Pilot::Exceptions;
 use UAV::Pilot::Video::H264Handler;
 
 use constant GSTREAMER_END_CMD => [ 'gdpdepay', '!', 'fdsink' ];
+use constant BUF_READ_SIZE     => 16 * 1024;
 
 
 with 'UAV::Pilot::Logger';
@@ -94,7 +95,12 @@ sub init_event_loop
 sub _process_io
 {
     my ($self) = @_;
-    my $gstreamer_in = $self->_io;
+
+    my $buf;
+    my $read_count = $self->_io->read( $buf, $self->BUF_READ_SIZE );
+    my @bytes = unpack 'C*', $buf;
+    $self->_add_frames_processed( 1 );
+
     return 1;
 }
 
@@ -103,10 +109,12 @@ sub _make_gstreamer_connection_cmd
     my ($class, $args) = @_;
     my $driver = $args->{driver};
 
-    my $cmd = 'tcpclientsrc'
-        . ' host=' . $driver->host
-        . ' port=' . UAV::Pilot::WumpusRover::DEFAULT_VIDEO_PORT;
-    return $cmd,
+    my @cmd = (
+        'tcpclientsrc',
+        'host=' . $driver->host,
+        'port=' . UAV::Pilot::WumpusRover::DEFAULT_VIDEO_PORT,
+    );
+    return @cmd,
 }
 
 

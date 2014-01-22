@@ -17,8 +17,11 @@ sub _make_gstreamer_connection_cmd
 {
     my ($class, $args) = @_;
     my $file = $args->{file};
-    my $cmd = 'filesrc location=' . $file;
-    return $cmd;
+    my @cmd = (
+        'filesrc',
+        'location=' . $file,
+    );
+    return @cmd;
 }
 
 
