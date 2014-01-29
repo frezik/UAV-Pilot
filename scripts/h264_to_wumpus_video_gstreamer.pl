@@ -80,11 +80,19 @@ sub output_video_frame
     my $loop = Glib::MainLoop->new( undef, FALSE );
 
     my $pipeline = GStreamer::Pipeline->new( 'pipeline' );
-    my ($filesrc, $h264, $fakesink) = GStreamer::ElementFactory->make(
-        filesrc   => 'and_who_are_you',
-        h264parse => 'the_proud_lord_said',
-        fakesink  => 'that_i_should_bow_so_low',
+    my ($filesrc, $h264, $capsfilter, $fakesink)
+        = GStreamer::ElementFactory->make(
+            filesrc    => 'and_who_are_you',
+            h264parse  => 'the_proud_lord_said',
+            capsfilter => 'that_i_should_bow_so_low',
+            fakesink   => 'only_a_cat_of_a_different_coat',
+        );
+
+    my $caps = GStreamer::Caps::Simple->new( 'video/x-h264',
+        alignment       => 'Glib::String' => 'au',
+        'stream-format' => 'Glib::String' => 'byte-stream',
     );
+    $capsfilter->set( caps => $caps );
 
     $filesrc->set(
         location => $INPUT_FILE,
@@ -97,8 +105,8 @@ sub output_video_frame
         'handoff' => \&dump_file_callback,
     );
 
-    $pipeline->add( $filesrc, $h264, $fakesink );
-    $filesrc->link( $h264, $fakesink );
+    $pipeline->add( $filesrc, $h264, $capsfilter, $fakesink );
+    $filesrc->link( $h264, $capsfilter, $fakesink );
 
     $pipeline->get_bus->add_watch( \&bus_callback, $loop );
 
