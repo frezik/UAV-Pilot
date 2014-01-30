@@ -74,6 +74,23 @@ sub convert_16bit_LE
     return $val;
 }
 
+sub convert_32bit_BE
+{
+    my ($class, @bytes) = @_;
+    my $val = ($bytes[0] << 24)
+        | ($bytes[1] << 16)
+        | ($bytes[2] << 8)
+        | $bytes[3];
+    return $val;
+}
+
+sub convert_16bit_BE
+{
+    my ($class, @bytes) = @_;
+    my $val = ($bytes[0] << 8) | $bytes[1];
+    return $val;
+}
+
 sub _make_default_log_conf
 {
     my ($class, $out_file) = @_;

@@ -13,15 +13,15 @@ has 'file' => (
 );
 
 
-sub _make_gstreamer_connection_cmd
+sub _build_io
 {
     my ($class, $args) = @_;
-    my $file = $args->{file};
-    my @cmd = (
-        'filesrc',
-        'location=' . $file,
-    );
-    return @cmd;
+    my $file = $$args{file};
+    open( my $fh, '<', $file ) 
+        or UAV::Pilot::IOException->throw(
+            error => "Could not open file '$file': $!",
+        );
+    return $fh;
 }
 
 

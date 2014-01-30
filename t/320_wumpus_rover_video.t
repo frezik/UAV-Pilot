@@ -1,4 +1,4 @@
-use Test::More; # Set test plan below
+use Test::More tests => 3;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::WumpusRover::Driver::Mock;
@@ -8,23 +8,13 @@ use File::Temp ();
 use AnyEvent;
 use Test::Moose;
 
-use constant VIDEO_DUMP_FILE         => 't_data/wumpus_video_stream_dump.gdp';
+use constant VIDEO_DUMP_FILE         => 't_data/wumpus_video_stream_dump.wump';
 use constant MAX_WAIT_TIME           => 15;
-use constant EXPECT_FRAMES_PROCESSED => 25;
-use constant EXPECT_SIZE             => 100_447;
+use constant EXPECT_FRAMES_PROCESSED => 24;
+use constant EXPECT_SIZE             => 98_304;
 
-my $GSTREAMER = $ENV{GST_LAUNCH_PATH} // `which gst-launch-1.0`;
-if( $GSTREAMER ) {
-    chomp $GSTREAMER;
-    plan tests => 4;
-}
-else {
-    plan skip_all => "Need GStreamer installed with gst-launch-1.0."
-        . "  (Can set path to gst-launch-1.0 in GST_LAUNCH_PATH environment"
-        . " variable.)";
-}
-
-my ($OUTPUT_FH, $OUTPUT_FILE) = File::Temp::tempfile( 'wumpus_video_stream.h264.XXXXXX',
+my ($OUTPUT_FH, $OUTPUT_FILE) = File::Temp::tempfile(
+    'wumpus_video_stream.h264.XXXXXX',
     UNLINK => 1,
 );
 
@@ -32,7 +22,6 @@ my ($OUTPUT_FH, $OUTPUT_FILE) = File::Temp::tempfile( 'wumpus_video_stream.h264.
 my $control_video = UAV::Pilot::Video::FileDump->new({
     fh => $OUTPUT_FH,
 });
-does_ok( $control_video => 'UAV::Pilot::Video::H264Handler' );
 
 my $cv = AnyEvent->condvar;
 my $wumpus = UAV::Pilot::WumpusRover::Driver::Mock->new({
@@ -43,10 +32,8 @@ my $driver_video = UAV::Pilot::WumpusRover::Video::Mock->new({
     handlers  => [ $control_video ],
     condvar   => $cv,
     driver    => $wumpus,
-    gstreamer => $GSTREAMER,
 });
 isa_ok( $driver_video => 'UAV::Pilot::WumpusRover::Video' );
-
 
 
 my $pass_timer; $pass_timer = AnyEvent->timer(
