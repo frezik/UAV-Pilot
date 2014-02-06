@@ -3,63 +3,103 @@ use v5.14;
 use warnings;
 use IO::Socket::INET;
 use UAV::Pilot;
-use UAV::Pilot::ARDrone::Driver;
-use UAV::Pilot::ARDrone::Driver::Mock;
-use UAV::Pilot::ARDrone::Video;
-use UAV::Pilot::ARDrone::Video::Mock;
 use UAV::Pilot::Video::FileDump;
 use AnyEvent;
 use Getopt::Long;
 
+my %UAV_TYPES = (
+    'ARDrone'     => \&init_ardrone,
+    'WumpusRover' => \&init_wumpus_rover,
+);
+
 my $HOST     = '192.168.1.1';
 my $FILE_OUT = '';
 my $FILE_IN  = '';
+my $UAV_TYPE = 'ARDrone';
 Getopt::Long::GetOptions(
-    'out=s' => \$FILE_OUT,
-    'in=s'  => \$FILE_IN,
+    'host=s' => \$HOST,
+    'out=s'  => \$FILE_OUT,
+    'in=s'   => \$FILE_IN,
+    'uav=s'  => \$UAV_TYPE,
 );
+die "'$UAV_TYPE' is not a valid UAV.  Valid types are: "
+    . join( ', ', sort keys %UAV_TYPES ) . "\n"
+    unless exists $UAV_TYPES{$UAV_TYPE};
+my $init_sub = $UAV_TYPES{$UAV_TYPE};
 
 $SIG{'INT'} = 'cleanup';
+END { cleanup() }
+
+my ($driver_video, $fh, $start_time);
 
 
-my $driver_class = $FILE_IN
-    ? 'UAV::Pilot::ARDrone::Driver::Mock'
-    : 'UAV::Pilot::ARDrone::Driver';
-my $ardrone = $driver_class->new({
-    host => $HOST,
-});
+sub init_ardrone
+{
+    my ($cv, $file_dump) = @_;
+    eval '
+        use UAV::Pilot::ARDrone::Driver;
+        use UAV::Pilot::ARDrone::Driver::Mock;
+        use UAV::Pilot::ARDrone::Video;
+        use UAV::Pilot::ARDrone::Video::Mock;
+    '; die $@ if $@;
 
-my $fh = undef;
-if( $FILE_OUT eq '' ) {
-    $fh = \*STDOUT;
-}
-else {
-    open( $fh, '>', $FILE_OUT )
-        or die "Can't open $FILE_OUT for writing: $!\n";
-}
-my $control_video = UAV::Pilot::Video::FileDump->new({
-    fh => $fh,
-});
+    my $driver_class = $FILE_IN
+        ? 'UAV::Pilot::ARDrone::Driver::Mock'
+        : 'UAV::Pilot::ARDrone::Driver';
+    my $ardrone = $driver_class->new({
+        host => $HOST,
+    });
 
-my $cv = AnyEvent->condvar;
-my %video_args = (
-        handlers => [ $control_video ],
+    my %video_args = (
+        handlers => [ $file_dump ],
         condvar  => $cv,
         driver   => $ardrone,
-);
+    );
 
-my $driver_video = $FILE_IN
-    ? UAV::Pilot::ARDrone::Video::Mock->new({
-        %video_args,
-        file => $FILE_IN,
-    })
-    : UAV::Pilot::ARDrone::Video->new( \%video_args );
-$driver_video->init_event_loop;
-my $start_time = time;
-$cv->recv;
+    my $driver_video = $FILE_IN
+        ? UAV::Pilot::ARDrone::Video::Mock->new({
+            %video_args,
+            file => $FILE_IN,
+        })
+        : UAV::Pilot::ARDrone::Video->new( \%video_args );
+    $driver_video->init_event_loop;
 
+    return $driver_video
+}
 
-END { cleanup() }
+sub init_wumpus_rover
+{
+    my ($cv, $file_dump) = @_;
+    eval '
+        use UAV::Pilot::WumpusRover::Driver;
+        use UAV::Pilot::WumpusRover::Driver::Mock;
+        use UAV::Pilot::WumpusRover::Video;
+        use UAV::Pilot::WumpusRover::Video::Mock;
+    '; die $@ if $@;
+
+    my $driver_class = $FILE_IN
+        ? 'UAV::Pilot::WumpusRover::Driver::Mock'
+        : 'UAV::Pilot::WumpusRover::Driver';
+    my $wumpus = $driver_class->new({
+        host => $HOST,
+    });
+
+    my %video_args = (
+        handlers => [ $file_dump ],
+        condvar  => $cv,
+        driver   => $wumpus,
+    );
+
+    my $driver_video = $FILE_IN
+        ? UAV::Pilot::WumpusRover::Video::Mock->new({
+            %video_args,
+            file => $FILE_IN,
+        })
+        : UAV::Pilot::WumpusRover::Video->new( \%video_args );
+    $driver_video->init_event_loop;
+
+    return $driver_video
+}
 
 
 my $cleanup_done = 0;
@@ -81,6 +121,29 @@ sub cleanup
     $cleanup_done = 1;
     exit;
 }
+
+
+{
+    my $cv = AnyEvent->condvar;
+
+    if( $FILE_OUT eq '' ) {
+        $fh = \*STDOUT;
+    }
+    else {
+        open( $fh, '>', $FILE_OUT )
+            or die "Can't open $FILE_OUT for writing: $!\n";
+    }
+    my $file_dump = UAV::Pilot::Video::FileDump->new({
+        fh => $fh,
+    });
+
+    $driver_video = $init_sub->( $cv, $file_dump );
+    $start_time = time;
+    $cv->recv;
+}
+
+
+
 
 
 __END__
