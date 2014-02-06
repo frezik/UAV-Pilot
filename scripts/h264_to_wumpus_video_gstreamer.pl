@@ -58,15 +58,16 @@ sub output_video_frame
     $digest->add( $frame_data );
     my $checksum = $digest->digest;
 
-    my $out_headers = pack 'nnnNnnNC*'
+    my $out_headers = pack 'nnnNNnnC*'
         ,VIDEO_MAGIC_NUMBER
         ,VIDEO_VERSION
         ,VIDEO_ENCODING
-        ,0x00000000 # 32-bits reserved
+        ,0x00000000 # 32-bits flags
+        ,$frame_size
         ,$width
         ,$height
-        ,$frame_size
         ,unpack( 'C*', $checksum )
+        ,( (0x00) x 10 )
         ;
 
     print $out_headers;
