@@ -10,7 +10,7 @@ use UAV::Pilot::Video::H264Handler;
 use constant BUF_READ_SIZE                 => 4096;
 use constant WUMP_VIDEO_MAGIC_NUMBER       => 0xFB42;
 use constant WUMP_VIDEO_MAGIC_NUMBER_ARRAY => [ 0xFB, 0x42 ];
-use constant WUMP_HEADER_SIZE              => 22;
+use constant WUMP_HEADER_SIZE              => 32;
 use constant WUMP_VERSION                  => 0x0000;
 
 use constant {
@@ -23,6 +23,10 @@ use constant {
     _MODE_WUMP_HEADER   => 0,
     _MODE_FRAME         => 1,
     _MODE_NEXT_WUMP     => 2,
+};
+
+use constant {
+    FLAG_HEARTBEAT => 0,
 };
 
 
@@ -123,10 +127,10 @@ sub _read_wump_header
     $packet{magic_number} = UAV::Pilot->convert_16bit_BE( @bytes[0,1] );
     $packet{version}      = UAV::Pilot->convert_16bit_BE( @bytes[2,3] );
     $packet{codec_id}     = UAV::Pilot->convert_16bit_BE( @bytes[4,5] );
-    # Bytes 6 through 9 reserved
-    $packet{width}        = UAV::Pilot->convert_16bit_BE( @bytes[10,11] );
-    $packet{height}       = UAV::Pilot->convert_16bit_BE( @bytes[12,13] );
-    $packet{length}       = UAV::Pilot->convert_32bit_BE( @bytes[14..17] );
+    $packet{flags}        = UAV::Pilot->convert_32bit_BE( @bytes[6..9] );
+    $packet{length}       = UAV::Pilot->convert_32bit_BE( @bytes[10..13] );
+    $packet{width}        = UAV::Pilot->convert_16bit_BE( @bytes[14,15] );
+    $packet{height}       = UAV::Pilot->convert_16bit_BE( @bytes[16,17] );
     $packet{checksum}     = UAV::Pilot->convert_32bit_BE( @bytes[18..21] );
 
     if( $packet{magic_number} != $self->WUMP_VIDEO_MAGIC_NUMBER ) {
