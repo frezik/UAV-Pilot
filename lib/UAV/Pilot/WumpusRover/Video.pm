@@ -151,6 +151,9 @@ sub _read_wump_header
         $self->_mode( $self->_MODE_NEXT_WUMP );
         return $self->_read_to_next_wump_header;
     }
+    if( $packet{flags} & (1 << $self->FLAG_HEARTBEAT) ) {
+        $self->_send_heartbeat( $packet{checksum} );
+    }
 
     $self->_logger->info( "Received frame " . $self->frames_processed
         . ", size $packet{length}, checksum "
@@ -254,6 +257,17 @@ sub _build_io
         error => "Could not connect to $host:$port for video: $@",
     );
     return $io;
+}
+
+sub _send_heartbeat
+{
+    my ($self, $checksum) = @_;
+    $self->_logger->info( "Sending heartbeat packet for checksum [$checksum]" );
+    my $output = pack 'nN'
+        ,$self->WUMP_VIDEO_MAGIC_NUMBER
+        ,$checksum;
+    $self->_io->write( $output );
+    return 1;
 }
 
 

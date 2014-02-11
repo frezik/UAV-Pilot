@@ -11,6 +11,10 @@ has 'file' => (
     is  => 'ro',
     isa => 'Str',
 );
+has 'heartbeat_count' => (
+    is  => 'rw',
+    isa => 'Int',
+);
 
 
 sub _build_io
@@ -22,6 +26,13 @@ sub _build_io
             error => "Could not open file '$file': $!",
         );
     return $fh;
+}
+
+sub _send_heartbeat
+{
+    my ($self, $checksum) = @_;
+    $self->heartbeat_count( $self->heartbeat_count + 1 );
+    return 1;
 }
 
 

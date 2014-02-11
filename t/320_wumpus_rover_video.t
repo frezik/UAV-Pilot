@@ -1,4 +1,4 @@
-use Test::More tests => 3;
+use Test::More tests => 4;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::WumpusRover::Driver::Mock;
@@ -75,6 +75,8 @@ $cv->recv;
 
 cmp_ok( $driver_video->frames_processed, '==', EXPECT_FRAMES_PROCESSED,
     'Expected number of frames processed' );
+cmp_ok( $driver_video->heartbeat_count, '==', EXPECT_FRAMES_PROCESSED,
+    'Heartbeats sent' );
 
 
 close $OUTPUT_FH;
