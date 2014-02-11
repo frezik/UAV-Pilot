@@ -23,22 +23,25 @@ while( @buf ) {
 
     my $version  = ($buf[2] << 8) | $buf[3];
     my $encoding = ($buf[4] << 8) | $buf[5];
-    my @reserved = @buf[6,7,8,9];
+    my $flags    = ($buf[6] << 24)
+        | ($buf[7] << 16)
+        | ($buf[8] << 8)
+        | $buf[9];
+    my $size     = ($buf[10] << 24)
+        | ($buf[11] << 16)
+        | ($buf[12] << 8)
+        | $buf[13];
     my $width    = ($buf[10] << 8) | $buf[11];
     my $height   = ($buf[12] << 8) | $buf[13];
-    my $size     = ($buf[14] << 24)
+    my $checksum = ($buf[14] << 24)
         | ($buf[15] << 16)
         | ($buf[16] << 8)
         | $buf[17];
-    my $checksum = ($buf[18] << 24)
-        | ($buf[19] << 16)
-        | ($buf[20] << 8)
-        | $buf[21];
 
     my $hex_checksum = sprintf( '%x', $checksum );
 
-    my $data_max_range = 22 + $size - 1;
-    my $frame_data = pack( 'C*', @buf[22..$data_max_range] );
+    my $data_max_range = 32 + $size - 1;
+    my $frame_data = pack( 'C*', @buf[32..$data_max_range] );
 
     my $digest = Digest::Adler32::XS->new;
     $digest->add( $frame_data );

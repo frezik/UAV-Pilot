@@ -132,6 +132,7 @@ sub _read_wump_header
     $packet{width}        = UAV::Pilot->convert_16bit_BE( @bytes[14,15] );
     $packet{height}       = UAV::Pilot->convert_16bit_BE( @bytes[16,17] );
     $packet{checksum}     = UAV::Pilot->convert_32bit_BE( @bytes[18..21] );
+    # 10 bytes reserved
 
     if( $packet{magic_number} != $self->WUMP_VIDEO_MAGIC_NUMBER ) {
         $self->_logger->error( "Bad Wump header.  Got [$packet{magic_number}],"
