@@ -1,9 +1,19 @@
 Version 0.9
 -----------
+* Spin off parts of the system into their own distributions
 * *::Control::Event modules should have their own role.
-* Joystick
-    * Support more than one joystick
-    * Map toggle buttons using config
+* For bin/uav;
+    * Different libraries will need to be loaded with a different host
+    * Use a factory pattern for init'ing the drivers and controllers
+* Error message formatting in REPL
+* EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
+* Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
+  Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
+* bin/uav uses a Factory object to create the Driver and Control objects
+* bin/uav loads a config file for loading modules by default
+
+
+(All these should be moved into their individual distros)
 * WumpusRover Client
     * Send min/max radio settings packets
     * Process video stream
@@ -13,25 +23,17 @@ Version 0.9
 * Use Devel::CheckLib to look for ffmpeg 
     * Replace Alien::ffmpeg?
 * Modify uav_joystick (and other bin/uav_*) to use share/ libraries
-* For bin/uav;
-    * Different libraries will need to be loaded with a different host
-    * Use a factory pattern for init'ing the drivers and controllers
 * UAV::Pilot::SDL::WindowEventHandlers should be handed an SDL::Surface 
   to draw on
 * SDL2 w/Streaming pixels for video?  Or OpenGL?
     * Navigation overlay on top of video
     * Get the color right on top of the UAV::Pilot::SDL::VideoOverlay
 * UAV::SDL::Video (xs) -- Use sws_getCachedContext() instead of sws_getContext()
-* Error message formatting in REPL
-* EasyEvent takes nav data into account ("vert_speed 1.0 until altitude == 10000cm")
-* Possibly use subref in @INC to load REPL modules.  See require() perlfunc docs in 
-  Perl 5.19.2.  Note that feature was implemented in 5.10 according to 5.19.2's perldelta.
-* bin/uav uses a Factory object to create the Driver and Control objects
-* bin/uav loads a config file for loading modules by default
 * Build script checks for ffmpeg using ExtUtils::PkgConfig
 * Document:
     * UAV::Pilot::WumpusRover::Video
-
-Version ???
------------
 * Send multiconfig commands in order to set video display size and fps
+* Joystick
+    * Support more than one joystick
+    * Map toggle buttons using config
+
