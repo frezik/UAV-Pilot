@@ -28,11 +28,3 @@ Install with the standard Module::Build method:
     ./Build test
     ./Build install
 
-
-
-SPECIAL THANKS
-==============
-
-Nirmal Biswas for font 'Typeone': http://www.dafont.com/nirmal-biswas.d3277
-
-Curtis Brandt for helping get things working on Macs
