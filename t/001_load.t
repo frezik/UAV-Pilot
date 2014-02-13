@@ -1,4 +1,4 @@
-use Test::More tests => 14;
+use Test::More tests => 18;
 use v5.14;
 
 use_ok( 'UAV::Pilot' );
@@ -15,3 +15,7 @@ use_ok( 'UAV::Pilot::Events' );
 use_ok( 'UAV::Pilot::NavCollector' );
 use_ok( 'UAV::Pilot::NavCollector::AckEvents' );
 use_ok( 'UAV::Pilot::ControlRover' );
+use_ok( 'UAV::Pilot::Video::H264Handler' );
+use_ok( 'UAV::Pilot::Video::RawHandler' );
+use_ok( 'UAV::Pilot::Video::H264Handler' );
+use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );

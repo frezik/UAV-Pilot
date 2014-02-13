@@ -27,7 +27,6 @@ my $build = Module::Build->new(
         'MooseX::Event'                     => 0,
         'String::CRC32'                     => 0,
         'Test::More'                        => 0,
-        'Tie::IxHash'                       => 0,
         'Throwable'                         => 0,
         'YAML'                              => 0,
     },
