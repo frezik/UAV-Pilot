@@ -5,17 +5,77 @@ use namespace::autoclean;
 
 with 'UAV::Pilot::Video::H264Handler';
 
-has 'fh' => (
+has 'file' => (
+    is  => 'ro',
+    isa => 'Str',
+);
+has 'single_frame' => (
+    is      => 'ro',
+    isa     => 'Bool',
+    default => 0,
+);
+has '_frame_count' => (
+    is      => 'rw',
+    isa     => 'Int',
+    default => 0,
+);
+has '_fh' => (
     is  => 'ro',
     isa => 'Item',
 );
 
 
+sub BUILDARGS
+{
+    my ($class, $args) = @_;
+
+    if(! $args->{single_frame} ) {
+        my $fh;
+        if( defined $args->{file}) {
+            open( my $fh, '>', $args->{file} )
+                or die "Can't open $$args{file}: $!\n";
+        }
+        else {
+            $fh = \*STDOUT;
+        }
+
+        $args->{'_fh'} = $fh;
+    }
+
+    return $args;
+}
+
 sub process_h264_frame
 {
     my ($self, $packet) = @_;
-    my $fh = $self->fh;
-    print $fh pack( 'C*', @$packet );
+
+    my $data = pack( 'C*', @$packet );
+    if( $self->single_frame) {
+        my $base_file = $self->file;
+        my $full_file = sprintf(
+            $base_file . '.%05i',
+            $self->_frame_count
+        );
+
+        open( my $fh, '>', $full_file )
+            or die "Can't open $full_file: $!\n";
+        print $fh $data;
+        close $fh;
+    }
+    else {
+        my $fh = $self->_fh;
+        print $fh $data;
+
+    }
+
+    $self->_frame_count( $self->_frame_count + 1 );
+    return 1;
+}
+
+sub close
+{
+    my ($self) = @_;
+    $self->_fh->close if defined $self->_fh;
     return 1;
 }
 

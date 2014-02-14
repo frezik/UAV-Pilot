@@ -12,15 +12,17 @@ my %UAV_TYPES = (
     'WumpusRover' => \&init_wumpus_rover,
 );
 
-my $HOST     = '192.168.1.1';
-my $FILE_OUT = '';
-my $FILE_IN  = '';
-my $UAV_TYPE = 'ARDrone';
+my $HOST          = '192.168.1.1';
+my $FILE_OUT      = '';
+my $FILE_IN       = '';
+my $UAV_TYPE      = 'ARDrone';
+my $SINGLE_FRAMES = 0;
 Getopt::Long::GetOptions(
-    'host=s' => \$HOST,
-    'out=s'  => \$FILE_OUT,
-    'in=s'   => \$FILE_IN,
-    'uav=s'  => \$UAV_TYPE,
+    'host=s'        => \$HOST,
+    'out=s'         => \$FILE_OUT,
+    'in=s'          => \$FILE_IN,
+    'uav=s'         => \$UAV_TYPE,
+    'single-frames' => \$SINGLE_FRAMES,
 );
 die "'$UAV_TYPE' is not a valid UAV.  Valid types are: "
     . join( ', ', sort keys %UAV_TYPES ) . "\n"
@@ -30,7 +32,7 @@ my $init_sub = $UAV_TYPES{$UAV_TYPE};
 $SIG{'INT'} = 'cleanup';
 END { cleanup() }
 
-my ($driver_video, $fh, $start_time);
+my ($driver_video, $file_dump, $start_time);
 
 
 sub init_ardrone
@@ -117,7 +119,7 @@ sub cleanup
         warn "FPS: $fps\n";
     }
 
-    close $fh if defined $fh;
+    $file_dump->close if defined $file_dump;
     $cleanup_done = 1;
     exit;
 }
@@ -126,15 +128,9 @@ sub cleanup
 {
     my $cv = AnyEvent->condvar;
 
-    if( $FILE_OUT eq '' ) {
-        $fh = \*STDOUT;
-    }
-    else {
-        open( $fh, '>', $FILE_OUT )
-            or die "Can't open $FILE_OUT for writing: $!\n";
-    }
-    my $file_dump = UAV::Pilot::Video::FileDump->new({
-        fh => $fh,
+    $file_dump = UAV::Pilot::Video::FileDump->new({
+        file         => $FILE_OUT,
+        single_frame => 1,
     });
 
     $driver_video = $init_sub->( $cv, $file_dump );
