@@ -6,6 +6,7 @@ bin/uav_joystick
 bin/uav_network_settings
 bin/uav_video_display
 bin/uav_video_dump
+bin/wumpusrover_client_example
 Build.PL
 CHANGELOG
 lib/UAV/Pilot.pm
@@ -22,6 +23,10 @@ lib/UAV/Pilot/Logger.pm
 lib/UAV/Pilot/NavCollector.pm
 lib/UAV/Pilot/NavCollector/AckEvents.pm
 lib/UAV/Pilot/Server.pm
+lib/UAV/Pilot/Video/FileDump.pm
+lib/UAV/Pilot/Video/H264Handler.pm
+lib/UAV/Pilot/Video/Mock/RawHandler.pm
+lib/UAV/Pilot/Video/RawHandler.pm
 LICENSE
 MANIFEST			This list of files
 META.json
@@ -30,18 +35,14 @@ ppport.h
 README
 RELEASE.HOWTO
 ROADMAP
+share/ARDrone.uav
 share/Mock.uav
 share/MockInit.uav
+share/typeone.ttf
+share/WumpusRover.uav
 t/001_load.t
-t/010_driver_mock.t
-t/020_nav_packet.t
-t/100_control_ardrone.t
-t/110_event_loop.t
-t/120_event_loop_controls.t
 t/130_easy_event.t
 t/140_events.t
-t/145_joystick_events.t
-t/170_sdl_window.t
-t/180_nav_processing.t
-t/190_control_nav_event.t
 t/200_commands.t
+typemap
+uav.h
