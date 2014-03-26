@@ -36,7 +36,7 @@ sub BUILDARGS
                 or die "Can't open $$args{file}: $!\n";
         }
         else {
-            $fh = \*STDOUT;
+            $fh = $args->{fh} // \*STDOUT;
         }
 
         $args->{'_fh'} = $fh;
