@@ -29,6 +29,9 @@ my $build = Module::Build->new(
         'Throwable'                         => 0,
         'YAML'                              => 0,
     },
+    test_requires => {
+        'Test::Pod' => 0,
+    },
     recommends => {
         'Getopt::Long'              => 0,
         'UAV::Pilot::SDL'           => 0,
