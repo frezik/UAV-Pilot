@@ -33,7 +33,7 @@ use Log::Log4perl;
 use constant DIST_NAME     => 'UAV-Pilot';
 use constant LOG_CONF_FILE => 'log4perl.conf';
 
-our $VERSION       = '0.9';
+our $VERSION       = '0.10';
 our $LOG_WAS_INITD = 0;
 
 

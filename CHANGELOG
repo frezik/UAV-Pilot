@@ -3,6 +3,7 @@ Revision history for perl module UAV::Pilot
 0.10 ???
 
 - Fix regression bug of FileDump taking a filehandle
+- UAV::Pilot::Command calls uav_module_quit() when it's about to exit
 
 0.9 2014-02-16
 

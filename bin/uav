@@ -51,6 +51,7 @@ sub run_cmd
     my $return = 1;
     if( $cmd =~ /\A(?: exit | quit | q ) \s*;\s*\z/x ) {
         $return = 0;
+        $repl->quit;
     }
     else {
         eval {

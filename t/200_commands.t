@@ -21,7 +21,7 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-use Test::More tests => 7;
+use Test::More tests => 9;
 use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
@@ -60,3 +60,8 @@ eval {
     $repl->run_cmd( 'uav_module_init();' );
 };
 ok( $@, "MockInit uav_module_init() call does not appear" );
+
+
+ok(! $main::DID_QUIT, "Have not yet sent quit signal" );
+$repl->quit;
+ok( $main::DID_QUIT, "Sent quit signal" );
