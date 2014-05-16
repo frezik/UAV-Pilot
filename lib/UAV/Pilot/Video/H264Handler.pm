@@ -23,9 +23,13 @@
 # POSSIBILITY OF SUCH DAMAGE.
 package UAV::Pilot::Video::H264Handler;
 use v5.14;
-use Moose::Role;
+use mop;
 
-requires 'process_h264_frame';
+
+class UAV::Pilot::Video::H264Handler
+{
+    #requires 'process_h264_frame';
+}
 
 1;
 __END__

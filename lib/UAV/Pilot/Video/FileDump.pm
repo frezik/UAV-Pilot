@@ -21,37 +21,23 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-package UAV::Pilot::Video::FileDump;
 use v5.14;
-use Moose;
-use namespace::autoclean;
+use mop;
+use UAV::Pilot::Video::H264Handler;
 
-with 'UAV::Pilot::Video::H264Handler';
-
-has 'file' => (
-    is  => 'ro',
-    isa => 'Str',
-);
-has 'single_frame' => (
-    is      => 'ro',
-    isa     => 'Bool',
-    default => 0,
-);
-has '_frame_count' => (
-    is      => 'rw',
-    isa     => 'Int',
-    default => 0,
-);
-has '_fh' => (
-    is  => 'ro',
-    isa => 'Item',
-);
-
-
-sub BUILDARGS
+class UAV::Pilot::Video::FileDump
+    with UAV::Pilot::Video::H264Handler
 {
-    my ($class, $args) = @_;
 
+
+has $!file is ro;
+has $!single_frame is ro = 0;
+has $!frame_count  is rw = 0;
+has $!fh           is ro = 0;
+
+
+method new( $class: $args )
+{
     if(! $args->{single_frame} ) {
         my $fh;
         if( defined $args->{file}) {
@@ -62,22 +48,20 @@ sub BUILDARGS
             $fh = $args->{fh} // \*STDOUT;
         }
 
-        $args->{'_fh'} = $fh;
+        $args->{fh} = $fh;
     }
 
-    return $args;
+    return $class->next::method( $args );
 }
 
-sub process_h264_frame
+method process_h264_frame( $packet )
 {
-    my ($self, $packet) = @_;
-
     my $data = pack( 'C*', @$packet );
     if( $self->single_frame) {
         my $base_file = $self->file;
         my $full_file = sprintf(
             $base_file . '.%05i',
-            $self->_frame_count
+            $self->frame_count
         );
 
         open( my $fh, '>', $full_file )
@@ -86,25 +70,23 @@ sub process_h264_frame
         close $fh;
     }
     else {
-        my $fh = $self->_fh;
+        my $fh = $self->fh;
         print $fh $data;
 
     }
 
-    $self->_frame_count( $self->_frame_count + 1 );
+    $self->frame_count( $self->frame_count + 1 );
     return 1;
 }
 
-sub close
+method close()
 {
-    my ($self) = @_;
-    $self->_fh->close if defined $self->_fh;
+    $self->fh->close if defined $self->fh;
     return 1;
 }
 
+}
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
 1;
 __END__
 
