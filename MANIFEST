@@ -41,6 +41,8 @@ share/MockInit.uav
 share/typeone.ttf
 share/WumpusRover.uav
 t/001_load.t
+t/002_pod.t
+t/010_video_file_dump.t
 t/130_easy_event.t
 t/140_events.t
 t/200_commands.t
