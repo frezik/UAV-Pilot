@@ -21,47 +21,23 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-package UAV::Pilot::EasyEvent;
 use v5.14;
-use Moose;
-use namespace::autoclean;
+use mop;
 
-#with 'MooseX::Clone';
-
-
-use constant {
-    UNITS_MILLISECOND => 0,
-};
-
-has 'condvar' => (
-    is  => 'ro',
-    isa => 'AnyEvent::CondVar',
-);
-has '_timers' => (
-    traits  => [ 'Array' ],
-    is      => 'ro',
-    isa     => 'ArrayRef[HashRef[Any]]',
-    default => sub { [] },
-    handles => {
-        _add_timer => 'push',
-    },
-);
-has '_events' => (
-    traits  => [ 'Hash' ],
-    is      => 'ro',
-    isa     => 'HashRef[ArrayRef[HashRef[Item]]]',
-    default => sub { {} },
-    handles => {
-        '_set_event_callbacks' => 'set',
-        '_event_type_exists'   => 'exists',
-        '_get_event_callbacks' => 'get',
-    },
-);
-
-
-sub add_timer
+class UAV::Pilot::EasyEvent
 {
-    my ($self, $args) = @_;
+
+
+
+has $!condvar is ro;
+has $!timers  is ro = [];
+has $!events  is ro = {};
+
+method UNITS_MILLISECOND() { 0 }
+
+
+method add_timer( $args )
+{
     my $duration       = $$args{duration};
     my $duration_units = $$args{duration_units};
     my $callback       = $$args{cb};
@@ -80,9 +56,9 @@ sub add_timer
     return $new_self;
 }
 
-sub add_event
+method add_event
 {
-    my ($self, $name, $callback, $is_oneoff) = @_;
+    my ($name, $callback, $is_oneoff) = @_;
     $is_oneoff //= 0;
 
     my @callbacks;
@@ -102,9 +78,8 @@ sub add_event
     return 1;
 }
 
-sub send_event
+method send_event( $name, @args )
 {
-    my ($self, $name, @args) = @_;
     my $callbacks            = $self->_get_event_callbacks( $name );
     return 1 unless defined $callbacks;
     my @callbacks            = (@$callbacks);
@@ -128,11 +103,9 @@ sub send_event
     return 1;
 }
 
-sub init_event_loop
+method init_event_loop()
 {
-    my ($self) = @_;
-
-    foreach my $timer_def (@{ $self->_timers }) {
+    foreach my $timer_def (@{ $self->timers }) {
         my $timer; $timer = AnyEvent->timer(
             after => $timer_def->{time},
             cb    => sub {
@@ -147,10 +120,8 @@ sub init_event_loop
 }
 
 
-sub _convert_time_units
+method _convert_time_units( $time, $unit )
 {
-    my ($self, $time, $unit) = @_;
-
     if( $self->UNITS_MILLISECOND == $unit ) {
         $time /= 1000;
     }
@@ -158,9 +129,27 @@ sub _convert_time_units
     return $time;
 }
 
+method _add_timer( @results )
+{
+    push @{ $!timers }, @results;
+}
 
-no Moose;
-__PACKAGE__->meta->make_immutable;
+method _set_event_callbacks( $key, $callback )
+{
+    $!events->{$key} = $callback;
+}
+method _event_type_exists( $key )
+{
+    return exists $!events->{$key};
+}
+method _get_event_callbacks( $key )
+{
+    return $!events->{$key};
+}
+
+}
+
+
 1;
 __END__
 
