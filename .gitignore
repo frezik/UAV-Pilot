@@ -1,4 +1,5 @@
 Build
+Makefile.PL
 _build
 blib
 MYMETA.*
@@ -7,3 +8,4 @@ ardrone_video_stream.h264.*
 a.out
 *.o
 *.c
+.build

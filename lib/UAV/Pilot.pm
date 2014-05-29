@@ -33,8 +33,10 @@ use Log::Log4perl;
 use constant DIST_NAME     => 'UAV-Pilot';
 use constant LOG_CONF_FILE => 'log4perl.conf';
 
-our $VERSION       = '0.10';
+our $VERSION       = '0.11';
 our $LOG_WAS_INITD = 0;
+
+# ABSTRACT: Base library for controlling UAVs
 
 
 sub default_module_dir

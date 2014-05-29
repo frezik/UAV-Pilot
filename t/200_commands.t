@@ -26,7 +26,7 @@ use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 
-my $LIB_DIR = 'uav_mods';
+my $LIB_DIR = 'share/';
 
 
 my $repl = UAV::Pilot::Commands->new;
@@ -43,7 +43,7 @@ eval {
 };
 ok( $@, "Could not find library named 'Mock' in search dirs" );
 
-$repl->add_lib_dir( UAV::Pilot->default_module_dir );
+$repl->add_lib_dir( $LIB_DIR );
 $repl->run_cmd( q{load 'Mock';} );
 $repl->run_cmd( 'mock;' );
 ok( 1, "Mock command ran" );
