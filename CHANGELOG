@@ -1,6 +1,6 @@
 Revision history for perl module UAV::Pilot
 
-0.11 ????
+0.11 2014-05-29
 
 - Port build to Dist::Zilla
 - Actually fix regression bug of FileDump taking a filehandle
