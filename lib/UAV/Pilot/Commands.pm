@@ -27,7 +27,8 @@ use Moose;
 use namespace::autoclean;
 use File::Spec;
 
-use constant MOD_EXTENSION => '.uav';
+use constant MOD_PREFIX => 'UAV::Pilot';
+use constant MOD_SUFFIX => 'Commands';
 
 
 has 'lib_dirs' => (
@@ -101,60 +102,76 @@ sub quit
 sub load_lib
 {
     my ($self, $mod_name, $args) = @_;
-    my @search_dirs = @{ $self->lib_dirs };
-    my $mod_file = $mod_name . $self->MOD_EXTENSION;
-    my $host = delete $$args{host};
+    my $dest_namespace = delete $args->{namespace} // 'UAV::Pilot::Commands';
+    
+    # This works via the hooks placed into @INC array, which is documented 
+    # in perlfunc under the require() entry.  In short, we can stick a 
+    # subref in @INC and mess around with how Perl loads up the module.  
+    # By choosing the starting text, we can control the exact namespace 
+    # where the module will end up.
 
-    my $found = 0;
-    foreach my $dir (@search_dirs) {
-        my $file = File::Spec->catfile( $dir, $mod_file );
-        if( -e $file) {
-            $found = 1;
-            $self->_compile_mod( $file, $args );
-        }
-    }
+    my @orig_inc = @INC;
+    local @INC = (
+        $self->_get_load_module_sub( $dest_namespace, \@orig_inc ),
+    );
 
-    die "Could not find module named '$mod_name' in search paths ("
-        . join( ', ', @search_dirs ) . ")\n"
-        if ! $found;
+    my $full_mod_name = $self->MOD_PREFIX
+            . '::' . $mod_name
+            . '::' . $self->MOD_SUFFIX;
 
-    return $found;
-}
+    eval "require $full_mod_name";
+    die "Could not load $mod_name: $@" if $@;
 
-sub _compile_mod
-{
-    my ($self, $file, $args) = @_;
-    my $pack = delete $$args{namespace};
+    if( my $call = $dest_namespace->can( 'uav_module_init' ) ) {
+        $call->( $dest_namespace, $self, $args );
 
-    my $input = defined($pack)
-        ? qq{package $pack;\n}
-        : '';
-    $input .= qq(# line 1 "$file"\n);
-    open( my $in, '<', $file ) or die "Can't open <$file> for reading: $!\n";
-    while( <$in> ) {
-        $input .= $_;
-    }
-    close $in;
-
-    my $ret = eval $input;
-    die $@ if $@;
-    die "Parsing <$file> did not return successfully\n" unless $ret;
-
-    $pack = ref($self) unless defined $pack;
-    if( my $call = $pack->can( 'uav_module_init' ) ) {
-        $call->( $pack, $self, $args );
-
-        # Clear uav_module_init.  Would prefer a solution without eval( STRING ), 
-        # though a symbol table manipulation method may be considered just as evil.
-        my $del_str = 'delete $' . $pack . '::{uav_module_init}';
+        # Clear uav_module_init.  Would prefer a solution without
+        # eval( STRING ), though a symbol table manipulation method may be 
+        # considered just as evil.
+        my $del_str = 'delete $' . $dest_namespace . '::{uav_module_init}';
         eval $del_str;
     }
 
-    if( my $quit_call = $pack->can( 'uav_module_quit' ) ) {
+    if( my $quit_call = $dest_namespace->can( 'uav_module_quit' ) ) {
         $self->_push_quit_sub( $quit_call );
     }
 
+    # If we want to reload the module, we need to delete its entry from the 
+    # %INC cache
+    my @mod_name_components = split /::/, $full_mod_name;
+    my $mod_name_path = File::Spec->catfile( @mod_name_components ) . '.pm';
+    delete $INC{$mod_name_path};
+
     return 1;
+}
+
+sub _get_load_module_sub
+{
+    my ($self, $dest_namespace, $inc) = @_;
+    my $init_source = "package $dest_namespace;";
+
+    my $sub = sub {
+        my ($this_sub, $file) = @_;
+
+        my @return;
+        foreach (@$inc) {
+            my $full_path = File::Spec->catfile( $_, $file );
+            if( -e $full_path ) {
+                open( my $in, '<', $full_path )
+                    or die "Can't open '$full_path': $!\n";
+
+                @return = (
+                    \$init_source,
+                    $in,
+                );
+                last;
+            }
+        }
+
+        return @return;
+    };
+
+    return $sub;
 }
 
 
@@ -243,22 +260,22 @@ L<UAV::Pilot::Control> directly.
 =head2 load
 
     load 'ARDrone', {
-        pack => 'AR',
+        namespace => 'AR',
     };
 
-Direct call to C<load_lib>.  The C<pack> paramter will load the library into a specific 
-namespace.  If you don't specify it, you won't need to qualify commands with a namespace 
-prefix.  Example:
+Direct call to C<load_lib>.  The C<namespace> paramter will load the library 
+into a specific namespace.  If you don't specify it, you won't need to qualify 
+commands with a namespace prefix.  Example:
 
-    load 'ARDrone', { pack => 'AR' };
+    load 'ARDrone', { namespace => 'AR' };
     takeoff;     # Error: no subroutine named 'takeoff'
     AR::takeoff; # This works
     
     load ARDrone;
     takeoff;     # Now this works, too
 
-Any other parmaeters you pass will be passed to the module's C<uav_module_init()> 
-subroutine.
+Any other parmaeters you pass will be passed to the module's 
+C<uav_module_init()> subroutine.
 
 =head1 WRITING YOUR OWN EXTENSIONS
 
@@ -268,18 +285,20 @@ Extensions should go in the directory specified by:
 
 They should have a C<.uav> extension.
 
-You write them much like any Perl module, but don't use a C<package> statement--the package
-will be controlled by C<UAV::Pilot::Command> when loaded.  Like a Perl module, it should 
-return true as its final statement (put a C<1;> at the end).
+You write them much like any Perl module, but don't use a C<package> 
+statement--the package will be controlled by C<UAV::Pilot::Command> when 
+loaded.  Like a Perl module, it should return true as its final statement 
+(put a C<1;> at the end).
 
-Likewise, be careful not to make any assumptions about what package you're in.  Modules 
-may or may not get loaded into different, arbitrary packages.
+Likewise, be careful not to make any assumptions about what package you're in. 
+Modules may or may not get loaded into different, arbitrary packages.
 
-For ease of use, it's recommended to use function prototypes to reduce the need for 
-parens.
+For ease of use, it's recommended to use function prototypes to reduce the need
+for parens.
 
-The method C<uav_module_init()> is called with the package name as the first argument.  
-Subsquent arguments will be the hashref passed to C<load()/load_lib()>.  After being called,
-this sub will be deleted from the package.
+The method C<uav_module_init()> is called with the package name as the first 
+argument.  Subsquent arguments will be the hashref passed to 
+C<load()/load_lib()>.  After being called, this sub will be deleted from the 
+package.
 
 The method C<uav_module_quit()> is called when the REPL is closing.

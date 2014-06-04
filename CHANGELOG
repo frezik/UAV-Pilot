@@ -1,5 +1,10 @@
 Revision history for perl module UAV::Pilot
 
+1 ????-??-??
+
+- No longer use share/ method of loading Command shell modules.  Instead, 
+  use a specific namespace with some @INC magic.
+
 0.11 2014-05-29
 
 - Port build to Dist::Zilla

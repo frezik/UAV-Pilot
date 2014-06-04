@@ -26,8 +26,6 @@ use v5.14;
 use UAV::Pilot;
 use UAV::Pilot::Commands;
 
-my $LIB_DIR = 'share/';
-
 
 my $repl = UAV::Pilot::Commands->new;
 isa_ok( $repl => 'UAV::Pilot::Commands' );
@@ -39,11 +37,11 @@ eval {
 ok( $@, "No such command 'mock'" );
 
 eval {
-    $repl->run_cmd( q{load 'Mock';} );
+    $repl->run_cmd( q{load 'NoExists';} );
 };
-ok( $@, "Could not find library named 'Mock' in search dirs" );
+like( $@, qr/\ACould not load NoExists/ );
 
-$repl->add_lib_dir( $LIB_DIR );
+
 $repl->run_cmd( q{load 'Mock';} );
 $repl->run_cmd( 'mock;' );
 ok( 1, "Mock command ran" );
