@@ -1,6 +1,6 @@
 Revision history for perl module UAV::Pilot
 
-1 ????-??-??
+1.0_0 ????-??-??
 
 - No longer use share/ method of loading Command shell modules.  Instead, 
   use a specific namespace with some @INC magic.
