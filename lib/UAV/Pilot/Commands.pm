@@ -113,6 +113,7 @@ sub load_lib
     my @orig_inc = @INC;
     local @INC = (
         $self->_get_load_module_sub( $dest_namespace, \@orig_inc ),
+        @INC,
     );
 
     my $full_mod_name = $self->MOD_PREFIX
