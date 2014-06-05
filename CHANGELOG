@@ -1,5 +1,9 @@
 Revision history for perl module UAV::Pilot
 
+1.0 2014-06-05
+
+- Bump version number.  Really, that's it.
+
 1.0_1 2014-06-04
 
 - Allow loading of other modules in Commands packages
