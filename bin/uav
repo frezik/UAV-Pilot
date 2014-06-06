@@ -70,7 +70,6 @@ sub load_libraries
     $repl->add_lib_dir( $_ ) for @$lib_paths;
     $repl->add_lib_dir( UAV::Pilot->default_module_dir );
 
-    print "Library paths:\n" . join( "\n", map { "\t$_" } @{ $repl->lib_dirs } ) . "\n";
     foreach my $lib (@$libs) {
         print "Loading library '$lib' . . . ";
         $repl->load_lib( $lib, {
