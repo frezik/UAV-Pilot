@@ -57,7 +57,15 @@ sub run_cmd
         eval {
             $repl->run_cmd( $cmd );
         };
-        warn $@ if $@;
+
+        if( $@ ) {
+            if( ref($@) && $@->isa( 'UAV::Pilot::Exception' ) ) {
+                warn $@->to_string;
+            }
+            else {
+                warn $@;
+            }
+        }
     }
 
     return $return;
