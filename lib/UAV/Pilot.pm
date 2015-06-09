@@ -1,4 +1,4 @@
-# Copyright (c) 2014  Timm Murray
+# Copyright (c) 2015  Timm Murray
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without 
@@ -22,6 +22,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
 package UAV::Pilot;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -33,7 +34,6 @@ use Log::Log4perl;
 use constant DIST_NAME     => 'UAV-Pilot';
 use constant LOG_CONF_FILE => 'log4perl.conf';
 
-our $VERSION       = 1.0;
 our $LOG_WAS_INITD = 0;
 
 # ABSTRACT: Base library for controlling UAVs

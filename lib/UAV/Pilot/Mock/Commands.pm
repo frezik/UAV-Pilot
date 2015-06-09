@@ -1,4 +1,5 @@
 use v5.14;
+
 use File::Glob; # To test that we can load other modules here
 
 sub mock ()

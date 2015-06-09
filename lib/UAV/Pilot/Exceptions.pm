@@ -1,4 +1,4 @@
-# Copyright (c) 2014  Timm Murray
+# Copyright (c) 2015  Timm Murray
 # All rights reserved.
 # 
 # Redistribution and use in source and binary forms, with or without 
@@ -22,6 +22,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
 package UAV::Pilot::Exception;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -44,6 +45,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::NumberOutOfRangeException;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -54,6 +56,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::IOException;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -64,6 +67,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::FileNotFoundException;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -79,6 +83,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::CommandNotFoundException;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -94,6 +99,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::NavPacketException::BadHeader;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -109,6 +115,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::VideoException;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -119,6 +126,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::ArdupilotPacketException::BadHeader;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
@@ -134,6 +142,7 @@ __PACKAGE__->meta->make_immutable;
 
 
 package UAV::Pilot::ArdupilotPacketException::BadChecksum;
+
 use v5.14;
 use Moose;
 use namespace::autoclean;
