@@ -21,24 +21,36 @@
 # CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) 
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 # POSSIBILITY OF SUCH DAMAGE.
-use Test::More tests => 18;
-use v5.14;
+package UAV::Pilot::Video::JPEGHandler;
 
-use_ok( 'UAV::Pilot' );
-use_ok( 'UAV::Pilot::Exceptions' );
-use_ok( 'UAV::Pilot::Driver' );
-use_ok( 'UAV::Pilot::Control' );
-use_ok( 'UAV::Pilot::ControlHelicopter' );
-use_ok( 'UAV::Pilot::ControlRover' );
-use_ok( 'UAV::Pilot::Server' );
-use_ok( 'UAV::Pilot::Commands' );
-use_ok( 'UAV::Pilot::EasyEvent' );
-use_ok( 'UAV::Pilot::EventHandler' );
-use_ok( 'UAV::Pilot::Events' );
-use_ok( 'UAV::Pilot::NavCollector' );
-use_ok( 'UAV::Pilot::NavCollector::AckEvents' );
-use_ok( 'UAV::Pilot::ControlRover' );
-use_ok( 'UAV::Pilot::Video::H264Handler' );
-use_ok( 'UAV::Pilot::Video::JPEGHandler' );
-use_ok( 'UAV::Pilot::Video::RawHandler' );
-use_ok( 'UAV::Pilot::Video::Mock::RawHandler' );
+use v5.14;
+use Moose::Role;
+
+requires 'process_jpeg_frame';
+
+1;
+__END__
+
+
+=head1 NAME
+
+  UAV::Pilot::Video::H264Handler
+
+=head1 DESCRIPTION
+
+Objects which do this role can be passed to objects that handle video frames, such as 
+C<UAV::Pilot::ARDrone::Video>.  They will handle an h264 video frame-by-frame.
+
+=head1 REQUIRED METHODS
+
+=head1 process_h264_frame
+
+    process_h264_frame(
+        $frame, # Arrayref of bytes containing the h264 frame
+        $width,
+        $height,
+        $encoded_width,
+        $encoded_height,
+    );
+
+=cut
