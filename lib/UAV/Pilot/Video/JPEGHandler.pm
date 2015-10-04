@@ -39,7 +39,7 @@ __END__
 =head1 DESCRIPTION
 
 Objects which do this role can be passed to objects that handle video frames, such as 
-C<UAV::Pilot::ARDrone::Video>.  They will handle an h264 video frame-by-frame.
+L<UAV::Pilot::ARDrone::Video>.  They will handle an h264 video frame-by-frame.
 
 =head1 REQUIRED METHODS
 

@@ -38,7 +38,7 @@ __END__
 
 =head1 DESCRIPTION
 
-Role for objects that will be passed into C<UAV::Pilot::Events>.
+Role for objects that will be passed into L<UAV::Pilot::Events>.
 
 Requires the method C<process_events>, which will be called to handle the events for this 
 object.

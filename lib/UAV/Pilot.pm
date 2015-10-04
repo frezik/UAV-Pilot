@@ -151,8 +151,8 @@ provides the basic support for implementing other UAV libraries, much the same
 way DBI provides support for implementing different database drivers.
 
 If you would like to control the Parrot AR.Drone, you should also install 
-C<UAV::Pilot::ARDrone>, and probably C<UAV::Pilot::SDL> and 
-C<UAV::Pilot::Video::Ffmpeg> as well.
+L<UAV::Pilot::ARDrone>, and probably L<UAV::Pilot::SDL> and 
+L<UAV::Pilot::Video::Ffmpeg> as well.
 
 =head1 LICENSE
 

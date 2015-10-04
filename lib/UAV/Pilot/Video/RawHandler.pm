@@ -52,7 +52,7 @@ C<process_raw_frame>.  It will be passed:
 
 =back
 
-The C<$decoder> object is a C<UAV::Pilot::Video::H264Decoder>, which will have processed the 
+The C<$decoder> object is a L<UAV::Pilot::Video::H264Decoder>, which will have processed the 
 most recent frame data.
 
 =cut

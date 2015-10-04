@@ -222,15 +222,15 @@ __END__
 
 =head1 DESCRIPTION
 
-C<AnyEvent> is the standard event framework used for C<UAV::Pilot>.  However, its 
+L<AnyEvent> is the standard event framework used for L<UAV::Pilot>.  However, its 
 interface isn't convenient for some of the typical things done for UAV piloting.  For 
 instance, to put the code into plain English, we might want to say:
 
     Takeoff, wait 5 seconds, then pitch forward for 2 seconds, then pitch backwards 
     for 2 seconds, then land
 
-In the usual C<AnyEvent> interface, this requires building the timers inside the callbacks 
-of other timers, which leads to several levels of indentation.  C<UAV::Pilot::EasyEvent> 
+In the usual L<AnyEvent> interface, this requires building the timers inside the callbacks 
+of other timers, which leads to several levels of indentation.  L<UAV::Pilot::EasyEvent> 
 simplifies the handling and syntax of this kind of event workflow.
 
 =head1 METHODS
@@ -241,7 +241,7 @@ simplifies the handling and syntax of this kind of event workflow.
         condvar => $cv,
     })
 
-Constructor.  The C<condvar> argument should be an C<AnyEvent::CondVar>.
+Constructor.  The C<condvar> argument should be an L<AnyEvent::CondVar>.
 
 =head2 add_timer
 

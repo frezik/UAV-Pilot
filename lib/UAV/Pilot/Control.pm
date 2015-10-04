@@ -49,6 +49,6 @@ module that does this role.
 
 =head2 driver
 
-Instantiated C<UAV::Pilot::Driver> object.
+Instantiated L<UAV::Pilot::Driver> object.
 
 =cut

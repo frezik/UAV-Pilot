@@ -43,7 +43,7 @@ __END__
 Role for any type of helicopter UAV.  This may include traditional monoprops, 
 or more modern multipods.
 
-Does the C<UAV::Pilot::Control> role.
+Does the L<UAV::Pilot::Control> role.
 
 Requires the method C<takeoff()>.
 

@@ -179,8 +179,8 @@ __END__
 
 =head1 DESCRIPTION
 
-Exceptions that could be thrown by C<UAV::Pilot> modules.  All inherit from 
-C<UAV::Pilot::Exception>, which does the role C<Throwable>.
+Exceptions that could be thrown by L<UAV::Pilot> modules.  All inherit from 
+L<UAV::Pilot::Exception>, which does the role L<Throwable>.
 
 =head1 EXCEPTIONS
 

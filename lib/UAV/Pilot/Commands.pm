@@ -219,9 +219,9 @@ Constructor.  The C<condvar> parameter is an C<AnyEvent::Condvar>.
 
 The C<controller_callback_*> parameters take a sub ref.  The subroutines take 
 a the parameters C<($cmd, $cv, $easy_event)>, where C<$cmd> is this 
-C<UAV::Pilot::Commands> instance, C<$cv> is the condvar passed above, and 
-C<$easy_event> is an C<UAV::Pilot::EasyEvent> instance.  It should return a 
-C<UAV::Pilot::Control> object of the associated type (generally one of the 
+L<UAV::Pilot::Commands> instance, C<$cv> is the condvar passed above, and 
+C<$easy_event> is an L<UAV::Pilot::EasyEvent> instance.  It should return a 
+L<UAV::Pilot::Control> object of the associated type (generally one of the 
 C<*::Event> types with C<init_event_loop()> called).
 
 Note that this API is likely to change to a factory pattern in the near future.
@@ -285,7 +285,7 @@ When calling C<load_lib( 'Foo' )>, we look for C<UAV::Pilot::Foo::Commands>
 in the current C<@INC>.
 
 You write them much like any Perl module, but don't use a C<package> 
-statement--the package will be controlled by C<UAV::Pilot::Command> when 
+statement--the package will be controlled by L<UAV::Pilot::Commands> when 
 loaded.  Like a Perl module, it should return true as its final statement 
 (put a C<1;> at the end).
 
