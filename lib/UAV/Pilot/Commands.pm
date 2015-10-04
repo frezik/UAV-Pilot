@@ -218,7 +218,7 @@ REPL shells.
 Constructor.  The C<condvar> parameter is an C<AnyEvent::Condvar>.
 
 The C<controller_callback_*> parameters take a sub ref.  The subroutines take 
-a the parameters C<($cmd, $cv, $easy_event)>, where C<$cmd> is this 
+the parameters C<($cmd, $cv, $easy_event)>, where C<$cmd> is this 
 L<UAV::Pilot::Commands> instance, C<$cv> is the condvar passed above, and 
 C<$easy_event> is an L<UAV::Pilot::EasyEvent> instance.  It should return a 
 L<UAV::Pilot::Control> object of the associated type (generally one of the 
@@ -232,7 +232,7 @@ Note that this API is likely to change to a factory pattern in the near future.
         pack => 'AR',
     })
 
-Loads an extension by name.  The C<pack> paramter will load the library into a specific 
+Loads an extension by name.  The C<pack> parameter will load the library into a specific 
 namespace.  If you don't specify it, you won't need to qualify commands with a namespace 
 prefix.  Example:
 
@@ -243,7 +243,7 @@ prefix.  Example:
     load_lib( 'ARDrone' );
     run_cmd( 'takeoff;' );     # Now this works, too
 
-Any other parmaeters you pass will be passed to the module's C<uav_module_init()> 
+Any other parameters you pass will be passed to the module's C<uav_module_init()> 
 subroutine.
 
 =head2 run_cmd
@@ -254,7 +254,7 @@ Executes a command.  Note that this will execute arbitrary Perl statements.
 
 =head1 COMMANDS
 
-Commands provide an easy interface for writing simple UAV programms in a REPL shell.  
+Commands provide an easy interface for writing simple UAV programs in a REPL shell.  
 They are usually thin interfaces over a L<UAV::Pilot::Control>.  If you're writing a 
 complicated script, it's suggested that you skip this interface and write to the 
 L<UAV::Pilot::Control> directly.
@@ -265,7 +265,7 @@ L<UAV::Pilot::Control> directly.
         namespace => 'AR',
     };
 
-Direct call to C<load_lib>.  The C<namespace> paramter will load the library 
+Direct call to C<load_lib>.  The C<namespace> parameter will load the library 
 into a specific namespace.  If you don't specify it, you won't need to qualify 
 commands with a namespace prefix.  Example:
 
@@ -276,7 +276,7 @@ commands with a namespace prefix.  Example:
     load ARDrone;
     takeoff;     # Now this works, too
 
-Any other parmaeters you pass will be passed to the module's 
+Any other parameters you pass will be passed to the module's 
 C<uav_module_init()> subroutine.
 
 =head1 WRITING YOUR OWN EXTENSIONS
@@ -296,7 +296,7 @@ For ease of use, it's recommended to use function prototypes to reduce the need
 for parens.
 
 The method C<uav_module_init()> is called with the package name as the first 
-argument.  Subsquent arguments will be the hashref passed to 
+argument.  Subsequent arguments will be the hashref passed to 
 C<load()/load_lib()>.  After being called, this sub will be deleted from the 
 package.
 
