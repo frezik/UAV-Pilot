@@ -21,10 +21,9 @@ INSTALLATION
 
 For full functionality, you will need the SDL Perl module and the ffmpeg C library.
 
-Install with the standard Module::Build method:
+Install with the standard ExtUtils::MakeMaker method:
 
-    perl ./Build.PL
-    ./Build
-    ./Build test
-    ./Build install
-
+    perl ./Makefile.PL
+    make
+    make test
+    make install
