@@ -96,8 +96,8 @@ __END__
 
 =head1 DESCRIPTION
 
-Does the C<UAV::Pilot::NavCollector> role to fire off events into 
-C<UAV::Pilot::EasyEvent> based on the ACK control bit.  Each nav packet with 
+Does the L<UAV::Pilot::NavCollector> role to fire off events into 
+L<UAV::Pilot::EasyEvent> based on the ACK control bit.  Each nav packet with 
 the bit on will fire a C<nav_ack_on> event, and C<nav_ack_off> when off.  If 
 the state toggles, C<nav_ack_toggle> is sent.
 

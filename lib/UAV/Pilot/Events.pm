@@ -97,18 +97,18 @@ Handles event loops on a regular timer.
         condvar => $cv,
     })
 
-Constructor.  The C<condvar> argument is an C<AnyEvent::Condvar>.
+Constructor.  The C<condvar> argument is an L<AnyEvent::Condvar>.
 
 =head2 register
 
     register( $event_handler )
 
-Adds a object that does the C<UAV::Pilot::EventHandler> role to the list.  The 
+Adds a object that does the L<UAV::Pilot::EventHandler> role to the list.  The 
 C<process_events> method on that object will be called each time the event loop runs.
 
 =head2 init_event_loop
 
-Sets up the event loop.  Note that you must still call C<recv> on the C<AnyEvent::Condvar> 
+Sets up the event loop.  Note that you must still call C<recv> on the L<AnyEvent::Condvar> 
 to start the loop running.
 
 =cut

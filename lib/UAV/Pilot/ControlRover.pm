@@ -44,7 +44,7 @@ __END__
 
 Role for any kind of ground vehicle.
 
-Does the C<UAV::Pilot::Control> role.
+Does the L<UAV::Pilot::Control> role.
 
 Requires the methods C<throttle( $throttle )> and C<turn( $turn )>.
 

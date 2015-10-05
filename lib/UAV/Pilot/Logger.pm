@@ -56,9 +56,9 @@ __END__
 
 =head1 DESCRIPTION
 
-A Moose role for C<UAV::Pilot> classes that want to log things.
+A Moose role for L<UAV::Pilot> classes that want to log things.
 
-Provides the attribute C<_logger>, which returns a C<Log::Log4perl::Logger> for 
+Provides the attribute C<_logger>, which returns a L<Log::Log4perl::Logger> for 
 your object.
 
 Also provides a method C<_logger_name> for fetching the logger name.  This will 
